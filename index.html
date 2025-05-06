@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DM World School</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        .coming-soon-regular {
+            font-family: "Coming Soon", cursive;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+
+        body {
+            /* font-family: 'Arial', sans-serif; */
+            font-family: "Coming Soon", cursive;
+            font-weight: 400;
+            font-style: normal;
+            overflow-x: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            background-color: #fdf5e1;
+            color: #0C2340;
+            padding: 1rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .school-emblem {
+            width: 100%;
+            height: auto;
+        }
+
+        .school-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .explore-btn {
+            /* background-color: #f5f5dc; */
+            background-color: #1a5276;
+            /* color: #1a5276; */
+            color: #f5f5dc;
+            font-weight: bold;
+            padding: 0.75rem 2rem;
+            border-radius: 30px;
+            border: none;
+            transition: all 0.3s;
+            margin: 0 0.5rem;
+        }
+
+        .explore-btn:hover {
+            background-color: #0C2340;
+            /* background-color: #eaeacb; */
+            transform: scale(1.05);
+        }
+
+        .sponsor-btn {
+            background-color: #e74c3c;
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 2rem;
+            border-radius: 30px;
+            border: none;
+            transition: all 0.3s;
+            margin: 0.5rem;
+            display: block;
+            margin: 1rem auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sponsor-btn:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            width: 4px;
+            height: 4px;
+        }
+
+        .footprint-section {
+            background-color: #000;
+            padding: 4rem 0;
+        }
+
+        .footprint-section .title {
+            font-size: 2.5rem;
+            color: #f5f5dc;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+
+        .book-publishing-section {
+            background-color: #fff;
+            padding: 4rem 0;
+        }
+
+        .book-publishing-section .title {
+            font-size: 2.5rem;
+            color: #0C2340;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .book-item {
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: transform 0.3s;
+        }
+
+        .book-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            background-color: #f5f5dc;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #1a5276;
+        }
+
+        .book-date {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .series-title {
+            color: #1a5276;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .series-description {
+            color: #555;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            max-width: 760px;
+        }
+
+        .landscape {
+            position: relative;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .school-title {
+                font-size: 3rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+
+            .pillars-title {
+                text-align: center;
+            }
+
+            .about-img {
+                margin-bottom: 2rem;
+            }
+
+            .header-icon {
+                width: 40px;
+                height: 40px;
+                margin: 0 10px;
+            }
+
+            .quote-text {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1320px;
+            }
+
+            .school-title {
+                font-size: 3rem;
+            }
+
+            .header-icon {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <section class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-5 mb-4 mb-md-0">
+                    <img src="/img/dmwsemblem.png" alt="DM World School Emblem" class="school-emblem">
+                </div>
+                <div class="col-md-7">
+                    <h1 class="school-title">Dad & Mom <br>International School (DMIS)</h1>
+                    <p class="tagline">
+                        <br>
+                        DMIS is a worldschool created for curious explorers.
+                        We embrace learning without borders — with creativity, resilience, and joy.
+                        <br>
+                        <br>
+                        The world is our classroom. <br> Learning from anywhere, anytime.
+                    </p>
+                    <button class="explore-btn">OUR BOOKS</button>
+                    <button class="explore-btn">OUR FOOTPRINTS</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="book-publishing-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="title">Explore Our Books</h2>
+                </div>
+            </div>
+
+            <!-- Books will be dynamically populated here -->
+            <div id="books-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+
+            <!-- Sponsor section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="sponsor-container text-center p-4"
+                        style="background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <h3 style="color: #1a5276; margin-bottom: 1rem;">Loving Our Stories?</h3>
+                        <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+                            Our books showcase the creative imagination of a young author from Malaysia.
+                            <br>
+                            By sponsoring her books, you directly encourage her passion for storytelling and
+                            help bring her unique voice to readers around the world.
+                        </p>
+                        <button class="sponsor-btn">SPONSOR OUR BOOKS</button>
+                        <p style="font-size: 0.9rem; margin-top: 1rem; color: #666;">
+                            Each sponsorship directly funds our next book project. <br>Sponsors receive special
+                            acknowledgments in our upcoming publications and exclusive digital content!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="footprint-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="title">Explore Our Footprints</h2>
+                    <ul style="color: #eee">
+                        <li>Kuala Lumpur, Malaysia</li>
+                        <li>Hokkaido, Japan</li>
+                        <li>Perth, Australia</li>
+                        <li>Tasmania, Australia</li>
+                        <li>Melbourne, Australia</li>
+                        <li>more coming ...</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <canvas id="cobe" style="width: 100%; height: 500px" width="1000" height="1000"></canvas>
+                </div>
+            </div>
+            <div id="stars-container"></div>
+        </div>
+    </section>
+
+    <script type="module">
+        import createGlobe from 'https://cdn.skypack.dev/cobe'
+
+        let phi = 0
+        let canvas = document.getElementById("cobe")
+
+        const globe = createGlobe(canvas, {
+            devicePixelRatio: 2,
+            width: 1000,
+            height: 1000,
+            phi: 0,
+            theta: 0,
+            dark: 1.1,
+            diffuse: 3,
+            mapSamples: 16000,
+            mapBrightness: 1.8,
+            mapBaseBrightness: 0.05,
+            baseColor: [1.1, 1.1, 1.1],
+            markerColor: [251 / 255, 100 / 255, 21 / 255],
+            glowColor: [1.1, 1.1, 1.1],
+            opacity: 0.7,
+            scale: 1,
+            offset: [0, 0],
+            markers: [
+                { location: [3.1390, 101.6869], size: 0.1 },    // Kuala Lumpur, Malaysia
+                { location: [43.15275277524453, 141.88074069132827], size: 0.1 },    // Hokkaido
+                { location: [-41.92959139698113, 146.52022428771951], size: 0.1 },  // Tasmania
+                { location: [-37.81683595808933, 144.9540326048453], size: 0.1 },  // Melb
+                { location: [-31.95345260814669, 115.8639705067741], size: 0.1 },  // Perth
+            ],
+            onRender: (state) => {
+                state.phi = phi
+                phi += 0.003
+            },
+        })
+    </script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Book Data and Dynamic Population -->
+    <script>
+        // Book data organized by series
+        const bookSeries = [
+            // {
+            //     seriesName: "Charlie The Rainbow Dragon Series",
+            //     books: [
+            //         { title: "Charlie's First Flight", filename: "charlie_first_flight" },
+            //         { title: "Charlie and the Rainbow Cave", filename: "charlie_rainbow_cave" },
+            //         { title: "Charlie's Dragon Friends", filename: "charlie_dragon_friends" },
+            //         { title: "Charlie Saves the Day", filename: "charlie_saves_day" }
+            //     ]
+            // },
+            // {
+            //     seriesName: "The Blocky Adventure of Thorik Series",
+            //     books: [
+            //         { title: "Thorik's First Quest", filename: "thorik_first_quest" },
+            //         { title: "Thorik and the Lost Mine", filename: "thorik_lost_mine" },
+            //         { title: "Thorik's Sky Adventure", filename: "thorik_sky_adventure" },
+            //         { title: "Thorik and the End Portal", filename: "thorik_end_portal" }
+            //     ]
+            // },
+            {
+                seriesName: "The Stellar Adventures of Rosalina Series",
+                seriesDecription: "A Charming Original Side Story Series by Young Author - Ee Jin. Where imagination knows no bounds and friendship crosses all worlds",
+                books: [
+                    { title: "Book 1: Adventure of Rosalina", filename: "book1_adventure_of_rosalina", createdAt: "April 29, 2025" },
+                    { title: "Book 2: The Adventure of Rosalina with Thorik, Tory, and Toffee", filename: "book2_adventure_of_rosalina", createdAt: "April 29, 2025" },
+                    { title: "Book 3: Rosalina Gets Lost", filename: "book3_adventure_of_rosalina", createdAt: "April 30, 2025" },
+                    { title: "Book 4: Rosalina’s Worst Day", filename: "book4_adventure_of_rosalina", createdAt: "May 2, 2025" },
+                    { title: "Book 5: The Bad Bad Days", filename: "book5_adventure_of_rosalina", createdAt: "May 5, 2025" }
+                ]
+            }
+        ];
+
+        // Function to populate books
+        function populateBooks() {
+            const booksContainer = document.getElementById('books-container');
+
+            // Clear existing content
+            booksContainer.innerHTML = '';
+
+            // For each series
+            bookSeries.forEach(series => {
+                // Create series header
+                const seriesHeader = document.createElement('h4');
+                seriesHeader.className = 'series-title';
+                seriesHeader.textContent = series.seriesName;
+                booksContainer.appendChild(seriesHeader);
+
+                const seriesDescription = document.createElement('p');
+                seriesDescription.textContent = series.seriesDecription;
+                seriesDescription.className = 'series-description';
+                booksContainer.appendChild(seriesDescription);
+
+                // Create row for books
+                const row = document.createElement('div');
+                row.className = 'row';
+
+                // Add each book in the series
+                series.books.forEach(book => {
+                    const bookCol = document.createElement('div');
+                    bookCol.className = 'col-md-3 mb-3';
+
+                    const bookItem = document.createElement('div');
+                    bookItem.className = 'book-item';
+
+                    // Create book link
+                    const bookLink = document.createElement('a');
+                    bookLink.href = `books.html?book=${book.filename}`;
+
+                    // Create book cover (placeholder)
+                    const bookCover = document.createElement('div');
+                    bookCover.className = 'book-cover';
+                    bookCover.textContent = book.title;
+
+                    // Create book title
+                    const bookTitle = document.createElement('h5');
+                    bookTitle.className = 'book-title';
+                    bookTitle.textContent = book.title;
+
+                    // Create book date display
+                    const bookDate = document.createElement('p');
+                    bookDate.className = 'book-date';
+                    bookDate.textContent = book.createdAt;
+
+                    // Assemble the components
+                    bookLink.appendChild(bookCover);
+                    bookItem.appendChild(bookLink);
+                    bookItem.appendChild(bookTitle);
+                    bookItem.appendChild(bookDate);
+                    bookCol.appendChild(bookItem);
+                    row.appendChild(bookCol);
+                });
+
+                booksContainer.appendChild(row);
+            });
+        }
+
+        $(document).ready(function () {
+            // Populate books when the page loads
+            populateBooks();
+
+            // Create stars for the header background
+            // createStars();
+
+            // Smooth scrolling for internal links
+            $('a[href^="#"]').on('click', function (e) {
+                e.preventDefault();
+
+                $('html, body').animate({
+                    scrollTop: $($(this).attr('href')).offset().top
+                }, 500, 'linear');
+            });
+
+            // Animation for explore button
+            $('.explore-btn').hover(
+                function () {
+                    $(this).css('transform', 'scale(1.05)');
+                },
+                function () {
+                    $(this).css('transform', 'scale(1)');
+                }
+            );
+
+            // Function to create stars
+            function createStars() {
+                const starsContainer = $('#stars-container');
+                const headerHeight = $('.header').height();
+                const headerWidth = $('.header').width();
+
+                // Create 50 stars with random positions
+                for (let i = 0; i < 50; i++) {
+                    const star = $('<div class="star"></div>');
+                    const size = Math.random() * 3 + 1; // Random size between 1-4px
+
+                    star.css({
+                        top: Math.random() * headerHeight + 'px',
+                        left: Math.random() * headerWidth + 'px',
+                        width: size + 'px',
+                        height: size + 'px',
+                        opacity: Math.random() * 0.8 + 0.2 // Random opacity
+                    });
+
+                    starsContainer.append(star);
+                }
+            }
+
+            // Add click events to navigation buttons
+            $('.explore-btn').eq(0).on('click', function () {
+                // Scroll to books section
+                $('html, body').animate({
+                    scrollTop: $('.book-publishing-section').offset().top
+                }, 500, 'linear');
+            });
+
+            $('.explore-btn').eq(1).on('click', function () {
+                // Scroll to footprints section
+                $('html, body').animate({
+                    scrollTop: $('.footprint-section').offset().top
+                }, 500, 'linear');
+            });
+
+            // Responsive adjustments
+            // $(window).resize(function () {
+            //     $('#stars-container').empty();
+            //     createStars();
+            // });
+        });
+    </script>
+</body>
+
+</html>
