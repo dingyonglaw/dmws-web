@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DM World School</title>
+    <title>Dad & Mom International School (DMIS)</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,13 +13,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
-        .coming-soon-regular {
-            font-family: "Coming Soon", cursive;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-
         body {
             /* font-family: 'Arial', sans-serif; */
             font-family: "Coming Soon", cursive;
@@ -140,10 +133,14 @@
             transform: translateY(-5px);
         }
 
+        .book-item a {
+            text-decoration: none;
+        }
+
         .book-cover {
             width: 100%;
             height: 200px;
-            background-color: #f5f5dc;
+            background-color: #eee;
             border-radius: 5px;
             display: flex;
             align-items: center;
@@ -235,7 +232,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-5 mb-4 mb-md-0">
-                    <img src="img/dmwsemblem.png" alt="DM World School Emblem" class="school-emblem">
+                    <img src="img/dmwsemblem.png" style="max-width: 400px;" alt="DM World School Emblem" class="school-emblem">
                 </div>
                 <div class="col-md-7">
                     <h1 class="school-title">Dad & Mom <br>International School (DMIS)</h1>
@@ -258,7 +255,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h2 class="title">Explore Our Books</h2>
+                    <h2 class="title"><img src="https://minecraft.wiki/images/Enchanted_Book.gif?b21c4" style="width: 48px;" /> Explore Our Books!</h2>
                 </div>
             </div>
 
@@ -268,13 +265,17 @@
             </div>
 
             <!-- Sponsor section -->
-            <div class="row mt-5">
-                <div class="col-12">
+            <div class="row justify-content-md-center mt-5">
+                <div class="col-lg-8">
                     <div class="sponsor-container text-center p-4"
-                        style="background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        style="background-color: #f5f5dc; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                         <h3 style="color: #1a5276; margin-bottom: 1rem;">Loving Our Stories?</h3>
+                        <div>
+                            <img src="https://minecraft.wiki/images/thumb/Enchanting-Table.png/640px-Enchanting-Table.png?4d22b" class="img-fluid" alt="Sponsor Image"
+                                style="max-width: 480px; height: auto; margin-bottom: 1rem;">
+                        </div>
                         <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                            Our books showcase the creative imagination of a young author from Malaysia.
+                            Our books showcase the creative imagination of a young author - Ee Jin.
                             <br>
                             By sponsoring her books, you directly encourage her passion for storytelling and
                             help bring her unique voice to readers around the world.
@@ -428,7 +429,8 @@
                     // Create book cover (placeholder)
                     const bookCover = document.createElement('div');
                     bookCover.className = 'book-cover';
-                    bookCover.textContent = book.title;
+                    // bookCover.textContent = book.title;
+                    bookCover.textContent = 'Book Cover Coming Soon!';
 
                     // Create book title
                     const bookTitle = document.createElement('h5');
