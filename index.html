@@ -402,7 +402,7 @@
                     { title: "Book 3: Rosalina Gets Lost", filename: "book3_adventure_of_rosalina", createdAt: "April 30, 2025" },
                     { title: "Book 4: Rosalina’s Worst Day", filename: "book4_adventure_of_rosalina", createdAt: "May 2, 2025" },
                     { title: "Book 5: The Bad Bad Days", filename: "book5_adventure_of_rosalina", createdAt: "May 5, 2025" },
-                    { title: "Book 6: The gardeners of Thorik and Ari", filename: "book6_adventure_of_rosalina", createdAt: "May 9, 2025" },
+                    { title: "Book 6: The Gardeners of Thorik and Ari", filename: "book6_adventure_of_rosalina", createdAt: "May 9, 2025" },
                 ]
             }
         ];
@@ -427,50 +427,6 @@
                 seriesDescription.className = 'series-description';
                 booksContainer.appendChild(seriesDescription);
 
-                // Create row for books
-                // const row = document.createElement('div');
-                // row.className = 'row';
-
-                // Add each book in the series
-                // series.books.forEach(book => {
-                //     const bookCol = document.createElement('div');
-                //     bookCol.className = 'col-md-3 mb-3';
-
-                //     const bookItem = document.createElement('div');
-                //     bookItem.className = 'book-item';
-
-                //     // Create book link
-                //     const bookLink = document.createElement('a');
-                //     bookLink.href = `books.html?book=${book.filename}`;
-
-                //     // Create book cover (placeholder)
-                //     const bookCover = document.createElement('div');
-                //     bookCover.className = 'book-cover';
-                //     // bookCover.textContent = book.title;
-                //     bookCover.textContent = 'Book Cover Coming Soon!';
-
-                //     // Create book title
-                //     const bookTitle = document.createElement('h5');
-                //     bookTitle.className = 'book-title';
-                //     bookTitle.textContent = book.title;
-
-                //     // Create book date display
-                //     const bookDate = document.createElement('p');
-                //     bookDate.className = 'book-date';
-                //     bookDate.textContent = book.createdAt;
-
-                //     // Assemble the components
-                //     bookLink.appendChild(bookCover);
-                //     bookItem.appendChild(bookLink);
-                //     bookItem.appendChild(bookTitle);
-                //     bookItem.appendChild(bookDate);
-                //     bookCol.appendChild(bookItem);
-                //     row.appendChild(bookCol);
-                // });
-                // booksContainer.appendChild(row);
-
-                // const booksContainer = document.createElement('ul');
-                // list.className = 'list-unstyled';
                 series.books.forEach(book => {
                     const listItem = document.createElement('div');
                     listItem.className = 'd-flex book-item';
