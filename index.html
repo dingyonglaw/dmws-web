@@ -83,6 +83,8 @@
             display: block;
             margin: 1rem auto;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            display: inline-block;
         }
 
         .sponsor-btn:hover {
@@ -183,6 +185,22 @@
             position: relative;
         }
 
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 315px;
+            margin: 0 auto 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 560px;
+            border: none;
+        }
+
         /* Media Queries */
         @media (max-width: 768px) {
             .school-title {
@@ -209,6 +227,14 @@
 
             .quote-text {
                 font-size: 1.8rem;
+            }
+
+            .video-container {
+                max-width: 280px;
+            }
+
+            .video-container iframe {
+                height: 498px;
             }
         }
 
@@ -279,10 +305,11 @@
                     <div class="sponsor-container text-center p-4"
                         style="background-color: #f5f5dc; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                         <h3 style="color: #1a5276; margin-bottom: 1rem;">Loving Our Stories?</h3>
-                        <div>
-                            <img src="https://minecraft.wiki/images/thumb/Enchanting-Table.png/640px-Enchanting-Table.png?4d22b"
-                                class="img-fluid" alt="Sponsor Image"
-                                style="width: 480px; height: auto; margin-bottom: 1rem;">
+                        <div class="video-container">
+                            <iframe src="https://www.youtube.com/embed/3xshqFy_0Ps" title="DMIS Introduction Video"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
                         </div>
                         <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
                             Our books showcase the creative imagination of a young author - Ee Jin (8 years-old in
@@ -297,7 +324,8 @@
                             authors.
 
                         </p>
-                        <button class="sponsor-btn">SPONSOR OUR BOOKS (Coming Soon)</button>
+                        <a class="sponsor-btn" target="_blank" href="https://ko-fi.com/dmisbookclub">SPONSOR OUR BOOKS
+                            <br>(Ko-fi)</a>
                         <p style="font-size: 0.9rem; margin-top: 1rem; color: #666;">
                             Each sponsorship directly funds our next book project and helps Ee Jin expand her personal
                             library.
@@ -406,7 +434,7 @@
                     { title: "Book 1: Adventure of Rosalina", filename: "book1_adventure_of_rosalina", createdAt: "April 29, 2025" },
                     { title: "Book 2: The Adventure of Rosalina with Thorik, Tory, and Toffee", filename: "book2_adventure_of_rosalina", createdAt: "April 29, 2025" },
                     { title: "Book 3: Rosalina Gets Lost", filename: "book3_adventure_of_rosalina", createdAt: "April 30, 2025" },
-                    { title: "Book 4: Rosalina’s Worst Day", filename: "book4_adventure_of_rosalina", createdAt: "May 2, 2025" },
+                    { title: "Book 4: Rosalina's Worst Day", filename: "book4_adventure_of_rosalina", createdAt: "May 2, 2025" },
                     { title: "Book 5: The Bad Bad Days", filename: "book5_adventure_of_rosalina", createdAt: "May 5, 2025" },
                     { title: "Book 6: The Gardeners of Thorik and Ari", filename: "book6_adventure_of_rosalina", createdAt: "May 9, 2025" },
                     { title: "Book 7: The Cliffhanger", filename: "book7_adventure_of_rosalina", createdAt: "May 19, 2025" },
