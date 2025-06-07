@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Preposition Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #3A2C22;
+            /* Dirt block dark brown */
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 16px;
+            background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23574334' fill-opacity='0.4'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            overflow-x: hidden;
+            /* Prevent horizontal scroll during animations */
+        }
+
+        .game-container,
+        .initial-screen {
+            background-color: #7B5C3F;
+            /* Dirt block light brown */
+            border: 8px solid #574334;
+            /* Dirt block border */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 0 4px #A58B70;
+            /* Inner highlight */
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            position: relative;
+        }
+
+        .initial-screen {
+            padding: 30px;
+        }
+
+        .initial-screen input {
+            font-family: 'Press Start 2P', cursive;
+            padding: 10px;
+            margin: 10px 0 20px 0;
+            border: 4px solid #505050;
+            border-radius: 8px;
+            background-color: #A58B70;
+            color: #3A2C22;
+            text-align: center;
+            max-width: 100%;
+        }
+
+        .initial-screen p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .minecraft-button {
+            background-color: #707070;
+            /* Stone block */
+            color: #FFFFFF;
+            border: 4px solid #505050;
+            /* Stone border */
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            text-transform: uppercase;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px #303030;
+            /* Button shadow */
+        }
+
+        .minecraft-button:hover:not(:disabled) {
+            background-color: #8A8A8A;
+            /* Lighter stone */
+        }
+
+        .minecraft-button:active:not(:disabled) {
+            background-color: #606060;
+            transform: translateY(2px);
+            box-shadow: 0 2px #303030;
+        }
+
+        .minecraft-button:disabled {
+            background-color: #4a4a4a;
+            border-color: #333333;
+            color: #888888;
+            cursor: not-allowed;
+            box-shadow: 0 4px #202020;
+        }
+
+        .minecraft-button.correct {
+            background-color: #5DBE5D;
+            /* Green for correct */
+            border-color: #4A9A4A;
+            box-shadow: 0 4px #3A7A3A;
+        }
+
+        .minecraft-button.incorrect {
+            background-color: #E05252;
+            /* Red for incorrect */
+            border-color: #B03232;
+            box-shadow: 0 4px #802222;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #DDDDDD;
+            /* Light gray for text */
+            background-color: #574334;
+            /* Darker background for question */
+            padding: 15px;
+            border-radius: 8px;
+            border: 4px solid #4A3A2A;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            background-color: #4A3A2A;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: #7B5C3F;
+            /* Dirt block light brown */
+            padding: 30px;
+            border-radius: 12px;
+            border: 8px solid #574334;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #FFFFFF;
+        }
+
+        .modal-content p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            color: #DDDDDD;
+        }
+
+        .modal.level-complete-animation .modal-content {
+            animation: modalEnter 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+
+        @keyframes modalEnter {
+            0% {
+                transform: scale(0.5) rotate(-15deg);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .particle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1001;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #34ebe5;
+            /* Diamond color */
+            border-radius: 2px;
+            animation: fall 3s linear infinite;
+            opacity: 0;
+        }
+
+        .particle.emerald {
+            background-color: #4CAF50;
+        }
+
+        /* Emerald color */
+        @keyframes fall {
+            0% {
+                transform: translateY(-50px) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .help-buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .help-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.7rem;
+            padding: 8px;
+        }
+
+        .help-button svg {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 5px;
+            border: 2px solid #505050;
+            border-radius: 4px;
+            background-color: #A58B70;
+        }
+
+        .help-button:disabled svg {
+            filter: grayscale(100%);
+            opacity: 0.6;
+        }
+
+        #tipDisplayArea {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            padding: 10px;
+            background-color: #574334;
+            border-radius: 6px;
+            border: 2px solid #4A3A2A;
+            min-height: 30px;
+            font-size: 0.9rem;
+            color: #E0E0E0;
+        }
+
+        .certificate {
+            border: 6px dashed #FFD700;
+            /* Gold color */
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #A58B70;
+            /* Inner dirt highlight */
+            color: #3A2C22;
+            /* Dark brown text */
+        }
+
+        .certificate h3 {
+            font-size: 1.8rem;
+            color: #E7A700;
+            /* Darker Gold */
+            margin-bottom: 10px;
+        }
+
+        .certificate .player-name {
+            font-size: 1.5rem;
+            color: #574334;
+            /* Dirt border color */
+            text-decoration: underline;
+            margin: 10px 0;
+        }
+
+        .brand-logo {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 32px;
+            height: 32px;
+            z-index: 10;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .brand-logo:hover {
+            transform: scale(2);
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            /* Slightly rounded to match theme */
+            border: 3px solid #574334;
+            /* Match container border */
+        }
+
+        p.sound-credit {
+            font-size: 0.7rem;
+            /* Smaller font */
+            color: #A58B70;
+            /* Light brown, subtle */
+            margin-top: 25px;
+            /* Add some space above it */
+            text-align: center;
+        }
+
+        p.sound-credit a {
+            color: #FFD700;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="initialScreen" class="initial-screen">
+        <a href="/" class="brand-logo">
+            <img src="/apple-touch-icon.png" alt="Brand Logo">
+        </a>
+        <h1 class="text-2xl font-bold mb-4 text-yellow-400">A MINECRAFT MYSTERY!</h1>
+        <p>One day, Steve the Blocky Adventurer woke up to find his prized diamond pickaxe, "Sparklebutt," was GONE! "By
+            my blocky beard!" he cried. A mischievous Creeper, giggling silently (which sounds like a faint hiss), had
+            hidden it.</p>
+        <p>"It's somewhere... uh... preposition-y!" the Creeper had scrawled on a sign made of dirt. Steve needs YOUR
+            help, brave adventurer! But first, what shall we call you on this quest?</p>
+
+        <input type="text" id="playerNameInput" placeholder="Enter Your Name">
+        <button id="startGameButton" class="minecraft-button">Begin Adventure!</button>
+        <div id="resumeGameContainer" class="mt-4 hidden">
+            <p class="text-sm">Or...</p>
+            <button id="resumeGameButton" class="minecraft-button">Resume Last Adventure?</button>
+        </div>
+        <p class="sound-credit">Awesome Sound effects by Ee Jin (daughter)<br>Super Game Design by Jarod (daddy)<br>© A Learning Game by <a href="https://dadmominternationalschool.com" target="_blank">DMIS</a> @ 7th June 2025</p>
+    </div>
+
+    <div id="gameContainer" class="game-container hidden">
+        <a href="/" class="brand-logo">
+            <img src="/apple-touch-icon.png" alt="DMIS Logo" title="Back to DMIS!">
+        </a>
+        <h1 class="text-2xl font-bold mb-2 text-yellow-300">Minecraft Preposition Adventure!</h1>
+        <p id="playerNameDisplay" class="text-lg mb-4 text-green-300"></p>
+
+        <div class="header-info">
+            <div id="levelDisplay">Level: 10/100</div>
+            <div id="scoreDisplay">Score: 0</div>
+            <div id="questionNumberDisplay">Q: 1/10</div>
+        </div>
+
+        <div class="help-buttons-container">
+            <button id="fiftyFiftyButton" class="minecraft-button help-button">
+                <svg viewBox="0 0 20 20" fill="#3A2C22">
+                    <rect x="3" y="3" width="14" height="14" rx="1" fill="#D2B48C" />
+                    <rect x="5" y="6" width="3" height="3" fill="#222" />
+                    <rect x="12" y="6" width="3" height="3" fill="#222" />
+                    <rect x="7" y="11" width="6" height="2" rx="1" fill="#222" />
+                    <rect x="4" y="2" width="12" height="2" fill="#8B4513" />
+                </svg>
+                Ari's 50:50
+            </button>
+            <button id="tipButton" class="minecraft-button help-button">
+                <svg viewBox="0 0 20 20" fill="#3A2C22">
+                    <rect x="3" y="3" width="14" height="14" rx="1" fill="#C19A6B" />
+                    <rect x="5" y="6" width="3" height="4" fill="#FFFFFF" />
+                    <rect x="6" y="7" width="1" height="2" fill="#333" />
+                    <rect x="12" y="6" width="3" height="4" fill="#FFFFFF" />
+                    <rect x="13" y="7" width="1" height="2" fill="#333" />
+                    <rect x="6" y="12" width="8" height="1.5" rx="0.5" fill="#555" />
+                    <rect x="3" y="1" width="2" height="3" fill="#4A2A12" />
+                    <rect x="15" y="1" width="2" height="3" fill="#4A2A12" />
+                    <rect x="5" y="1" width="10" height="2" fill="#4A2A12" />
+                </svg>
+                Thorik's Tip
+            </button>
+        </div>
+        <div id="tipDisplayArea" class="hidden"></div>
+
+        <div id="questionArea" class="mb-6">
+            <p id="questionText" class="question-text">Loading question...</p>
+            <div id="optionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            </div>
+        </div>
+
+        <div id="feedbackArea" class="mt-4 h-10">
+        </div>
+
+        <button id="nextButton" class="minecraft-button mt-4 hidden">Next Question</button>
+        <p class="sound-credit">Awesome Sound effects by Ee Jin (daughter)<br>Super Game Design by Jarod (daddy)<br>© A Learning Game by <a href="https://dadmominternationalschool.com" target="_blank">DMIS</a>  @ 7th June 2025</p>
+    </div>
+
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Message</h2>
+            <p id="modalMessage">This is a message.</p>
+            <div id="certificateArea"></div>
+            <button id="modalButton" class="minecraft-button">OK</button>
+        </div>
+    </div>
+    <div id="particleContainer" class="particle-container"></div>
+
+    <script>
+        // --- Sound Engine (Tone.js) ---
+        let soundsReady = false;
+        const soundEngine = {
+            correctSynth: null, incorrectSynth: null, clickSynth: null, hintSynth: null,
+            levelUpPlayers: [],
+            congratsPlayer: null,
+            init: async () => {
+                try {
+                    await Tone.start();
+                    soundEngine.correctSynth = new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.2 } }).toDestination();
+                    soundEngine.incorrectSynth = new Tone.MonoSynth({ oscillator: { type: "sawtooth" }, envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.1 }, filterEnvelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1, baseFrequency: 200, octaves: 2 } }).toDestination();
+                    soundEngine.clickSynth = new Tone.MembraneSynth({ pitchDecay: 0.008, octaves: 2, envelope: { attack: 0.001, decay: 0.1, sustain: 0 } }).toDestination();
+                    soundEngine.hintSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.05, release: 0.1 } }).toDestination();
+
+                    // --- NEW: Load custom audio files ---
+                    const soundBaseUrl = "https://dadmominternationalschool.com/games/minecraft-preposition-adventure/";
+                    const levelSoundFiles = [
+                        'level_10.m4a', 'level_20.m4a', 'level_30.m4a', 'level_40.m4a', 'level_50.m4a',
+                        'level_60.m4a', 'level_70.m4a', 'level_80.m4a', 'level_90.m4a', 'level_100.m4a'
+                    ];
+
+                    soundEngine.levelUpPlayers = levelSoundFiles.map(file => new Tone.Player(soundBaseUrl + file).toDestination());
+                    soundEngine.congratsPlayer = new Tone.Player(soundBaseUrl + 'congratulations.m4a').toDestination();
+
+                    // Optional: Pre-buffer sounds. This can take time on slow connections.
+                    // await Tone.loaded();
+
+                    soundsReady = true;
+                    console.log("Sound engine initialized with custom sounds.");
+                } catch (e) { console.error("Could not initialize Tone.js. Sounds will be disabled.", e); soundsReady = false; }
+            },
+            playCorrect: () => { if (soundsReady) soundEngine.correctSynth.triggerAttackRelease("C5", "8n", Tone.now()); },
+            playIncorrect: () => { if (soundsReady) soundEngine.incorrectSynth.triggerAttackRelease("C3", "4n", Tone.now()); },
+            playLevelUp: (levelIndex) => {
+                if (soundsReady && soundEngine.levelUpPlayers[levelIndex]) {
+                    soundEngine.levelUpPlayers[levelIndex].start();
+                }
+            },
+            playCongrats: () => {
+                if (soundsReady && soundEngine.congratsPlayer) {
+                    soundEngine.congratsPlayer.start();
+                }
+            },
+            playClick: () => { if (soundsReady) soundEngine.clickSynth.triggerAttackRelease("C4", "32n", Tone.now()); },
+            playHint: () => { if (soundsReady) soundEngine.hintSynth.triggerAttackRelease("A4", "16n", Tone.now()); }
+        };
+        document.body.addEventListener('click', async () => { if (!soundsReady && typeof Tone !== 'undefined' && Tone.context.state !== 'running') { await soundEngine.init(); } }, { once: true });
+
+        const questions = [ /* ... (questions array remains the same as previous version) ... */
+            // Level 1
+            [
+                { q: "Steve is hiding ___ the big oak tree.", o: ["on", "under", "through", "between"], a: "under", tip: "Where would you go to be covered by a tree?" },
+                { q: "A Creeper is waiting ___ the door.", o: ["above", "next to", "inside", "far from"], a: "next to", tip: "It's close and beside the entrance." },
+                { q: "The pickaxe is ___ the crafting table.", o: ["on", "under", "behind", "with"], a: "on", tip: "It's resting on the surface." },
+                { q: "Alex found diamonds ___ a dark cave.", o: ["over", "in", "around", "without"], a: "in", tip: "Diamonds are usually found deep inside something." },
+                { q: "A pig is rolling happily ___ the mud.", o: ["through", "on top of", "in", "beside"], a: "in", tip: "Pigs love to be surrounded by mud!" },
+                { q: "The torch is placed ___ the stone wall.", o: ["on", "underneath", "far from", "out of"], a: "on", tip: "It's attached to the surface of the wall." },
+                { q: "A zombie is slowly walking ___ Steve.", o: ["away from", "towards", "inside", "over"], a: "towards", tip: "It's moving in the direction of Steve." },
+                { q: "The village is situated ___ the river.", o: ["near", "through", "under", "on"], a: "near", tip: "It's located close to the river." },
+                { q: "A sheep is trapped ___ the fence.", o: ["outside", "inside", "above", "below"], a: "inside", tip: "It cannot get out because it's enclosed." },
+                { q: "My sword is kept ___ my inventory.", o: ["out of", "in", "on", "next to"], a: "in", tip: "Items are stored within your inventory slots." }
+            ],
+            // Level 2
+            [
+                { q: "The Ghast floats ___ the lava sea in the Nether.", o: ["in", "under", "above", "through"], a: "above", tip: "Ghasts fly higher than the lava." },
+                { q: "To find gold, you must dig ___ the surface.", o: ["on", "above", "below", "around"], a: "below", tip: "Gold is usually found deep underground." },
+                { q: "Steve is mining ___ a wall of stone.", o: ["through", "over", "beside", "away from"], a: "through", tip: "He's making a passage from one side to the other." },
+                { q: "An Enderman teleported ___ the player.", o: ["in front of", "behind", "on top of", "under"], a: "behind", tip: "Endermen like to surprise you from the back!" },
+                { q: "A rickety bridge goes ___ the chasm.", o: ["under", "across", "into", "out of"], a: "across", tip: "The bridge spans from one side to the other." },
+                { q: "Bats often fly ___ dark caves.", o: ["around in", "on", "under", "next to"], a: "around in", tip: "They move in various directions within the cave." },
+                { q: "The sun shines brightly ___ the blocky world.", o: ["below", "over", "inside", "with"], a: "over", tip: "The sun is positioned higher than the world." },
+                { q: "Water flows ___ the obsidian blocks.", o: ["around", "through", "on", "in"], a: "around", tip: "Water can't break obsidian, so it goes by the sides." },
+                { q: "A secret lever is hidden ___ a bookshelf.", o: ["on", "in front of", "behind", "under"], a: "behind", tip: "Secrets are often concealed at the back of things." },
+                { q: "The treasure chest was buried ___ the sand.", o: ["above", "on", "under", "beside"], a: "under", tip: "You need to dig down to find buried treasure." }
+            ],
+            // Level 3
+            [
+                { q: "Steve is standing ___ two tall pillars.", o: ["among", "between", "on", "under"], a: "between", tip: "He is in the space that separates the two pillars." },
+                { q: "A rare flower grows ___ the tall grass.", o: ["between", "among", "over", "through"], a: "among", tip: "It's one of many things within the grass." },
+                { q: "The player jumped ___ the water to escape.", o: ["out of", "onto", "into", "beside"], a: "into", tip: "The player is entering the water." },
+                { q: "A skeleton shot an arrow ___ the darkness.", o: ["from", "into", "out of", "on"], a: "from", tip: "The arrow originated in the darkness." },
+                { q: "Alex climbed ___ the minecart.", o: ["out of", "into", "under", "over"], a: "into", tip: "Alex is entering the minecart." },
+                { q: "The wolf emerged ___ the forest.", o: ["into", "out of", "on", "under"], a: "out of", tip: "The wolf is coming from inside the forest to the outside." },
+                { q: "Place the cake ___ the table.", o: ["under", "on", "in", "through"], a: "on", tip: "The cake rests on the table's surface." },
+                { q: "The path leads ___ the spooky woods.", o: ["away from", "through", "above", "below"], a: "through", tip: "The path goes from one side of the woods to the other, inside it." },
+                { q: "A slime is bouncing ___ the player.", o: ["towards", "away from", "inside", "on"], a: "towards", tip: "The slime is moving in the direction of the player." },
+                { q: "The cat is hiding ___ the chests.", o: ["on", "among", "over", "out of"], a: "among", tip: "The cat is in the middle of a group of chests." }
+            ],
+            // Level 4
+            [
+                { q: "The Ender Dragon flies ___ the End islands.", o: ["under", "between", "in", "around"], a: "around", tip: "It circles the islands." },
+                { q: "You can see the Nether portal ___ the obsidian frame.", o: ["through", "beside", "on top of", "underneath"], a: "through", tip: "You look from one side to the other via the frame." },
+                { q: "Steve built his house ___ a mountain.", o: ["into the side of", "on top of", "under", "far from"], a: "on top of", tip: "The house is on the highest surface of the mountain." },
+                { q: "The pufferfish swims ___ the coral reef.", o: ["above", "through", "next to", "among"], a: "among", tip: "It's surrounded by various corals." },
+                { q: "A ladder was placed ___ the wall to climb up.", o: ["across", "against", "under", "over"], a: "against", tip: "The ladder leans on the wall." },
+                { q: "The minecart rushed ___ the rails.", o: ["off", "along", "above", "below"], a: "along", tip: "It follows the path of the rails." },
+                { q: "A sign was posted ___ the entrance of the cave.", o: ["inside", "at", "under", "over"], a: "at", tip: "It's located right by the opening." },
+                { q: "The player fell ___ a deep ravine.", o: ["onto", "into", "out of", "across"], a: "into", tip: "The player is going inside the ravine from above." },
+                { q: "A fox is sleeping ___ a pile of leaves.", o: ["on", "in", "under", "between"], a: "on", tip: "It's resting on the surface of the leaves." },
+                { q: "The beacon shoots a beam of light ___ the sky.", o: ["towards", "into", "from", "under"], a: "towards", tip: "The light is directed to the sky." }
+            ],
+            // Level 5
+            [
+                { q: "The Shulker hides ___ its shell.", o: ["outside", "inside", "beside", "on"], a: "inside", tip: "It's contained within its protective covering." },
+                { q: "You need to go ___ the Nether to find Blaze Rods.", o: ["away from", "into", "out of", "above"], a: "into", tip: "You must enter the Nether dimension." },
+                { q: "The Iron Golem walks ___ the village protecting it.", o: ["outside", "through", "under", "far from"], a: "through", tip: "It moves from one part of the village to another." },
+                { q: "A painting can be hung ___ a wall.", o: ["in", "on", "under", "through"], a: "on", tip: "It's attached to the surface of the wall." },
+                { q: "The player is fishing ___ the edge of the pier.", o: ["from", "into", "under", "on"], a: "from", tip: "The action starts at the edge." },
+                { q: "A boat is floating ___ the water.", o: ["under", "in", "on", "through"], a: "on", tip: "It rests on the surface of the water." },
+                { q: "The Villager trades goods ___ his stall.", o: ["away from", "at", "under", "on top of"], a: "at", tip: "The trading happens at the location of the stall." },
+                { q: "The dog sits patiently ___ its owner.", o: ["far from", "beside", "on", "under"], a: "beside", tip: "It's next to the owner." },
+                { q: "Arrows are stored ___ a quiver (or inventory).", o: ["outside", "in", "on", "next to"], a: "in", tip: "They are kept inside the container." },
+                { q: "The player looked ___ the spyglass to see far away.", o: ["around", "through", "on", "under"], a: "through", tip: "You see via the lens of the spyglass." }
+            ],
+            // Level 6
+            [
+                { q: "A secret passage was found ___ a waterfall.", o: ["in front of", "behind", "on", "through"], a: "behind", tip: "The passage is hidden at the back of the waterfall." },
+                { q: "The player is riding a horse ___ the plains.", o: ["under", "across", "into", "out of"], a: "across", tip: "They are traveling over the wide area of the plains." },
+                { q: "TNT was placed ___ the weak wall.", o: ["far from", "next to", "above", "inside"], a: "next to", tip: "The TNT is positioned close beside the wall." },
+                { q: "The cat jumped ___ the bed.", o: ["under", "onto", "into", "off"], a: "onto", tip: "The cat landed on the surface of the bed." },
+                { q: "A map is held ___ the player's hands.", o: ["above", "in", "under", "beside"], a: "in", tip: "The player is grasping the map within their hands." },
+                { q: "The sun sets ___ the horizon.", o: ["above", "below", "on", "through"], a: "below", tip: "The sun appears to go down past the horizon line." },
+                { q: "A group of Pillagers appeared ___ the hill.", o: ["under", "on top of", "inside", "between"], a: "on top of", tip: "They are standing on the highest surface of the hill." },
+                { q: "Steve carefully walked ___ the narrow ledge.", o: ["off", "along", "through", "under"], a: "along", tip: "He moved following the length of the ledge." },
+                { q: "The treasure is hidden ___ an 'X' mark.", o: ["above", "at", "far from", "inside"], a: "at", tip: "The 'X' indicates the specific location of the treasure." },
+                { q: "The player swam ___ the sunken ship.", o: ["over", "towards", "away from", "on"], a: "towards", tip: "The player is moving in the direction of the ship." }
+            ],
+            // Level 7
+            [
+                { q: "A Warden lurks ___ the Deep Dark biome.", o: ["outside of", "in", "above", "far from"], a: "in", tip: "The Warden is found inside this specific biome." },
+                { q: "The player used an Elytra to glide ___ the mountains.", o: ["under", "through", "over", "into"], a: "over", tip: "They are flying above the mountains." },
+                { q: "A potion was brewed ___ a cauldron.", o: ["next to", "in", "on", "under"], a: "in", tip: "The brewing process happens inside the cauldron." },
+                { q: "The Axolotl lives ___ underwater caves.", o: ["above", "in", "on", "beside"], a: "in", tip: "These creatures are found inside these caves." },
+                { q: "A shield is held ___ the player for defense.", o: ["behind", "in front of", "on top of", "under"], a: "in front of", tip: "The shield is positioned to protect the front of the player." },
+                { q: "The player built a snow golem ___ the snowy biome.", o: ["outside", "in", "on", "far from"], a: "in", tip: "Snow golems are typically made within snowy areas." },
+                { q: "A fishing rod was cast ___ the lake.", o: ["away from", "into", "out of", "beside"], a: "into", tip: "The line and hook are sent into the water." },
+                { q: "The glow squid swims ___ the dark ocean depths.", o: ["above", "in", "on the surface of", "near"], a: "in", tip: "They are found within the deep parts of the ocean." },
+                { q: "A campfire was lit ___ the tent.", o: ["inside", "near", "on top of", "under"], a: "near", tip: "The campfire is positioned close to the tent for warmth or cooking." },
+                { q: "The player looked ___ the chest for items.", o: ["around", "inside", "on", "under"], a: "inside", tip: "They are searching within the contents of the chest." }
+            ],
+            // Level 8
+            [
+                { q: "The Allay flew ___ the player, carrying an item.", o: ["away from", "towards", "above", "under"], a: "towards", tip: "The Allay is moving in the direction of the player." },
+                { q: "A name tag was placed ___ the tamed wolf.", o: ["under", "on", "inside", "far from"], a: "on", tip: "The name tag is attached to the surface of the wolf." },
+                { q: "The player is sneaking ___ the Sculk Shrieker.", o: ["loudly past", "quietly past", "over", "under"], a: "quietly past", tip: "They are moving by it without making much noise." },
+                { q: "A bookshelf is filled ___ enchanted books.", o: ["empty of", "with", "beside", "under"], a: "with", tip: "The bookshelf contains enchanted books." },
+                { q: "The player is standing ___ the edge of a cliff.", o: ["far from", "on", "inside", "under"], a: "on", tip: "They are positioned right at the brink of the cliff." },
+                { q: "A spider climbed ___ the wall of the house.", o: ["down", "up", "through", "away from"], a: "up", tip: "The spider is moving in an upward direction on the wall." },
+                { q: "The player is hiding ___ a block to avoid arrows.", o: ["on top of", "behind", "in front of", "through"], a: "behind", tip: "The block is providing cover from the back." },
+                { q: "A farm was built ___ the house.", o: ["inside", "next to", "on top of", "under"], a: "next to", tip: "The farm is located beside the house." },
+                { q: "The player is looking ___ a map to find their way.", o: ["away from", "at", "under", "over"], a: "at", tip: "Their gaze is directed towards the map." },
+                { q: "A saddle is placed ___ a pig to ride it.", o: ["under", "on", "in", "beside"], a: "on", tip: "The saddle is put on top of the pig's back." }
+            ],
+            // Level 9
+            [
+                { q: "The player traded emeralds ___ useful items with a villager.", o: ["for", "with", "against", "without"], a: "for", tip: "Emeralds are exchanged to get items." },
+                { q: "A railway track was laid ___ the mine.", o: ["above", "throughout", "outside", "away from"], a: "throughout", tip: "The track extends all over the inside of the mine." },
+                { q: "The player is gliding ___ the air using an Elytra.", o: ["under", "through", "on", "into"], a: "through", tip: "They are moving within the air." },
+                { q: "A hostile mob spawned ___ the player.", o: ["far from", "near", "inside", "on top of"], a: "near", tip: "The mob appeared close to the player." },
+                { q: "The player is looking ___ a window.", o: ["around", "out of", "on", "under"], a: "out of", tip: "Their view is from inside to the outside via the window." },
+                { q: "A torch provides light ___ the darkness.", o: ["with", "in", "from", "without"], a: "in", tip: "The light exists within the dark area." },
+                { q: "The player jumped ___ a gap between two platforms.", o: ["under", "over", "into", "through"], a: "over", tip: "They leaped above the gap to cross it." },
+                { q: "A diamond sword is effective ___ monsters.", o: ["for", "against", "with", "from"], a: "against", tip: "The sword is used to fight and oppose monsters." },
+                { q: "The player is building a tower ___ the ground.", o: ["down from", "up from", "into", "out of"], a: "up from", tip: "The tower is being constructed upwards, starting at ground level." },
+                { q: "A potion of healing was used ___ the injured player.", o: ["against", "on", "without", "far from"], a: "on", tip: "The potion is applied directly to the player." }
+            ],
+            // Level 10
+            [
+                { q: "The End Portal is located ___ a stronghold.", o: ["outside", "inside", "above", "below"], a: "inside", tip: "You find the portal within the structure of a stronghold." },
+                { q: "Steve is running ___ a pack of wolves.", o: ["with", "against", "towards", "under"], a: "with", tip: "He is accompanied by the wolves." },
+                { q: "The player placed a block ___ another block.", o: ["through", "on top of", "underneath", "inside"], a: "on top of", tip: "One block is positioned on the upper surface of another." },
+                { q: "A wither skeleton patrols ___ Nether fortresses.", o: ["outside of", "within", "above", "far from"], a: "within", tip: "They move around inside the fortresses." },
+                { q: "The player is hiding ___ a bush from a skeleton.", o: ["on", "in", "over", "through"], a: "in", tip: "They are concealed inside the foliage of the bush." },
+                { q: "A boat moves quickly ___ the water current.", o: ["against", "with", "over", "under"], a: "with", tip: "The current helps propel the boat." },
+                { q: "The player is looking ___ the sky at night.", o: ["down at", "up at", "through", "inside"], a: "up at", tip: "Their gaze is directed upwards towards the night sky." },
+                { q: "A fence was built ___ the animal pen.", o: ["through", "around", "inside", "on top of"], a: "around", tip: "The fence encircles the pen." },
+                { q: "The player found a rare ore ___ the stone.", o: ["separate from", "embedded in", "on top of", "far from"], a: "embedded in", tip: "The ore is fixed firmly within the stone." },
+                { q: "Congratulations! You've journeyed ___ all the preposition challenges!", o: ["away from", "through", "under", "beside"], a: "through", tip: "You have successfully passed all the challenges from start to finish!" }
+            ]
+        ];
+
+        let playerName = "Adventurer";
+        let currentLevel = 0;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const questionsPerLevel = 10;
+        const totalLevels = questions.length; // This is 10
+        let fiftyFiftyUsedThisQuestion = false;
+        let tipUsedThisQuestion = false;
+
+        // ... (all other constant declarations remain the same) ...
+        const initialScreen = document.getElementById('initialScreen');
+        const gameContainer = document.getElementById('gameContainer');
+        const playerNameInput = document.getElementById('playerNameInput');
+        const startGameButton = document.getElementById('startGameButton');
+        const resumeGameContainer = document.getElementById('resumeGameContainer');
+        const resumeGameButton = document.getElementById('resumeGameButton');
+        const playerNameDisplay = document.getElementById('playerNameDisplay');
+        const levelDisplay = document.getElementById('levelDisplay');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const questionNumberDisplay = document.getElementById('questionNumberDisplay');
+        const questionTextElement = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackArea = document.getElementById('feedbackArea');
+        const nextButton = document.getElementById('nextButton');
+        const messageModal = document.getElementById('messageModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalButton = document.getElementById('modalButton');
+        const certificateArea = document.getElementById('certificateArea');
+        const particleContainer = document.getElementById('particleContainer');
+        const fiftyFiftyButton = document.getElementById('fiftyFiftyButton');
+        const tipButton = document.getElementById('tipButton');
+        const tipDisplayArea = document.getElementById('tipDisplayArea');
+        const SAVE_GAME_KEY = 'minecraftPrepositionAdventureSave';
+
+        // ... (localStorage, shuffle, particle functions remain the same) ...
+        function checkForSavedGame() {
+            const savedGame = localStorage.getItem(SAVE_GAME_KEY);
+            if (savedGame) { resumeGameContainer.classList.remove('hidden'); }
+        }
+        function saveGameProgress() {
+            const gameState = { playerName, currentLevel, currentQuestionIndex, score };
+            localStorage.setItem(SAVE_GAME_KEY, JSON.stringify(gameState));
+        }
+        function loadSavedGame() {
+            const savedGame = localStorage.getItem(SAVE_GAME_KEY);
+            if (savedGame) {
+                const gameState = JSON.parse(savedGame);
+                playerName = gameState.playerName;
+                currentLevel = gameState.currentLevel;
+                currentQuestionIndex = gameState.currentQuestionIndex;
+                score = gameState.score;
+                return true;
+            }
+            return false;
+        }
+        function clearSavedGame() { localStorage.removeItem(SAVE_GAME_KEY); }
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        function createParticles(type = 'diamond', count = 30) {
+            particleContainer.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                if (type === 'emerald') particle.classList.add('emerald');
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.animationDelay = `${Math.random() * 2}s`;
+                particle.style.width = `${Math.random() * 5 + 8}px`;
+                particle.style.height = particle.style.width;
+                particleContainer.appendChild(particle);
+            }
+            setTimeout(() => particleContainer.innerHTML = '', 3500);
+        }
+
+        startGameButton.onclick = () => {
+            const name = playerNameInput.value.trim();
+            if (name) { playerName = name; }
+            initialScreen.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
+            playerNameDisplay.textContent = `Let's go, ${playerName}!`;
+            clearSavedGame();
+            initGame(false);
+        };
+
+        resumeGameButton.onclick = () => {
+            if (loadSavedGame()) {
+                initialScreen.classList.add('hidden');
+                gameContainer.classList.remove('hidden');
+                playerNameDisplay.textContent = `Welcome back, ${playerName}!`;
+                initGame(true);
+            } else {
+                startGameButton.click();
+            }
+        };
+
+        function showModal(title, message, buttonText = "OK", callback, isLevelComplete = false, isGameEnd = false) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalButton.textContent = buttonText;
+            certificateArea.innerHTML = ''; // Clear previous certificate
+
+            if (isGameEnd) {
+                const certificateHTML = `
+                    <div class="certificate">
+                        <h3>Certificate of Preposition Mastery</h3>
+                        <p>This certifies that</p>
+                        <p class="player-name">${playerName}</p>
+                        <p>has bravely faced the Creeper's preposition puzzles and emerged VICTORIOUS, finding Steve's beloved Sparklebutt pickaxe!</p>
+                        <p>Final Score: ${score} / ${totalLevels * questionsPerLevel}</p>
+                        <p>Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                `;
+                certificateArea.innerHTML = certificateHTML;
+            }
+
+            messageModal.classList.add('visible');
+
+            if (isLevelComplete || isGameEnd) {
+                messageModal.classList.add('level-complete-animation');
+                createParticles(Math.random() > 0.5 ? 'diamond' : 'emerald', 50);
+                // Sound is now played before calling showModal
+            } else {
+                messageModal.classList.remove('level-complete-animation');
+            }
+
+            modalButton.onclick = () => {
+                soundEngine.playClick();
+                messageModal.classList.remove('visible');
+                messageModal.classList.remove('level-complete-animation');
+                if (callback) callback();
+            };
+        }
+
+        function initGame(resuming = false) {
+            if (!resuming) {
+                currentLevel = 0;
+                currentQuestionIndex = 0;
+                score = 0;
+                questions.forEach(level => {
+                    shuffleArray(level);
+                    level.forEach(q => shuffleArray(q.o));
+                });
+            }
+            playerNameDisplay.textContent = `Onwards, ${playerName}!`;
+            loadLevel();
+        }
+
+        function loadLevel() {
+            levelDisplay.textContent = `Level: ${(currentLevel + 1) * 10}/${totalLevels * 10}`;
+            scoreDisplay.textContent = `Score: ${score}`;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            feedbackArea.textContent = '';
+            tipDisplayArea.textContent = '';
+            tipDisplayArea.classList.add('hidden');
+            nextButton.classList.add('hidden');
+            fiftyFiftyUsedThisQuestion = false;
+            tipUsedThisQuestion = false;
+            fiftyFiftyButton.disabled = false;
+            tipButton.disabled = false;
+
+            if (currentQuestionIndex < questionsPerLevel) {
+                questionNumberDisplay.textContent = `Q: ${currentQuestionIndex + 1}/${questionsPerLevel}`;
+                const questionData = questions[currentLevel][currentQuestionIndex];
+                questionTextElement.textContent = questionData.q;
+
+                optionsContainer.innerHTML = '';
+                let currentOptions = [...questionData.o];
+
+                currentOptions.forEach(optionText => {
+                    const button = document.createElement('button');
+                    button.textContent = optionText;
+                    button.classList.add('minecraft-button');
+                    button.onclick = () => selectAnswer(button, questionData.a);
+                    optionsContainer.appendChild(button);
+                });
+            } else { // Level complete
+                if (currentLevel < totalLevels - 1) {
+                    soundEngine.playLevelUp(currentLevel); // Play sound for the completed level
+                    showModal(`Level ${(currentLevel + 1) * 10} Complete!`, `Amazing work, ${playerName}! You're a preposition pro! Current Score: ${score}`, "Next Level", () => {
+                        currentLevel++;
+                        currentQuestionIndex = 0;
+                        saveGameProgress();
+                        loadLevel();
+                    }, true);
+                } else { // Game complete
+                    soundEngine.playCongrats(); // Play the final congratulations sound
+                    clearSavedGame();
+                    showModal("YOU DID IT, SUPER MINER!", `Hooray, ${playerName}! You've conquered all the preposition challenges and found Sparklebutt! Steve is doing a happy block dance thanks to you!`, "View Certificate & Play Again?", () => {
+                        initialScreen.classList.remove('hidden');
+                        gameContainer.classList.add('hidden');
+                        checkForSavedGame();
+                    }, true, true);
+                }
+            }
+        }
+
+        function selectAnswer(selectedButton, correctAnswer) {
+            soundEngine.playClick();
+            const selectedOption = selectedButton.textContent;
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.disabled = true;
+                if (button.textContent === correctAnswer) {
+                    button.classList.add('correct');
+                } else if (button === selectedButton) {
+                    button.classList.add('incorrect');
+                }
+            });
+
+            if (selectedOption === correctAnswer) {
+                feedbackArea.textContent = `Correct! You got it, ${playerName}!`;
+                feedbackArea.style.color = '#5DBE5D';
+                score++;
+                scoreDisplay.textContent = `Score: ${score}`;
+                soundEngine.playCorrect();
+            } else {
+                feedbackArea.textContent = `Not quite, ${playerName}! The answer was "${correctAnswer}". Keep mining!`;
+                feedbackArea.style.color = '#E05252';
+                soundEngine.playIncorrect();
+            }
+            saveGameProgress();
+            nextButton.classList.remove('hidden');
+            fiftyFiftyButton.disabled = true;
+            tipButton.disabled = true;
+        }
+
+        fiftyFiftyButton.onclick = () => {
+            if (fiftyFiftyUsedThisQuestion || !questions[currentLevel] || !questions[currentLevel][currentQuestionIndex]) return;
+            soundEngine.playHint();
+
+            const questionData = questions[currentLevel][currentQuestionIndex];
+            const correctAnswer = questionData.a;
+            const optionsButtons = Array.from(optionsContainer.querySelectorAll('button'));
+            const wrongOptions = optionsButtons.filter(btn => btn.textContent !== correctAnswer && !btn.disabled);
+            shuffleArray(wrongOptions);
+
+            let disabledCount = 0;
+            for (let i = 0; i < wrongOptions.length && disabledCount < 2; i++) {
+                if (!wrongOptions[i].disabled) {
+                    wrongOptions[i].disabled = true;
+                    wrongOptions[i].style.opacity = '0.5';
+                    disabledCount++;
+                }
+            }
+
+            fiftyFiftyUsedThisQuestion = true;
+            fiftyFiftyButton.disabled = true;
+            tipDisplayArea.textContent = `Ari whispers: "Try one of these, ${playerName}!"`;
+            tipDisplayArea.classList.remove('hidden');
+        };
+
+        tipButton.onclick = () => {
+            if (tipUsedThisQuestion || !questions[currentLevel] || !questions[currentLevel][currentQuestionIndex]) return;
+            soundEngine.playHint();
+
+            const questionData = questions[currentLevel][currentQuestionIndex];
+            tipDisplayArea.textContent = `Thorik's Tip for ${playerName}: ${questionData.tip || "No specific tip for this one, you can do it!"}`;
+            tipDisplayArea.classList.remove('hidden');
+            tipUsedThisQuestion = true;
+            tipButton.disabled = true;
+        };
+
+
+        nextButton.onclick = () => {
+            soundEngine.playClick();
+            currentQuestionIndex++;
+            loadQuestion();
+        };
+
+        // Check for saved game on page load
+        checkForSavedGame();
+
+    </script>
+</body>
+
+</html>
