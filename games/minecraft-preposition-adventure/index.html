@@ -459,14 +459,14 @@
                     soundEngine.hintSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.05, release: 0.1 } }).toDestination();
 
                     // --- NEW: Load custom audio files ---
-                    const soundBaseUrl = "https://dadmominternationalschool.com/games/minecraft-preposition-adventure/";
+                    const soundBaseUrl = "./";
                     const levelSoundFiles = [
                         'level_10.m4a', 'level_20.m4a', 'level_30.m4a', 'level_40.m4a', 'level_50.m4a',
                         'level_60.m4a', 'level_70.m4a', 'level_80.m4a', 'level_90.m4a', 'level_100.m4a'
                     ];
 
                     soundEngine.levelUpPlayers = levelSoundFiles.map(file => new Tone.Player(soundBaseUrl + file).toDestination());
-                    soundEngine.congratsPlayer = new Tone.Player(soundBaseUrl + 'congratulations.m4a').toDestination();
+                    soundEngine.congratsPlayer = new Tone.Player(soundBaseUrl + 'congratulations_2.m4a').toDestination();
 
                     // Optional: Pre-buffer sounds. This can take time on slow connections.
                     // await Tone.loaded();
@@ -688,7 +688,7 @@
                 [array[i], array[j]] = [array[j], array[i]];
             }
         }
-        function createParticles(type = 'diamond', count = 30) {
+        function createParticles(type = 'diamond', count = 30, duration = 5000) {
             particleContainer.innerHTML = '';
             for (let i = 0; i < count; i++) {
                 const particle = document.createElement('div');
@@ -700,7 +700,7 @@
                 particle.style.height = particle.style.width;
                 particleContainer.appendChild(particle);
             }
-            setTimeout(() => particleContainer.innerHTML = '', 3500);
+            setTimeout(() => particleContainer.innerHTML = '', duration);
         }
 
         startGameButton.onclick = () => {
@@ -748,7 +748,13 @@
 
             if (isLevelComplete || isGameEnd) {
                 messageModal.classList.add('level-complete-animation');
-                createParticles(Math.random() > 0.5 ? 'diamond' : 'emerald', 50);
+
+                if (isGameEnd) {
+                    createParticles('emerald', 100, 45000);
+                } else {
+                    createParticles('diamond', 50, 5000);
+                }
+
                 // Sound is now played before calling showModal
             } else {
                 messageModal.classList.remove('level-complete-animation');
@@ -819,7 +825,7 @@
                 } else { // Game complete
                     soundEngine.playCongrats(); // Play the final congratulations sound
                     clearSavedGame();
-                    showModal("YOU DID IT, SUPER MINER!", `Hooray, ${playerName}! You've conquered all the preposition challenges and found Sparklebutt! Steve is doing a happy block dance thanks to you!`, "View Certificate & Play Again?", () => {
+                    showModal("YOU DID IT!", `Hooray, ${playerName}! You've conquered all the preposition challenges and found Sparklebutt! Steve is doing a happy block dance thanks to you!`, "View Certificate & Play Again?", () => {
                         initialScreen.classList.remove('hidden');
                         gameContainer.classList.add('hidden');
                         checkForSavedGame();
