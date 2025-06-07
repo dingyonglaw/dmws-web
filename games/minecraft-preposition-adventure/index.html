@@ -825,7 +825,7 @@
                 } else { // Game complete
                     soundEngine.playCongrats(); // Play the final congratulations sound
                     clearSavedGame();
-                    showModal("YOU DID IT!", `Hooray, ${playerName}! You've conquered all the preposition challenges and found Sparklebutt! Steve is doing a happy block dance thanks to you!`, "View Certificate & Play Again?", () => {
+                    showModal("YOU DID IT!", `Hooray, ${playerName}! You've conquered all the preposition challenges and found Sparklebutt! Steve is doing a happy block dance thanks to you!`, "Play Again?", () => {
                         initialScreen.classList.remove('hidden');
                         gameContainer.classList.add('hidden');
                         checkForSavedGame();
