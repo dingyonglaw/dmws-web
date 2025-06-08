@@ -935,21 +935,21 @@
 
         function winGame() {
             isProcessing = true;
-            typewriterEffect("Oh NO!! Quagsire ran away with the GS Ball!\n\nTo be continued...", () => {
+            typewriterEffect("Oh no! Quagsire ran away with the GS Ball!\n\nTo be continued...", () => {
                 setTimeout(() => showCertificate(true), 1500);
             });
         }
 
         function loseGame() {
             isProcessing = true;
-            typewriterEffect("Oh no, Pikachu fainted!\nYou blacked out...", () => {
+            typewriterEffect("Oh no, Pikachu fainted!", () => {
                 setTimeout(() => showCertificate(false), 1500);
             });
         }
 
         function drawGame() {
             isProcessing = true;
-            typewriterEffect("Oh NO!! It's a draw! Quagsire ran away with the GS Ball!\n\nTo be continued...", () => {
+            typewriterEffect("Oh yes! It's a draw! Quagsire ran away with the GS Ball!\n\nTo be continued...", () => {
                 setTimeout(() => showCertificate(false, true), 1500);
             });
         }
