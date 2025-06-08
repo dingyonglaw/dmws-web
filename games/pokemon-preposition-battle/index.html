@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Preposition Battle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Press Start 2P',
+                cursive;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+
+        .gameboy-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            max-height: 800px;
+            background-color: #8bac0f;
+            border-radius: 20px;
+            padding: 25px;
+            border: 5px solid #306230;
+            box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4), inset 5px 5px 10px rgba(255, 255, 255, 0.3), inset -5px -5px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            position: relative;
+        }
+
+        .screen {
+            background-color: #000;
+            border: 15px solid #306230;
+            border-radius: 10px 10px 50px 10px;
+            padding: 10px;
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-content {
+            border-radius: 0 0 25px 0;
+            background-color: #9bbc0f;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .battle-scene {
+            height: 50%;
+            flex-grow: 1;
+            position: relative;
+            background-image:
+                linear-gradient(rgba(155, 188, 15, 0.8), rgba(155, 188, 15, 0.8)),
+                url('https://www.transparenttextures.com/patterns/diagmonds.png');
+        }
+
+        .pokemon-sprite {
+            image-rendering: pixelated;
+            width: 96px;
+            height: 96px;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        @keyframes dramatic-shake {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0);
+            }
+
+            10% {
+                transform: translate(-4px, -6px) rotate(-3deg);
+            }
+
+            20% {
+                transform: translate(5px, 3px) rotate(2deg);
+            }
+
+            30% {
+                transform: translate(6px, 5px) rotate(0deg);
+            }
+
+            40% {
+                transform: translate(3px, -3px) rotate(3deg);
+            }
+
+            50% {
+                transform: translate(-5px, 4px) rotate(-2deg);
+            }
+
+            60% {
+                transform: translate(-7px, 2px) rotate(0deg);
+            }
+
+            70% {
+                transform: translate(5px, 3px) rotate(-3deg);
+            }
+
+            80% {
+                transform: translate(-3px, -3px) rotate(2deg);
+            }
+
+            90% {
+                transform: translate(3px, 4px) rotate(0deg);
+            }
+        }
+
+
+        .shake-animation {
+            animation: dramatic-shake 0.5s;
+        }
+
+        .hit-effect {
+            position: absolute;
+            width: 96px;
+            height: 96px;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes flash-effect {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .flash-animation {
+            animation: flash-effect 0.15s 2;
+        }
+
+        #enemy-sprite,
+        #enemy-hit-effect {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+        }
+
+        #player-sprite,
+        #player-hit-effect {
+            position: absolute;
+            bottom: 15%;
+            left: 5%;
+        }
+
+        .info-box {
+            position: absolute;
+            background: rgba(48, 98, 48, 0.8);
+            border: 4px solid #0f380f;
+            border-radius: 8px;
+            padding: 8px;
+            color: white;
+            font-size: 10px;
+            line-height: 1.4;
+            width: 150px;
+        }
+
+        #enemy-info {
+            top: 5%;
+            left: 5%;
+        }
+
+        #player-info {
+            bottom: 30%;
+            right: 5%;
+        }
+
+        .hp-text {
+            float: right;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .health-bar-container {
+            background-color: #333;
+            border: 2px solid #0f380f;
+            border-radius: 5px;
+            padding: 1px;
+            margin-top: 4px;
+        }
+
+        .health-bar {
+            height: 8px;
+            background-color: #30a048;
+            border-radius: 2px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .health-bar.low {
+            background-color: #f8d030;
+        }
+
+        .health-bar.critical {
+            background-color: #f85830;
+        }
+
+
+        .dialogue-box {
+            height: 55%;
+            width: 100%;
+            background: #e0f8d0;
+            border: 4px solid #0f380f;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #0f380f;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .question-text {
+            width: 100%;
+            min-height: 50%;
+            overflow-y: auto;
+        }
+
+        .options-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .option-btn {
+            background-color: #f8f8f8;
+            border: 2px solid #0f380f;
+            border-radius: 5px;
+            padding: 8px 4px;
+            font-family: 'Press Start 2P',
+                cursive;
+            font-size: 11px;
+            cursor: pointer;
+            color: #0f380f;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover,
+        .option-btn:focus {
+            background-color: #c0d0b0;
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 3px 3px 0 #0f380f;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .feedback.correct {
+            background: rgba(48, 160, 72, 0.7);
+        }
+
+        .feedback.incorrect {
+            background: rgba(194, 66, 40, 0.7);
+        }
+
+        /* Start & Cert Screen Styles */
+        .centered-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #0f380f;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .fade-in-on-start {
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        .fade-in-on-start.visible {
+            opacity: 1;
+        }
+
+
+        @keyframes bobbing {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .start-screen-quagsire {
+            margin-top: 20px;
+            scale: 1.5;
+            animation: bobbing 2s ease-in-out infinite;
+            margin-bottom: -15px;
+        }
+
+        .start-screen-gsball {
+            animation: bobbing 2s ease-in-out infinite;
+            animation-delay: 0.2s;
+            image-rendering: pixelated;
+            width: 32px;
+            margin-bottom: 20px;
+        }
+
+        .credit-screen-pikachu {
+            scale: 1.5;
+            animation: bobbing 2s ease-in-out infinite;
+        }
+
+
+        .start-title {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        #start-screen-footer {
+            position: absolute;
+            bottom: 10px;
+            font-size: 8px;
+            color: #306230;
+        }
+
+        .start-input {
+            font-family: 'Press Start 2P',
+                cursive;
+            background-color: #e0f8d0;
+            border: 4px solid #0f380f;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+            font-size: 14px;
+            color: #0f380f;
+            text-align: center;
+        }
+
+        .action-button {
+            font-family: 'Press Start 2P',
+                cursive;
+            background-color: #306230;
+            color: #e0f8d0;
+            border: 4px solid #0f380f;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .action-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+
+        .action-button:hover:not(:disabled) {
+            background-color: #0f380f;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 0 #000;
+        }
+
+        #certificate-screen {
+            background-color: #e0f8d0;
+            border: 10px solid #306230;
+            border-radius: 15px;
+        }
+
+        .cert-title {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #0f380f;
+        }
+
+        .cert-subtitle {
+            font-size: 12px;
+            margin-bottom: 15px;
+            color: #306230;
+        }
+
+        #cert-name {
+            font-size: 24px;
+            color: #c24228;
+            text-decoration: underline;
+            margin: 10px 0;
+        }
+
+        .cert-body {
+            font-size: 12px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            color: #0f380f;
+        }
+
+        .cert-images {
+            margin-bottom: 25px;
+        }
+
+        .cert-images img {
+            margin: 0 auto;
+            image-rendering: pixelated;
+            vertical-align: middle;
+        }
+
+        /* Credits Screen */
+        #credits-screen {
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .credits-content {
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            line-height: 2;
+        }
+
+        .credits-content h2 {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        @keyframes scroll-up {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(-120%);
+                /* Scrolls completely off screen */
+            }
+        }
+
+        .scrolling {
+            animation: scroll-up 20s linear forwards;
+        }
+
+        #play-again-btn {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: fade-in-button 2s ease 18s forwards;
+            /* Fade in near the end */
+        }
+
+        @keyframes fade-in-button {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+
+        .brand-logo {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 32px;
+            height: 32px;
+            z-index: 10;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .brand-logo:hover {
+            transform: scale(2);
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            /* Slightly rounded to match theme */
+            border: 3px solid #574334;
+            /* Match container border */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-800 flex items-center justify-center h-screen">
+
+    <div class="gameboy-container">
+        <div class="screen">
+            <!-- Start Screen -->
+            <div id="start-screen" class="game-content centered-screen">
+                <h1 class="start-title">The GS Ball Quest!</h1>
+                <p class="text-sm mb-5">preposition battle</p>
+                <img id="start-quagsire" src="https://img.pokemondb.net/sprites/black-white/anim/normal/quagsire.gif" alt="Quagsire"
+                    class="start-screen-quagsire fade-in-on-start" />
+                <img id="start-gsball" src="https://www.serebii.net/itemdex/sprites/gsball.png" alt="GS Ball"
+                    class="start-screen-gsball" />
+
+                <button id="init-audio-btn" class="action-button" disabled>Loading Audio...</button>
+
+                <div id="start-game-form" class="w-full max-w-sm fade-in-on-start">
+                    <p class="text-xs mb-4 leading-relaxed">Quagsire took the GS Ball! Help get it back! <br>What is your
+                        name?</p>
+                    <input type="text" id="name-input" class="start-input" placeholder="Enter your name...">
+                    <button id="start-btn" class="action-button">Start Adventure</button>
+                </div>
+
+                <p id="start-screen-footer">Aweeeeesome project by Ee Jin & Daddy, <a target="_blank"
+                        href="https://dadmominternationalschool.com">DMIS</a></p>
+            </div>
+
+            <!-- Game Screen -->
+            <div id="game-screen" class="game-content hidden">
+                <div class="battle-scene">
+                    <!-- Hit Effects -->
+                    <div id="enemy-hit-effect" class="hit-effect"></div>
+                    <div id="player-hit-effect" class="hit-effect"></div>
+
+                    <!-- Enemy -->
+                    <div id="enemy-info" class="info-box">
+                        <div>QUAGSIRE</div>
+                        <span id="enemy-hp-text" class="hp-text">15/15</span>
+                        <div class="health-bar-container">
+                            <div id="enemy-health" class="health-bar" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    <img src="https://img.pokemondb.net/sprites/black-white/anim/normal/quagsire.gif" alt="Quagsire"
+                        id="enemy-sprite" class="pokemon-sprite">
+
+                    <!-- Player -->
+                    <div id="player-info" class="info-box">
+                        <div id="trainer-name" class="text-right">TRAINER</div>
+                        <div id="player-pokemon-name">PIKACHU</div>
+                        <span id="player-hp-text" class="hp-text">15/15</span>
+                        <div class="health-bar-container">
+                            <div id="player-health" class="health-bar" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    <img src="https://img.pokemondb.net/sprites/black-white/anim/back-normal/pikachu.gif" alt="Pikachu"
+                        id="player-sprite" class="pokemon-sprite">
+                </div>
+                <div id="text-box" class="dialogue-box">
+                    <div id="question-text" class="question-text">What will Pikachu do?</div>
+                    <div id="options-grid" class="options-grid hidden"></div>
+                </div>
+                <div id="feedback" class="feedback"></div>
+            </div>
+
+            <!-- Certificate Screen -->
+            <div id="certificate-screen" class="game-content centered-screen hidden">
+                <div id="certificate-content">
+                    <h2 class="cert-title">Victory!</h2>
+                    <p class="cert-subtitle">This certificate awards to</p>
+                    <h1 id="cert-name">Brave Adventurer</h1>
+                    <p id="cert-body" class="cert-body">the official PREPOSITION BADGE for excellence in grammar and
+                        Pokémon training!</p>
+                    <div class="cert-images">
+                        <img class="credit-screen-pikachu"
+                            src="https://img.pokemondb.net/sprites/black-white/anim/normal/pikachu.gif" alt="Pikachu">
+                    </div>
+                    <button id="credits-btn" class="action-button">View Credits</button>
+                </div>
+            </div>
+
+            <!-- Credits Screen -->
+            <div id="credits-screen" class="game-content centered-screen hidden">
+                <div class="credits-content">
+                    <h2 style="margin-bottom: 2px;">The GS Ball Quest</h2>
+                    <h3>Pokémon Preposition Battle</h3>
+                    <br>
+                    <p><strong>Genius Storyline:</strong></p>
+                    <p>Ee Jin (Daughter)</p>
+                    <br>
+                    <p><strong>Funny, Quality Questions:</strong></p>
+                    <p>Ee Jin (Daughter)</p>
+                    <br>
+                    <p><strong>Awesome Sound Effects:</strong></p>
+                    <p>Ee Jin (Daughter)</p>
+                    <br>
+                    <p><strong>Programming Hero:</strong></p>
+                    <p>Jarod (Daddy)</p>
+                    <br><br>
+                    <p>An educational project from
+                        <a target="_blank" href="https://dadmominternationalschool.com">DMIS</a><br>
+                        (Homeschool | Worldschool)
+                    </p>
+                </div>
+                <button id="play-again-btn" class="action-button">Play Again?</button>
+            </div>
+
+
+        </div>
+
+        <a href="https://dadmominternationalschool.com" target="_blank" class="brand-logo">
+            <img src="https://dadmominternationalschool.com/apple-touch-icon.png"
+                title="DMIS (Dad & Mom International School)">
+        </a>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const certificateScreen = document.getElementById('certificate-screen');
+        const creditsScreen = document.getElementById('credits-screen');
+        const creditsContent = document.querySelector('.credits-content');
+        const nameInput = document.getElementById('name-input');
+        const initAudioBtn = document.getElementById('init-audio-btn');
+        const startGameForm = document.getElementById('start-game-form');
+        const startQuagsire = document.getElementById('start-quagsire');
+        const startGsball = document.getElementById('start-gsball');
+        const startBtn = document.getElementById('start-btn');
+        const questionText = document.getElementById('question-text');
+        const optionsGrid = document.getElementById('options-grid');
+        const feedbackEl = document.getElementById('feedback');
+        const enemyHealthBar = document.getElementById('enemy-health');
+        const playerHealthBar = document.getElementById('player-health');
+        const enemyHpText = document.getElementById('enemy-hp-text');
+        const playerHpText = document.getElementById('player-hp-text');
+        const enemySprite = document.getElementById('enemy-sprite');
+        const playerSprite = document.getElementById('player-sprite');
+        const enemyHitEffect = document.getElementById('enemy-hit-effect');
+        const playerHitEffect = document.getElementById('player-hit-effect');
+        const certName = document.getElementById('cert-name');
+        const certBody = document.getElementById('cert-body');
+        const creditsBtn = document.getElementById('credits-btn');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const trainerName = document.getElementById('trainer-name');
+        const playerPokemonName = document.getElementById('player-pokemon-name');
+
+        // --- Sound Effects ---
+        let soundsReady = false;
+        const synth = new Tone.Synth().toDestination();
+        const membraneSynth = new Tone.MembraneSynth().toDestination();
+        const noiseSynth = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0 } }).toDestination();
+
+        const soundFiles = {
+            correct: "https://dadmominternationalschool.com/games/pokemon-preposition-battle/correct.m4a",
+            incorrect: "https://dadmominternationalschool.com/games/pokemon-preposition-battle/wrong.m4a",
+            playerAttack: "https://dadmominternationalschool.com/games/pokemon-preposition-battle/pikachu_attack.m4a",
+            start: "https://dadmominternationalschool.com/games/pokemon-preposition-battle/welcome_notes.m4a",
+        };
+
+        const players = new Tone.Players(soundFiles, () => {
+            players.player('start').loop = false; // Welcome note plays once
+            initAudioBtn.textContent = "Press to Begin";
+            initAudioBtn.disabled = false;
+            soundsReady = true;
+        }).toDestination();
+        
+        function initAudio() {
+            if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundsReady) return;
+            try {
+                const now = Tone.now();
+                if (players.has(type)) {
+                    players.player(type).start(now);
+                } else {
+                    if (type === 'select') {
+                        synth.triggerAttackRelease("C5", "8n", now);
+                    } else if (type === 'enemyAttack') {
+                        noiseSynth.triggerAttackRelease("8n", now);
+                    } else if (type === 'hit') {
+                        membraneSynth.triggerAttackRelease("A1", "8n", now);
+                    } else if (type === 'startGameEffect') {
+                        synth.triggerAttackRelease("C4", "8n", now);
+                        synth.triggerAttackRelease("E4", "8n", now + 0.1);
+                        synth.triggerAttackRelease("G4", "8n", now + 0.2);
+                    }
+                }
+            } catch (error) {
+                // console.error("Sound playback failed:", error);
+            }
+        }
+
+
+        // --- Game Data ---
+        const questions = [
+            { question: "The Raichu went ______ the tunnel!", options: ["through", "on", "by", "next to"], answer: "through" },
+            { question: "Raichu jumps ___ and ____. Oh no! It doesn’t work _____ the copies.", options: ["up ... down ... among", "up ... down ... along", "up ... down ... across", "up ... down ... during"], answer: "up ... down ... among" },
+            { question: "Brock groans and groans. He was _______ the boat.", options: ["in front of", "near", "far from", "against"], answer: "near" },
+            { question: "Raichu releases a powerful thundershock _________ Ash.", options: ["towards", "in front of", "behind", "during"], answer: "towards" },
+            { question: "Pikachu jumps up and down ______ Ash.", options: ["next to", "since", "will", "beyond"], answer: "next to" },
+            { question: "Pikachu hopped ____, and Pidgeot flew _____ of the basket and ___ to the top of the balloon.", options: ["on ... out .... up", "down ... during .... across", "in ... out ... by", "on ... in ... under"], answer: "on ... out .... up" },
+            { question: "Charmander has a flame _____ the tip of its tail.", options: ["at", "on", "among", "across"], answer: "at" },
+            { question: "Mariah hugged Oddish. The other Hoppip jumped ____ her arms.", options: ["into", "by", "before", "at"], answer: "into" },
+            { question: "________ Ash could run away, Misty shouted ______ him.", options: ["Before ... at", "Up ... down", "Left ... right", "After ... towards"], answer: "Before ... at" },
+            { question: "All the Pokémon are excited _______ Hariyama.", options: ["except", "in front of", "among", "at"], answer: "except" },
+            { question: "Meowth peered ______ a periscope.", options: ["through", "across", "out", "towards"], answer: "through" },
+            { question: "Ash and the others followed Hoppip _____ a dirt path.", options: ["down", "up", "everywhere", "beside"], answer: "down" },
+            { question: "The breeze lifted two Hoppip _____ the ground.", options: ["off", "on", "tomorrow", "up down"], answer: "off" },
+            { question: "All seven Hoppip were lifted _______ the air", options: ["up into", "in", "out", "up down"], answer: "up into" },
+            { question: "Misty stepped ______, holding a Poké ball.", options: ["forward", "in front of", "among", "up down"], answer: "forward" },
+            { question: "Oddish smiled and hopped ____ and _____.", options: ["up ... down", "in ... out", "above ... below", "left ... right"], answer: "up ... down" },
+            { question: "Wooper jumped ____ of the sink and _____ a pile of dishes.", options: ["out ... onto", "out ... before", "into ... down", "in ... at"], answer: "out ... onto" },
+            { question: "The Pokémon cheered and jumped ____ happily.", options: ["up", "down", "around", "left"], answer: "around" },
+            { question: "The little Pokémon hopped ____ leg ___ leg, shaking the tambourine.", options: ["from ... to", "up ... down", "left ... right", "today ... tomorrow"], answer: "from ... to" },
+            { question: "Congratulations! You rescued the GS ball ____ defeating the Quagsire.", options: ["by", "to", "after", "with"], answer: "by" }
+        ];
+
+        const playerAttacks = ["Thunder Shock", "Thunderbolt", "Agility", "Quick Attack", "Discharge", "Double Team", "Electro Ball", "Feint", "Growl"];
+        const enemyAttacks = ["Water Gun", "Amnesia", "Aqua Tail", "Mud Shot", "Muddy Water", "Rain Dance"];
+
+        let currentQuestionIndex = 0;
+        let playerName = "Adventurer";
+        const MAX_HP = 15;
+        let playerHP = MAX_HP;
+        let enemyHP = MAX_HP;
+        let isProcessing = false; // Debounce flag
+
+        // --- Game Logic ---
+        function startGame() {
+            if (players.player('start').state === 'started') {
+                players.player('start').stop();
+            }
+            playSound('startGameEffect');
+
+            playerName = nameInput.value.trim() || "Adventurer";
+            trainerName.textContent = playerName.substring(0, 10).toUpperCase();
+            playerPokemonName.textContent = "PIKACHU";
+            
+            startScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            creditsScreen.classList.add('hidden');
+            certificateScreen.classList.add('hidden');
+
+            currentQuestionIndex = 0;
+            playerHP = MAX_HP;
+            enemyHP = MAX_HP;
+
+            updateHealthBars();
+            displayQuestion();
+        }
+
+        function typewriterEffect(text, callback) {
+            questionText.classList.remove('hidden');
+            optionsGrid.classList.add('hidden');
+            let i = 0;
+            questionText.innerHTML = "";
+            const speed = 30; // ms
+
+            function type() {
+                if (i < text.length) {
+                    questionText.innerHTML += text.charAt(i).replace('\n', '<br>');
+                    i++;
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    setTimeout(callback, 300);
+                }
+            }
+            type();
+        }
+
+        function displayQuestion() {
+            isProcessing = false;
+            if (currentQuestionIndex >= questions.length) {
+                drawGame();
+                return;
+            }
+
+            const q = questions[currentQuestionIndex];
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+            typewriterEffect(`Q${currentQuestionIndex + 1}: ${q.question}`, () => {
+                optionsGrid.innerHTML = '';
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add('option-btn');
+                    button.onclick = () => selectAnswer(option, q.answer);
+                    optionsGrid.appendChild(button);
+                });
+                optionsGrid.classList.remove('hidden');
+            });
+        }
+
+        function selectAnswer(selected, correct) {
+            if (isProcessing) return; // Prevent multiple clicks
+            isProcessing = true;
+
+            playSound('select');
+            optionsGrid.classList.add('hidden');
+
+            if (selected === correct) {
+                playSound('correct');
+                showFeedback(true);
+                setTimeout(() => typewriterEffect("Correct!\nChoose a move for Pikachu.", showPlayerAttackMenu), 500);
+            } else {
+                playSound('incorrect');
+                showFeedback(false);
+                playerHP = Math.max(0, playerHP - 1);
+                updateHealthBars();
+                setTimeout(enemyAttack, 500);
+            }
+        }
+
+        function showPlayerAttackMenu() {
+            optionsGrid.innerHTML = '';
+            // Get 4 random moves
+            const availableMoves = [...playerAttacks].sort(() => 0.5 - Math.random()).slice(0, 4);
+
+            availableMoves.forEach(attack => {
+                const button = document.createElement('button');
+                button.textContent = attack;
+                button.classList.add('option-btn');
+                button.onclick = () => playerAttack(attack);
+                optionsGrid.appendChild(button);
+            });
+            optionsGrid.classList.remove('hidden');
+        }
+
+        function playerAttack(attackName) {
+            if (!isProcessing) return;
+
+            optionsGrid.classList.add('hidden');
+            playSound('playerAttack');
+
+            enemyHP = Math.max(0, enemyHP - 1);
+            triggerAnimation(enemySprite, enemyHitEffect);
+            playSound('hit');
+
+            updateHealthBars();
+
+            typewriterEffect(`Pikachu used ${attackName}!`, () => {
+                if (enemyHP <= 0) {
+                    winGame();
+                } else {
+                    currentQuestionIndex++;
+                    setTimeout(displayQuestion, 1000);
+                }
+            });
+        }
+
+        function enemyAttack() {
+            const attackName = enemyAttacks[Math.floor(Math.random() * enemyAttacks.length)];
+            playSound('enemyAttack');
+            triggerAnimation(playerSprite, playerHitEffect);
+            playSound('hit');
+
+            typewriterEffect(`Quagsire used ${attackName}!`, () => {
+                if (playerHP <= 0) {
+                    loseGame();
+                } else {
+                    currentQuestionIndex++;
+                    setTimeout(displayQuestion, 1000);
+                }
+            });
+        }
+
+        function triggerAnimation(spriteElement, hitEffectElement) {
+            spriteElement.classList.add('shake-animation');
+            hitEffectElement.classList.add('flash-animation');
+
+            setTimeout(() => {
+                spriteElement.classList.remove('shake-animation');
+                hitEffectElement.classList.remove('flash-animation');
+            }, 500);
+        }
+
+        function showFeedback(isCorrect) {
+            feedbackEl.textContent = isCorrect ? 'Correct!' : 'Missed!';
+            feedbackEl.className = 'feedback';
+            feedbackEl.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            feedbackEl.style.opacity = 1;
+            setTimeout(() => {
+                feedbackEl.style.opacity = 0;
+            }, 1000);
+        }
+
+        function updateHealthBars() {
+            const enemyHealthPercent = (enemyHP / MAX_HP) * 100;
+            enemyHealthBar.style.width = `${enemyHealthPercent}%`;
+            enemyHpText.textContent = `${enemyHP}/${MAX_HP}`;
+            setBarColor(enemyHealthBar, enemyHealthPercent);
+
+            const playerHealthPercent = (playerHP / MAX_HP) * 100;
+            playerHealthBar.style.width = `${playerHealthPercent}%`;
+            playerHpText.textContent = `${playerHP}/${MAX_HP}`;
+            setBarColor(playerHealthBar, playerHealthPercent);
+        }
+
+        function setBarColor(barElement, percentage) {
+            barElement.classList.remove('low', 'critical');
+            if (percentage < 20) {
+                barElement.classList.add('critical');
+            } else if (percentage < 50) {
+                barElement.classList.add('low');
+            }
+        }
+
+        function winGame() {
+            isProcessing = true;
+            typewriterEffect("Oh NO!! Quagsire ran away with the GS Ball!\n\nTo be continued...", () => {
+                setTimeout(() => showCertificate(true), 1500);
+            });
+        }
+
+        function loseGame() {
+            isProcessing = true;
+            typewriterEffect("Oh no, Pikachu fainted!\nYou blacked out...", () => {
+                setTimeout(() => showCertificate(false), 1500);
+            });
+        }
+
+        function drawGame() {
+            isProcessing = true;
+            typewriterEffect("Oh NO!! It's a draw! Quagsire ran away with the GS Ball!\n\nTo be continued...", () => {
+                setTimeout(() => showCertificate(false, true), 1500);
+            });
+        }
+
+        function showCertificate(didWin, isDraw = false) {
+            gameScreen.classList.add('hidden');
+            certificateScreen.classList.remove('hidden');
+            certName.textContent = playerName;
+
+            if (didWin) {
+                certBody.innerHTML = "the official <br><span class='text-yellow-500'>PREPOSITION BADGE</span><br> for excellence in grammar and Pokémon training!";
+            } else if (isDraw) {
+                certBody.innerHTML = "You bravely faced the Pokémon Preposition Challenge! It was a hard-fought draw. Try again to earn your badge!";
+            }
+            else {
+                certBody.innerHTML = "You bravely faced the Pokémon Preposition Challenge! Heal your Pokémon and try again to earn your badge!";
+            }
+        }
+
+
+        // --- Event Listeners ---
+        initAudioBtn.addEventListener('click', () => {
+            initAudio();
+            playSound('start');
+            initAudioBtn.style.display = 'none';
+
+            startQuagsire.classList.add('visible');
+            startGsball.classList.add('visible');
+            startGameForm.classList.add('visible');
+            nameInput.focus();
+        });
+
+        startBtn.addEventListener('click', startGame);
+        
+        nameInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                if(!startBtn.disabled) {
+                    startGame();
+                }
+            }
+        });
+
+        creditsBtn.addEventListener('click', () => {
+            playSound('select');
+            certificateScreen.classList.add('hidden');
+            creditsScreen.classList.remove('hidden');
+            // Trigger animation
+            creditsContent.classList.remove('scrolling');
+            void creditsContent.offsetWidth; // Trigger reflow to restart animation
+            creditsContent.classList.add('scrolling');
+        });
+
+        playAgainBtn.addEventListener('click', () => {
+            playSound('select');
+            location.reload();
+        });
+
+
+    </script>
+</body>
+
+</html>
