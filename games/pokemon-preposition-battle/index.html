@@ -22,6 +22,7 @@
             width: 100%;
             max-width: 480px;
             height: 100vh;
+            height: 100dvh;
             max-height: 800px;
             background-color: #8bac0f;
             border-radius: 20px;
@@ -383,7 +384,7 @@
             padding: 15px 25px;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 12px;
             text-transform: uppercase;
             transition: all 0.2s;
         }
@@ -522,20 +523,20 @@
     </style>
 </head>
 
-<body class="bg-gray-800 flex items-center justify-center h-screen">
+<body class="bg-gray-800 flex items-center justify-center">
 
     <div class="gameboy-container">
         <div class="screen">
             <!-- Start Screen -->
             <div id="start-screen" class="game-content centered-screen">
                 <h1 class="start-title">The GS Ball Quest!</h1>
-                <p class="text-sm mb-5">preposition battle</p>
+                <p class="text-xs mb-5">preposition battle</p>
                 <img id="start-quagsire" src="https://img.pokemondb.net/sprites/black-white/anim/normal/quagsire.gif" alt="Quagsire"
                     class="start-screen-quagsire fade-in-on-start" />
                 <img id="start-gsball" src="https://www.serebii.net/itemdex/sprites/gsball.png" alt="GS Ball"
                     class="start-screen-gsball" />
 
-                <button id="init-audio-btn" class="action-button" disabled>Loading Audio...</button>
+                <button id="init-audio-btn" class="action-button" disabled>Loading ...</button>
 
                 <div id="start-game-form" class="w-full max-w-sm fade-in-on-start">
                     <p class="text-xs mb-4 leading-relaxed">Quagsire took the GS Ball! Help get it back! <br>What is your
