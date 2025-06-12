@@ -16,6 +16,13 @@
                 cursive;
             background-color: #f0f0f0;
             overflow: hidden;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .gameboy-container {
@@ -31,9 +38,23 @@
             box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4), inset 5px 5px 10px rgba(255, 255, 255, 0.3), inset -5px -5px 10px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
-            margin: auto;
             position: relative;
         }
+
+        /* Add responsive adjustments for larger screens */
+        /* @media (min-width: 768px) {
+            .gameboy-container {
+                height: auto;
+                min-height: 600px;
+                max-height: min(90vh, 800px);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .gameboy-container {
+                max-height: min(85vh, 800px);
+            }
+        } */
 
         .screen {
             background-color: #000;
@@ -64,7 +85,7 @@
             position: relative;
             background-image:
                 linear-gradient(rgba(155, 188, 15, 0.8), rgba(155, 188, 15, 0.8)),
-                url('https://www.transparenttextures.com/patterns/diagmonds.png');
+                url('./diagmonds.png');
         }
 
         .pokemon-sprite {
@@ -523,7 +544,7 @@
     </style>
 </head>
 
-<body class="bg-gray-800 flex items-center justify-center">
+<body class="bg-gray-800">
 
     <div class="gameboy-container">
         <div class="screen">
@@ -531,9 +552,9 @@
             <div id="start-screen" class="game-content centered-screen">
                 <h1 class="start-title">The GS Ball Quest!</h1>
                 <p class="text-xs mb-5">preposition battle</p>
-                <img id="start-quagsire" src="https://img.pokemondb.net/sprites/black-white/anim/normal/quagsire.gif" alt="Quagsire"
+                <img id="start-quagsire" src="./quagsire_normal.gif" alt="Quagsire"
                     class="start-screen-quagsire fade-in-on-start" />
-                <img id="start-gsball" src="https://www.serebii.net/itemdex/sprites/gsball.png" alt="GS Ball"
+                <img id="start-gsball" src="./gsball.png" alt="GS Ball"
                     class="start-screen-gsball" />
 
                 <button id="init-audio-btn" class="action-button" disabled>Loading ...</button>
@@ -564,7 +585,7 @@
                             <div id="enemy-health" class="health-bar" style="width: 100%;"></div>
                         </div>
                     </div>
-                    <img src="https://img.pokemondb.net/sprites/black-white/anim/normal/quagsire.gif" alt="Quagsire"
+                    <img src="./quagsire_normal.gif" alt="Quagsire"
                         id="enemy-sprite" class="pokemon-sprite">
 
                     <!-- Player -->
@@ -576,7 +597,7 @@
                             <div id="player-health" class="health-bar" style="width: 100%;"></div>
                         </div>
                     </div>
-                    <img src="https://img.pokemondb.net/sprites/black-white/anim/back-normal/pikachu.gif" alt="Pikachu"
+                    <img src="./pikachu_back.gif" alt="Pikachu"
                         id="player-sprite" class="pokemon-sprite">
                 </div>
                 <div id="text-box" class="dialogue-box">
@@ -596,7 +617,7 @@
                         Pokémon training!</p>
                     <div class="cert-images">
                         <img class="credit-screen-pikachu"
-                            src="https://img.pokemondb.net/sprites/black-white/anim/normal/pikachu.gif" alt="Pikachu">
+                            src="./pikachu_normal.gif" alt="Pikachu">
                     </div>
                     <button id="credits-btn" class="action-button">View Credits</button>
                 </div>
@@ -722,7 +743,7 @@
         // --- Game Data ---
         const questions = [
             { question: "The Raichu went ______ the tunnel!", options: ["through", "on", "by", "next to"], answer: "through" },
-            { question: "Raichu jumps ___ and ____. Oh no! It doesn’t work _____ the copies.", options: ["up ... down ... among", "up ... down ... along", "up ... down ... across", "up ... down ... during"], answer: "up ... down ... among" },
+            { question: "Raichu jumps ___ and ____. Oh no! It doesn't work _____ the copies.", options: ["up ... down ... among", "up ... down ... along", "up ... down ... across", "up ... down ... during"], answer: "up ... down ... among" },
             { question: "Brock groans and groans. He was _______ the boat.", options: ["in front of", "near", "far from", "against"], answer: "near" },
             { question: "Raichu releases a powerful thundershock _________ Ash.", options: ["towards", "in front of", "behind", "during"], answer: "towards" },
             { question: "Pikachu jumps up and down ______ Ash.", options: ["next to", "since", "will", "beyond"], answer: "next to" },
