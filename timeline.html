@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Timeline UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for timeline pseudo-elements */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            /* Light gray background */
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background-color: #d1d5db;
+            /* Gray-300 */
+        }
+
+        .timeline-item-dot {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 4px solid #3b82f6;
+            /* Blue-500 */
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        /* Styling for responsive video embeds */
+        .aspect-video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            /* rounded-lg */
+        }
+
+        .aspect-video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 p-4 sm:p-6 lg:p-8">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">Project Development Timeline</h1>
+
+        <!-- Timeline Container -->
+        <div class="relative timeline-container py-10">
+
+            <!-- Timeline Item 1: Project Kick-off (Image) -->
+            <div class="relative flex items-center mb-12 w-full md:w-1/2 md:left-0 md:pr-8">
+                <div class="timeline-item-dot hidden md:block"></div>
+                <div
+                    class="bg-white rounded-lg shadow-xl p-6 w-full transform transition-transform duration-500 hover:scale-105">
+                    <p class="text-sm font-semibold text-blue-500 mb-1">June 15, 2024</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Project Kick-off & Planning</h3>
+                    <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop"
+                        alt="Team planning a project on a whiteboard" class="rounded-lg mb-4 w-full h-auto object-cover"
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/4a5568?text=Image+Not+Found';">
+                    <p class="text-gray-600">The official start of the project. The team gathered to define the scope,
+                        objectives, and key deliverables. We established our roadmap and set initial milestones for the
+                        first phase of development.</p>
+                </div>
+            </div>
+
+            <!-- Timeline Item 2: UI/UX Design (YouTube Video) -->
+            <div class="relative flex items-center mb-12 w-full md:w-1/2 md:ml-auto md:pl-8">
+                <div class="timeline-item-dot hidden md:block"></div>
+                <div
+                    class="bg-white rounded-lg shadow-xl p-6 w-full transform transition-transform duration-500 hover:scale-105">
+                    <p class="text-sm font-semibold text-blue-500 mb-1">July 22, 2024</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">UI/UX Design Phase</h3>
+                    <div class="aspect-video-container mb-4">
+                        <iframe src="https://www.youtube.com/embed/cKZEgt61w_Y" title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p class="text-gray-600">Our design team presented the final wireframes and interactive prototypes.
+                        This video showcases the user flow and key interface elements that were approved for
+                        development.</p>
+                </div>
+            </div>
+
+            <!-- Timeline Item 3: Frontend Development -->
+            <div class="relative flex items-center mb-12 w-full md:w-1/2 md:left-0 md:pr-8">
+                <div class="timeline-item-dot hidden md:block"></div>
+                <div
+                    class="bg-white rounded-lg shadow-xl p-6 w-full transform transition-transform duration-500 hover:scale-105">
+                    <p class="text-sm font-semibold text-blue-500 mb-1">September 5, 2024</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Frontend Development Begins</h3>
+                    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=2070&auto=format&fit=crop"
+                        alt="Code on a computer screen" class="rounded-lg mb-4 w-full h-auto object-cover"
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/4a5568?text=Image+Not+Found';">
+                    <p class="text-gray-600">The development team started translating the approved designs into a
+                        functional user interface using modern web technologies. Focus on creating a responsive and
+                        accessible experience.</p>
+                </div>
+            </div>
+
+            <!-- Timeline Item 4: Alpha Launch -->
+            <div class="relative flex items-center w-full md:w-1/2 md:ml-auto md:pl-8">
+                <div class="timeline-item-dot hidden md:block"></div>
+                <div
+                    class="bg-white rounded-lg shadow-xl p-6 w-full transform transition-transform duration-500 hover:scale-105">
+                    <p class="text-sm font-semibold text-blue-500 mb-1">October 20, 2024</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Internal Alpha Launch</h3>
+                    <p class="text-gray-600">The first version of the application was deployed for internal testing.
+                        This milestone allowed us to gather crucial feedback from stakeholders and identify key areas
+                        for improvement before the public beta release.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // On mobile, the timeline line should align to the left.
+        // We can achieve this by changing the 'left' property on mobile screens.
+        function adjustTimelineLine() {
+            const timelineContainer = document.querySelector('.timeline-container');
+            if (window.innerWidth < 768) { // md breakpoint in Tailwind
+                timelineContainer.style.setProperty('--timeline-left', '20px');
+                // Adjust position of items relative to new line
+                document.querySelectorAll('.timeline-item-dot').forEach(dot => {
+                    dot.style.left = '20px';
+                });
+                document.querySelectorAll('.mb-12').forEach(item => {
+                    item.style.paddingLeft = '40px';
+                    item.classList.remove('md:w-1/2', 'md:left-0', 'md:pr-8', 'md:ml-auto', 'md:pl-8');
+                });
+                timelineContainer.style.setProperty('left', '20px', 'important');
+                timelineContainer.style.setProperty('transform', 'translateX(0)');
+                timelineContainer.classList.add('pl-5')
+
+
+            } else {
+                timelineContainer.style.setProperty('left', '50%');
+                timelineContainer.style.setProperty('transform', 'translateX(-50%)');
+                timelineContainer.classList.remove('pl-5')
+
+            }
+        }
+
+        // Initial check
+        // We have to wait for the DOM to load before we can adjust the timeline
+        document.addEventListener('DOMContentLoaded', () => {
+            adjustTimelineLine();
+        });
+
+    </script>
+</body>
+
+</html>

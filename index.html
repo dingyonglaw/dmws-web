@@ -8,7 +8,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -19,6 +20,18 @@
             font-weight: 400;
             font-style: normal; */
             overflow-x: hidden;
+        }
+
+        .text-cute {
+            font-family: "Coming Soon", cursive;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .text-blocky {
+            font-family: 'Press Start 2P', cursive;
+            font-weight: 400;
+            font-style: normal;
         }
 
         /* Header Section */
@@ -112,6 +125,83 @@
             margin-bottom: 2rem;
         }
 
+        /* Updates & Books Sections */
+        .latest-updates-section,
+        .book-publishing-section {
+            padding: 4rem 0;
+        }
+
+        .latest-updates-section {
+            background-color: #f8f9fa;
+        }
+
+        .latest-updates-section .title {
+            font-size: 2.5rem;
+            color: #0C2340;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .update-card {
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: left;
+            height: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin: 0 auto 25px;
+            max-width: 850px;
+        }
+
+        .update-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .update-card img {
+            width: 100%;
+            max-height: 360px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .update-card .video {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+        }
+
+        .update-card .video iframe {
+            width: 100%;
+            height: 360px;
+            border: none;
+        }
+
+        .update-date {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 0.5rem;
+        }
+
+        .update-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #0C2340;
+            margin-bottom: 0.75rem;
+        }
+
+        .update-text {
+            font-size: 1rem;
+            color: #555;
+        }
+
         .book-publishing-section {
             background-color: #fff;
             padding: 4rem 0;
@@ -201,6 +291,91 @@
             border: none;
         }
 
+        /* Game Arcade Section */
+        .game-arcade-section {
+            background-color: #0C2340;
+            /* Dark blue background */
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-arcade-section .section-title {
+            font-family: 'Press Start 2P', cursive;
+            /* Pixel font */
+            color: #fdf5e1;
+            font-size: 2rem;
+            margin-bottom: 4rem;
+            text-shadow: 3px 3px 0px #e74c3c;
+        }
+
+        .game-card {
+            background: #1a5276;
+            border-radius: 15px;
+            overflow: hidden;
+            text-align: center;
+            height: 100%;
+            border: 3px solid #fdf5e1;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 0 25px #3498db, 0 15px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .game-card-img-container {
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .game-card-body {
+            padding: 1.5rem;
+            color: #fdf5e1;
+        }
+
+        .game-card-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-card-text {
+            font-family: 'Coming Soon', cursive;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .play-btn {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            border-bottom: 4px solid #c0392b;
+        }
+
+        .play-btn:hover {
+            background-color: #ff5733;
+            transform: translateY(-2px);
+            border-bottom-width: 6px;
+        }
+
         /* Media Queries */
         @media (max-width: 768px) {
             .school-title {
@@ -235,6 +410,10 @@
 
             .video-container iframe {
                 height: 498px;
+            }
+
+            .game-arcade-section .section-title {
+                font-size: 1.5rem;
             }
         }
 
@@ -279,8 +458,85 @@
                         <br>
                         The world is our classroom. <br> Learning from anywhere, anytime.
                     </p>
-                    <button class="explore-btn">OUR BOOKS</button>
-                    <button class="explore-btn">OUR FOOTPRINTS</button>
+                    <button class="explore-btn explore-btn-books">OUR BOOKS</button>
+                    <button class="explore-btn explore-btn-arcade">OUR GAMES</button>
+                    <button class="explore-btn explore-btn-footprints">OUR FOOTPRINTS</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="latest-updates-section">
+        <div class="container">
+            <h2 class="title text-center">Freshly Baked Updates! <small class="text-cute">yum...</small></h2>
+            <div class="update-card">
+                <div class="row justify-content-md-center">
+                    <div class="col-lg-4 col-md-4 mb-4">
+                        <div class="video">
+                            <iframe src="https://www.youtube.com/embed/e7KCibufA4k"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8 mb-4">
+                        <p class="update-date">May 31, 2025</p>
+                        <h3 class="update-title text-cute">Pop Quiz Alert: Our New Song Will Blow Your Socks Off! 🎶
+                        </h3>
+                        <p class="update-text">Hold onto your hats, Rosalina fans, we have cooked up the
+                            catchiest,
+                            zaniest tune for <u>The Stella Adventures of Rosalina Series</u> say hello to the Pop Quiz
+                            Song!
+                            🎤
+                            <br><br>
+                            This song is so fun, it’ll make your goldfish dance and your grandma do the floss. It’s all
+                            about those epic Pop Quizzes in every book—y’know, the ones that are “easy peasy” but
+                            sneakily make you feel like a superhero when you nail ‘em! 💪
+                            <br><br>
+                            ⚠️⚠️⚠️ Warning: Singing this in public may cause spontaneous dance parties and jealous
+                            stares from
+                            people.
+                            <br><br>
+                            Love,
+                            <br>
+                            Jarod & Ee Jin, the Pop Quiz Songwriting Superstars
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="update-card">
+                <div class="row justify-content-md-center">
+                    <div class="col-lg-4 col-md-4 mb-4">
+                        <img src="./dmis_arcade_square_med.jpeg">
+                    </div>
+                    <div class="col-lg-8 col-md-8 mb-4">
+                        <p class="update-date">June 13, 2025</p>
+                        <h3 class="update-title text-blocky">🎮 Buckle Up!?</h3>
+                        <p class="update-text">Hold onto your keyboards, folks, because DMIS just leveled up BIG TIME!
+                            🎉
+                            Say hello to the DMIS Arcade, our shiny new corner of
+                            the internet where learning meets games party! 🕹️
+                            <br><br>
+                            It all started when daddy whipped up a Minecraft Preposition Adventure to make
+                            learning prepositions less “ugh” and more “YEAH!”. Ee Jin loved it so much she said,
+                            “Dad, let’s make a another one with Pokemon. Quagsire stolen Ash GS ball ...”
+                            So, we teamed up, and BOOM—Pokémon Preposition Battle was
+                            born! 🔥
+                            <br><br>
+                            Now, we’re hooked! We want to crank out more games that make
+                            learning sneakily fun. Dive into the <a class="explore-btn-arcade">DMIS Arcade</a>, try out our games, and let us know which
+                            one makes you
+                            snort-laugh the loudest.
+                            <br><br>
+                            ⚠️⚠️⚠️ Warning: 🎙️ Turn up the volume for maximum hilarity! (to enjoy Ee Jin’s sound
+                            effects, her “PEW PEW!” and “ZAP!” are so epic!)
+                            <br><br>
+                            High scores & happy vibes,
+                            <br>
+                            Jarod & Ee Jin, the DMIS Arcade Game-Making Heroes
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -333,6 +589,41 @@
                             Sponsors receive special acknowledgments in our upcoming publications and exclusive digital
                             content!
                         </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="game-arcade-section">
+        <div class="container">
+            <h2 class="section-title text-center">DMIS Arcade</h2>
+            <div class="row justify-content-center">
+                <!-- Game 1 -->
+                <div class="col-lg-5 col-md-6 mb-5">
+                    <div class="game-card">
+                        <div class="game-card-img-container">
+                            <img src="/games/minecraft-preposition-adventure/cover.png">
+                        </div>
+                        <div class="game-card-body">
+                            <h3 class="game-card-title">Minecraft Preposition Adventure</h3>
+                            <p class="game-card-text">Learn prepositions by exploring a blocky world!<br>Sound effects by: Ee Jin</p>
+                            <a href="/games/minecraft-preposition-adventure/" target="_blank" class="play-btn">Play
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Game 2 -->
+                <div class="col-lg-5 col-md-6 mb-5">
+                    <div class="game-card">
+                        <div class="game-card-img-container">
+                            <img src="/games/pokemon-preposition-battle/cover.png">
+                        </div>
+                        <div class="game-card-body">
+                            <h3 class="game-card-title">Pokémon Preposition Battle</h3>
+                            <p class="game-card-text">Master prepositions to win epic Pokémon battles! <br>Game stories design and sound effects by: Ee Jin</p>
+                            <a href="/games/pokemon-preposition-battle/" target="_blank" class="play-btn">Play Now</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -561,14 +852,21 @@
             }
 
             // Add click events to navigation buttons
-            $('.explore-btn').eq(0).on('click', function () {
+            $('.explore-btn-books').on('click', function () {
                 // Scroll to books section
                 $('html, body').animate({
                     scrollTop: $('.book-publishing-section').offset().top
                 }, 500, 'linear');
             });
 
-            $('.explore-btn').eq(1).on('click', function () {
+            $('.explore-btn-arcade').on('click', function () {
+                // Scroll to arcade section
+                $('html, body').animate({
+                    scrollTop: $('.game-arcade-section').offset().top
+                }, 500, 'linear');
+            });
+
+            $('.explore-btn-footprints').on('click', function () {
                 // Scroll to footprints section
                 $('html, body').animate({
                     scrollTop: $('.footprint-section').offset().top
