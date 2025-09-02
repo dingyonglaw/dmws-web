@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Flash Cards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-display {
+            font-family: 'Fredoka One', cursive;
+        }
+
+        /* Custom styles for the card flip animation */
+        .card-container {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card-container.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 1.5rem;
+            /* rounded-3xl */
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Shake animation for wrong answers */
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        .shake {
+            animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+        }
+    </style>
+</head>
+
+<body class="bg-yellow-50 text-gray-800 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-md mx-auto">
+
+        <!-- Screen 1: Times Table Selection -->
+        <div id="selection-screen">
+            <img src="charlie_animation_256.png" alt="Charlie the rainbow dragon" class="w-32 h-32 mx-auto mb-4">
+            <h1 class="text-4xl md:text-5xl text-center text-pink-500 mb-2">Multiplication Fun!</h1>
+            <p class="text-center text-gray-600 mb-8">Choose a times table to challenge:</p>
+            <div class="grid grid-cols-3 md:grid-cols-4 gap-4">
+                <!-- Times table buttons will be generated here by JS -->
+            </div>
+        </div>
+
+        <!-- Screen 2: Game Screen -->
+        <div id="game-screen" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                <button id="back-btn"
+                    class="text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors">&larr;
+                    Back</button>
+                <h2 id="progress-text" class="text-lg font-semibold text-gray-600">Card 1 of 12</h2>
+            </div>
+
+            <!-- Flash Card -->
+            <div id="card-container" class="card-container h-64 md:h-80 mb-6">
+                <div id="card-inner" class="card-inner">
+                    <div class="card-front bg-teal-400 text-white shadow-lg">
+                        <p id="question-text" class="text-5xl md:text-7xl font-display"></p>
+                    </div>
+                    <div class="card-back bg-indigo-500 text-white shadow-lg">
+                        <p id="answer-text" class="text-7xl md:text-8xl font-display"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input and Controls -->
+            <div class="space-y-4">
+                <input type="number" id="answer-input" placeholder="Type your answer"
+                    class="w-full text-center text-2xl p-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-400 focus:border-transparent transition">
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="flip-btn"
+                        class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-md">Reveal
+                        Answer</button>
+                    <button id="next-btn"
+                        class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-md">Next
+                        Card &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Completion Screen -->
+        <div id="completion-screen" class="hidden text-center p-8 bg-white rounded-2xl shadow-xl">
+            <h2 class="text-4xl text-green-500 mb-4 font-display">Awesome Work!</h2>
+            <p class="text-lg text-gray-700 mb-2">You completed the deck in:</p>
+            <p id="total-time-text" class="text-5xl font-bold text-indigo-500 mb-8"></p>
+            <button id="play-again-btn"
+                class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-8 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-md">Play
+                Again</button>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const selectionScreen = document.getElementById('selection-screen');
+            const gameScreen = document.getElementById('game-screen');
+            const completionScreen = document.getElementById('completion-screen');
+            const selectionGrid = selectionScreen.querySelector('.grid');
+
+            const backBtn = document.getElementById('back-btn');
+            const progressText = document.getElementById('progress-text');
+            const cardContainer = document.getElementById('card-container');
+            const questionText = document.getElementById('question-text');
+            const answerText = document.getElementById('answer-text');
+            const answerInput = document.getElementById('answer-input');
+            const flipBtn = document.getElementById('flip-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            const totalTimeText = document.getElementById('total-time-text');
+            const playAgainBtn = document.getElementById('play-again-btn');
+
+            // --- Game State ---
+            let currentTable = 0;
+            let cards = [];
+            let currentCardIndex = 0;
+            let startTime = 0;
+            let peekTimeout = null; // To manage the auto-flip-back timer
+
+            // --- Initialization ---
+            function init() {
+                // Generate selection buttons
+                for (let i = 1; i <= 12; i++) {
+                    const button = document.createElement('button');
+                    button.textContent = i;
+                    button.className = 'font-display text-3xl p-4 md:p-6 bg-white border-2 border-teal-200 rounded-xl shadow-md hover:bg-teal-100 hover:border-teal-400 transition-all transform hover:scale-110';
+                    button.addEventListener('click', () => selectTimesTable(i));
+                    selectionGrid.appendChild(button);
+                }
+
+                // Add event listeners
+                backBtn.addEventListener('click', goHome);
+                flipBtn.addEventListener('click', peekAnswer);
+                nextBtn.addEventListener('click', nextCard);
+                playAgainBtn.addEventListener('click', goHome);
+                answerInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        nextCard();
+                    }
+                });
+            }
+
+            // --- Navigation ---
+            function showScreen(screen) {
+                selectionScreen.classList.add('hidden');
+                gameScreen.classList.add('hidden');
+                completionScreen.classList.add('hidden');
+                screen.classList.remove('hidden');
+            }
+
+            function goHome() {
+                showScreen(selectionScreen);
+            }
+
+            // --- Game Logic ---
+            function selectTimesTable(tableNumber) {
+                currentTable = tableNumber;
+                currentCardIndex = 0;
+                cards = generateAndShuffleCards(tableNumber);
+                startTime = new Date().getTime();
+
+                // Ensure controls are enabled when starting a new game
+                answerInput.disabled = false;
+                nextBtn.disabled = false;
+                flipBtn.disabled = false;
+
+                displayCard();
+                showScreen(gameScreen);
+            }
+
+            function generateAndShuffleCards(table) {
+                const generatedCards = [];
+                for (let i = 1; i <= 12; i++) {
+                    generatedCards.push({
+                        question: `${table} x ${i}`,
+                        answer: table * i
+                    });
+                }
+
+                // Fisher-Yates shuffle algorithm
+                for (let i = generatedCards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [generatedCards[i], generatedCards[j]] = [generatedCards[j], generatedCards[i]];
+                }
+
+                return generatedCards;
+            }
+
+            function displayCard() {
+                if (currentCardIndex >= cards.length) return;
+
+                const card = cards[currentCardIndex];
+                questionText.textContent = card.question;
+                answerText.textContent = card.answer;
+                progressText.textContent = `Card ${currentCardIndex + 1} of ${cards.length}`;
+
+                // This function now only updates the content. Animation is handled elsewhere.
+                answerInput.value = '';
+                answerInput.focus();
+            }
+
+            function peekAnswer() {
+                // Prevent clicking while the card is already revealed or animating
+                if (flipBtn.disabled) return;
+
+                cardContainer.classList.add('flipped');
+                flipBtn.disabled = true; // Disable button while answer is shown
+
+                // Clear any previous timeout to prevent glitches
+                clearTimeout(peekTimeout);
+
+                // Set a timer to flip the card back
+                peekTimeout = setTimeout(() => {
+                    cardContainer.classList.remove('flipped');
+
+                    // Wait for the flip-back animation to finish before re-enabling the button
+                    setTimeout(() => {
+                        // nextBtn is disabled during card transitions, which is a good check
+                        // to see if we've already moved on to the next card.
+                        if (!nextBtn.disabled) {
+                            flipBtn.disabled = false;
+                        }
+                    }, 600); // Must match CSS transition time
+                }, 3000); // Reveal for 3 seconds
+            }
+
+            function nextCard() {
+                const card = cards[currentCardIndex];
+                const userAnswer = parseInt(answerInput.value, 10);
+                const correctAnswer = card.answer;
+
+                // If the answer is correct
+                if (userAnswer === correctAnswer) {
+                    // We are moving on, so cancel any pending auto-flip-back from the peek function.
+                    clearTimeout(peekTimeout);
+
+                    // Disable controls during the animation sequence
+                    answerInput.disabled = true;
+                    nextBtn.disabled = true;
+                    flipBtn.disabled = true;
+
+                    // If card isn't already flipped, flip it now to show confirmation.
+                    if (!cardContainer.classList.contains('flipped')) {
+                        cardContainer.classList.add('flipped');
+                    }
+
+                    // Wait for flip to complete (600ms) + time for user to see answer (800ms)
+                    setTimeout(() => {
+                        proceedToNext();
+                    }, 1400);
+                } else { // If the answer is wrong or empty
+                    // Nudge the card to indicate a wrong answer
+                    cardContainer.classList.add('shake');
+                    answerInput.value = '';
+                    answerInput.focus();
+
+                    // Remove the shake class after the animation is done so it can be re-triggered
+                    setTimeout(() => {
+                        cardContainer.classList.remove('shake');
+                    }, 820); // Duration matches CSS animation
+                }
+            }
+
+            function proceedToNext() {
+                currentCardIndex++;
+                if (currentCardIndex < cards.length) {
+                    // Start the flip-back animation first
+                    cardContainer.classList.remove('flipped');
+
+                    // Keep controls disabled during the flip-back
+                    answerInput.disabled = true;
+                    nextBtn.disabled = true;
+
+                    // Wait for the flip-back animation to finish before updating content
+                    setTimeout(() => {
+                        displayCard();
+                        // Re-enable controls for the new card
+                        answerInput.disabled = false;
+                        nextBtn.disabled = false;
+                        flipBtn.disabled = false;
+                        answerInput.focus();
+                    }, 600); // This duration MUST match the 'transform' transition in CSS
+                } else {
+                    endGame();
+                }
+            }
+
+            function endGame() {
+                const endTime = new Date().getTime();
+                const totalTime = Math.round((endTime - startTime) / 1000); // in seconds
+
+                totalTimeText.textContent = `${totalTime} seconds`;
+                showScreen(completionScreen);
+            }
+
+            // --- Start the app ---
+            init();
+        });
+    </script>
+</body>
+
+</html>
