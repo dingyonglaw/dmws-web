@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokéNum - Chinese Number Trainer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-image: radial-gradient(#4b5563 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #1f2937;
+        }
+        .pixel-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+        
+        /* Pokedex Screen Inner Shadow */
+        .pokedex-screen {
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        }
+
+        /* Glassmorphism lens effect */
+        .lens-reflection {
+            background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 50%);
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Custom Scrollbar for dropdown */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 text-gray-800">
+
+    <!-- Main Pokedex Container -->
+    <div class="w-full max-w-md bg-[#dd0b2d] rounded-3xl border-[6px] border-gray-900 shadow-[0_10px_30px_rgba(0,0,0,0.7)] relative overflow-hidden flex flex-col h-[85vh] max-h-[800px]">
+        
+        <!-- Pokedex Top Header -->
+        <div class="flex items-start p-4 border-b-[6px] border-gray-900 bg-[#c00a27] relative">
+            <div class="w-16 h-16 rounded-full border-4 border-gray-900 bg-[#e0e0e0] flex items-center justify-center shadow-lg relative z-10">
+                <div class="w-12 h-12 rounded-full bg-[#28aae2] border-2 border-gray-900 relative overflow-hidden">
+                    <div class="absolute top-1 left-1 w-4 h-4 rounded-full lens-reflection"></div>
+                </div>
+            </div>
+            <div class="flex ml-4 mt-1 gap-2 relative z-10">
+                <div class="w-4 h-4 rounded-full border-2 border-gray-900 bg-[#ff2c2c] shadow-inner"></div>
+                <div class="w-4 h-4 rounded-full border-2 border-gray-900 bg-[#fdd835] shadow-inner"></div>
+                <div class="w-4 h-4 rounded-full border-2 border-gray-900 bg-[#4caf50] shadow-inner"></div>
+            </div>
+            <!-- Diagonal cut styling -->
+            <div class="absolute bottom-[-6px] right-[-6px] w-3/5 h-8 border-t-[6px] border-l-[6px] border-gray-900 bg-[#dd0b2d] transform rotate-12 origin-bottom-right z-0"></div>
+        </div>
+
+        <!-- Main Screen Area -->
+        <div class="flex-1 p-5 flex flex-col relative z-20 bg-[#dd0b2d]">
+            
+            <!-- Screen Bezel -->
+            <div class="bg-[#dcdcdc] rounded-xl border-4 border-gray-900 p-4 flex-1 flex flex-col relative shadow-lg">
+                <div class="flex justify-center mb-2 gap-4">
+                    <div class="w-2 h-2 rounded-full bg-red-500 border border-gray-900"></div>
+                    <div class="w-2 h-2 rounded-full bg-red-500 border border-gray-900"></div>
+                </div>
+
+                <!-- Actual Screen -->
+                <div class="pokedex-screen border-[3px] border-gray-800 rounded-lg flex-1 flex flex-col relative overflow-hidden">
+                    
+                    <!-- 1. Setup Screen -->
+                    <div id="setup-screen" class="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white z-20 transition-opacity duration-300">
+                        <h1 class="pixel-font text-xl text-center text-blue-600 mb-6 leading-relaxed">Pokédex Number<br><span class="text-sm text-gray-600">Trainer</span></h1>
+                        
+                        <div class="w-full space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Select Level</label>
+                                <select id="level-select" class="w-full bg-gray-100 border-2 border-gray-300 rounded-lg p-3 font-bold text-gray-700 focus:outline-none focus:border-blue-500 transition-colors">
+                                    <option value="9">Level 1 (0 - 9)</option>
+                                    <option value="99">Level 2 (0 - 99)</option>
+                                    <option value="999">Level 3 (0 - 999)</option>
+                                    <option value="9999">Level 4 (0 - 9999)</option>
+                                    <option value="99999">Master (0 - 99999)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Questions per Game</label>
+                                <input type="number" id="question-count" value="10" min="1" max="50" class="w-full bg-gray-100 border-2 border-gray-300 rounded-lg p-3 font-bold text-gray-700 focus:outline-none focus:border-blue-500 transition-colors">
+                            </div>
+                            <button onclick="app.startGame()" class="w-full mt-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 border-2 border-yellow-600 rounded-lg p-4 font-black tracking-wide shadow-[0_4px_0_rgb(202,138,4)] active:shadow-[0_0px_0_rgb(202,138,4)] active:translate-y-1 transition-all uppercase pixel-font text-xs">
+                                Start Game
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Game Screen -->
+                    <div id="game-screen" class="absolute inset-0 flex flex-col p-4 bg-white z-10 hidden transition-opacity duration-300">
+                        <div class="flex justify-between items-center mb-4">
+                            <span id="progress-text" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Q: 1/10</span>
+                            <span id="score-text" class="text-xs font-bold text-green-500 uppercase tracking-wider">Score: 0</span>
+                        </div>
+                        
+                        <div class="flex-1 flex flex-col items-center justify-center mb-4">
+                            <div class="text-xs text-gray-400 mb-2 font-bold uppercase">Translate to Chinese</div>
+                            <div id="number-display" class="pixel-font text-4xl text-gray-800 tracking-widest bg-gray-100 py-6 w-full text-center rounded-xl border-2 border-dashed border-gray-300">
+                                0
+                            </div>
+                        </div>
+
+                        <div class="w-full relative group mb-2">
+                            <input type="text" id="answer-input" placeholder="Enter characters (e.g. 一百)" autocomplete="off" class="w-full bg-gray-50 border-2 border-gray-300 rounded-xl p-4 pr-12 text-lg font-bold text-center text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all placeholder-gray-400 shadow-inner">
+                            <button onclick="app.toggleDictation()" id="mic-btn" class="absolute right-3 top-3 p-2 bg-gray-200 hover:bg-red-100 text-gray-600 hover:text-red-500 rounded-lg transition-colors" title="Dictate Answer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="text-[10px] text-gray-400 text-center mb-4">Use Pinyin keyboard or tap mic to speak</p>
+
+                        <button onclick="app.checkAnswer()" class="w-full bg-blue-500 hover:bg-blue-600 text-white border-2 border-blue-700 rounded-xl p-4 font-black tracking-wide shadow-[0_4px_0_rgb(29,78,216)] active:shadow-[0_0px_0_rgb(29,78,216)] active:translate-y-1 transition-all uppercase pixel-font text-xs">
+                            Submit Answer
+                        </button>
+                    </div>
+
+                    <!-- 3. Feedback Overlay Screen -->
+                    <div id="feedback-screen" class="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white/95 backdrop-blur-sm z-30 hidden animate-pop">
+                        <img id="feedback-sprite" src="" alt="Pokemon Sprite" class="w-32 h-32 mb-4 object-contain filter drop-shadow-md">
+                        <h2 id="feedback-title" class="pixel-font text-xl mb-2 text-center">Correct!</h2>
+                        <p id="feedback-message" class="text-gray-600 text-center font-bold text-lg mb-8 h-16"></p>
+                        <button onclick="app.nextQuestion()" class="w-full bg-gray-800 hover:bg-gray-900 text-white rounded-xl p-4 font-black tracking-wide shadow-[0_4px_0_rgb(0,0,0)] active:shadow-[0_0px_0_rgb(0,0,0)] active:translate-y-1 transition-all uppercase pixel-font text-xs">
+                            Continue
+                        </button>
+                    </div>
+
+                    <!-- 4. End Game Screen -->
+                    <div id="end-screen" class="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white z-40 hidden transition-opacity duration-300">
+                        <h1 class="pixel-font text-2xl text-center text-gray-800 mb-2">Game Over!</h1>
+                        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pikachu" class="w-40 h-40 mb-2 drop-shadow-lg">
+                        <div class="text-center mb-8">
+                            <p class="text-sm font-bold text-gray-500 uppercase">Final Score</p>
+                            <p id="final-score" class="pixel-font text-4xl text-blue-500 mt-2">8/10</p>
+                        </div>
+                        <button onclick="app.resetGame()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-yellow-900 border-2 border-yellow-600 rounded-lg p-4 font-black tracking-wide shadow-[0_4px_0_rgb(202,138,4)] active:shadow-[0_0px_0_rgb(202,138,4)] active:translate-y-1 transition-all uppercase pixel-font text-xs">
+                            Play Again
+                        </button>
+                    </div>
+
+                </div>
+                
+                <!-- Bottom controls -->
+                <div class="flex justify-between items-center mt-3 px-2">
+                    <div class="w-16 h-4 rounded-full bg-gray-800"></div>
+                    <div class="flex gap-3">
+                        <div class="w-12 h-2 rounded-full bg-gray-800"></div>
+                        <div class="w-12 h-2 rounded-full bg-gray-800"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- D-Pad and Buttons (Decorative) -->
+            <!-- <div class="flex justify-between items-center mt-6 px-4">
+                <div class="relative w-20 h-20 bg-gray-900 rounded-full shadow-lg opacity-90 flex items-center justify-center">
+                   <div class="absolute w-6 h-16 bg-gray-800 rounded-md"></div>
+                   <div class="absolute w-16 h-6 bg-gray-800 rounded-md"></div>
+                   <div class="absolute w-4 h-4 bg-gray-700 rounded-full"></div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-12 h-12 rounded-full bg-gray-900 shadow-lg flex items-center justify-center opacity-90">
+                        <div class="w-10 h-10 rounded-full bg-[#1e1e1e] shadow-inner"></div>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-gray-900 shadow-lg flex items-center justify-center opacity-90 mt-6">
+                        <div class="w-10 h-10 rounded-full bg-[#1e1e1e] shadow-inner"></div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            state: {
+                maxNumber: 9,
+                totalQuestions: 10,
+                currentQuestion: 1,
+                score: 0,
+                currentNumber: 0,
+                expectedAnswer: '',
+                isDictating: false
+            },
+            
+            elements: {
+                setupScreen: document.getElementById('setup-screen'),
+                gameScreen: document.getElementById('game-screen'),
+                feedbackScreen: document.getElementById('feedback-screen'),
+                endScreen: document.getElementById('end-screen'),
+                levelSelect: document.getElementById('level-select'),
+                questionCount: document.getElementById('question-count'),
+                progressText: document.getElementById('progress-text'),
+                scoreText: document.getElementById('score-text'),
+                numberDisplay: document.getElementById('number-display'),
+                answerInput: document.getElementById('answer-input'),
+                feedbackSprite: document.getElementById('feedback-sprite'),
+                feedbackTitle: document.getElementById('feedback-title'),
+                feedbackMessage: document.getElementById('feedback-message'),
+                finalScore: document.getElementById('final-score'),
+                micBtn: document.getElementById('mic-btn')
+            },
+
+            sprites: {
+                happy: [25, 1, 4, 7, 133, 175, 151], // Pikachu, Bulbasaur, Charmander, Squirtle, Eevee, Togepi, Mew
+                sad: [54, 79, 143, 94, 202, 129] // Psyduck, Slowpoke, Snorlax, Gengar, Wobbuffet, Magikarp
+            },
+
+            recognition: null,
+
+            init() {
+                // Setup Speech Recognition
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (SpeechRecognition) {
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.lang = 'zh-CN';
+                    this.recognition.interimResults = false;
+                    this.recognition.maxAlternatives = 1;
+
+                    this.recognition.onstart = () => {
+                        this.state.isDictating = true;
+                        this.elements.micBtn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
+                        this.elements.answerInput.placeholder = "Listening...";
+                    };
+
+                    this.recognition.onresult = (event) => {
+                        let transcript = event.results[0][0].transcript;
+                        // Clean punctuation
+                        transcript = transcript.replace(/[.,!?。，！？]/g, '').trim();
+                        // Handle case where speech-to-text returns digits instead of characters
+                        transcript = this.convertDigitsToChineseIfNecessary(transcript);
+                        this.elements.answerInput.value = transcript;
+                        this.stopDictation();
+                    };
+
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error', event.error);
+                        this.stopDictation();
+                    };
+
+                    this.recognition.onend = () => {
+                        this.stopDictation();
+                    };
+                } else {
+                    this.elements.micBtn.style.display = 'none'; // Hide if not supported
+                }
+
+                // Setup Enter key to submit
+                this.elements.answerInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkAnswer();
+                });
+            },
+
+            startGame() {
+                this.state.maxNumber = parseInt(this.elements.levelSelect.value);
+                this.state.totalQuestions = parseInt(this.elements.questionCount.value) || 10;
+                this.state.currentQuestion = 1;
+                this.state.score = 0;
+                
+                this.elements.setupScreen.classList.add('hidden');
+                this.elements.gameScreen.classList.remove('hidden');
+                this.generateQuestion();
+            },
+
+            generateQuestion() {
+                this.updateHUD();
+                this.elements.answerInput.value = '';
+                this.elements.answerInput.focus();
+
+                // Generate random number based on maxNumber
+                this.state.currentNumber = Math.floor(Math.random() * (this.state.maxNumber + 1));
+                this.state.expectedAnswer = this.numberToChinese(this.state.currentNumber);
+                
+                this.elements.numberDisplay.innerText = this.state.currentNumber;
+                
+                // Reset styling
+                this.elements.answerInput.classList.remove('border-red-500', 'border-green-500');
+            },
+
+            checkAnswer() {
+                if (this.elements.feedbackScreen.classList.contains('hidden') === false) return; // Prevent double click
+                
+                let userInput = this.elements.answerInput.value.trim();
+                if (!userInput) return;
+
+                // Normalize user input (e.g., allow 两 for 二 in some cases)
+                let normalizedInput = userInput.replace(/两/g, '二');
+                
+                let isCorrect = (normalizedInput === this.state.expectedAnswer);
+
+                if (isCorrect) {
+                    this.state.score++;
+                    this.showFeedback(true);
+                } else {
+                    this.showFeedback(false, this.state.expectedAnswer);
+                }
+            },
+
+            showFeedback(isCorrect, correctAnswer = '') {
+                this.elements.feedbackScreen.classList.remove('hidden');
+                
+                const spriteArray = isCorrect ? this.sprites.happy : this.sprites.sad;
+                const randomId = spriteArray[Math.floor(Math.random() * spriteArray.length)];
+                this.elements.feedbackSprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${randomId}.png`;
+
+                if (isCorrect) {
+                    this.elements.feedbackTitle.innerText = "Super Effective!";
+                    this.elements.feedbackTitle.className = "pixel-font text-xl mb-2 text-center text-green-500";
+                    this.elements.feedbackMessage.innerText = "You got it right!";
+                } else {
+                    this.elements.feedbackTitle.innerText = "It Missed!";
+                    this.elements.feedbackTitle.className = "pixel-font text-xl mb-2 text-center text-red-500";
+                    this.elements.feedbackMessage.innerHTML = `The correct answer is:<br><span class="text-2xl text-blue-600 mt-2 block">${correctAnswer}</span>`;
+                    
+                    // Shake effect on the input box
+                    this.elements.gameScreen.classList.add('animate-shake');
+                    setTimeout(() => this.elements.gameScreen.classList.remove('animate-shake'), 400);
+                }
+            },
+
+            nextQuestion() {
+                this.elements.feedbackScreen.classList.add('hidden');
+                
+                if (this.state.currentQuestion < this.state.totalQuestions) {
+                    this.state.currentQuestion++;
+                    this.generateQuestion();
+                } else {
+                    this.endGame();
+                }
+            },
+
+            endGame() {
+                this.elements.gameScreen.classList.add('hidden');
+                this.elements.endScreen.classList.remove('hidden');
+                this.elements.finalScore.innerText = `${this.state.score}/${this.state.totalQuestions}`;
+            },
+
+            resetGame() {
+                this.elements.endScreen.classList.add('hidden');
+                this.elements.setupScreen.classList.remove('hidden');
+            },
+
+            updateHUD() {
+                this.elements.progressText.innerText = `Q: ${this.state.currentQuestion}/${this.state.totalQuestions}`;
+                this.elements.scoreText.innerText = `Score: ${this.state.score}`;
+            },
+
+            toggleDictation() {
+                if (!this.recognition) return alert('Speech recognition is not supported in this browser.');
+                
+                if (this.state.isDictating) {
+                    this.recognition.stop();
+                } else {
+                    this.recognition.start();
+                }
+            },
+
+            stopDictation() {
+                this.state.isDictating = false;
+                this.elements.micBtn.classList.remove('bg-red-500', 'text-white', 'animate-pulse');
+                this.elements.answerInput.placeholder = "Enter characters (e.g. 一百)";
+            },
+
+            // Standard conversion logic for Number to Chinese
+            numberToChinese(num) {
+                if (num === 0) return '零';
+                
+                const digits = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+                const units = ['', '十', '百', '千', '万'];
+                let str = num.toString();
+                let res = '';
+                let zeroFlag = false;
+
+                for (let i = 0; i < str.length; i++) {
+                    let n = parseInt(str[i]);
+                    let pos = str.length - 1 - i;
+
+                    if (n === 0) {
+                        zeroFlag = true;
+                    } else {
+                        if (zeroFlag) {
+                            res += digits[0];
+                            zeroFlag = false;
+                        }
+                        // Special handling for leading 10-19 to output "十五" instead of "一十五"
+                        if (n === 1 && pos === 1 && str.length === 2 && i === 0) {
+                            res += units[pos];
+                        } else {
+                            res += digits[n] + units[pos];
+                        }
+                    }
+                }
+                return res;
+            },
+
+            // If Speech-to-Text outputs "123" instead of "一百二十三", convert it to characters
+            convertDigitsToChineseIfNecessary(text) {
+                if (/^\d+$/.test(text)) {
+                    return this.numberToChinese(parseInt(text));
+                }
+                return text;
+            }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
