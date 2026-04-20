@@ -900,7 +900,7 @@
                     </div>
                     <div class="pulse-marker" style="position-anchor:--cobe-kk; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-kk,0); --pulse-delay:0.5s;">
                         <div class="pulse-dot"></div>
-                        <div class="pulse-label">⛰️ Sabah KK · Borneo 🇲🇾</div>
+                        <div class="pulse-label">⛰️ Kota KK · Borneo 🇲🇾</div>
                     </div>
                     <div class="pulse-marker" style="position-anchor:--cobe-hangzhou; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-hangzhou,0); --pulse-delay:0.8s;">
                         <div class="pulse-dot"></div>
@@ -928,7 +928,7 @@
                     <div class="footprint-overlay">
                         <h2 class="footprint-overlay-title">Our Footprints</h2>
                         <ul class="footprint-list">
-                            <li>🏠 Klang Valley, Malaysia <em>(Homebase)</em></li>
+                            <li>🏠 Selangor - KL, Malaysia <em>(Homebase)</em></li>
                             <li>The Beach School, Port Dickson</li>
                             <li>❄️ Hokkaido 北海道, Japan</li>
                             <li>🌞 Perth, Australia</li>
@@ -954,20 +954,38 @@
         <div id="stars-container"></div>
     </section>
 
-    <!-- ─── COBE v2 ────────────────────────────────────────────────────────── -->
+    <!-- ─── COBE v2 (draggable) ──────────────────────────────────────────── -->
     <script type="module">
         import createGlobe from 'https://esm.sh/cobe'
 
-        const canvas = document.getElementById('cobe')
+        const canvas  = document.getElementById('cobe')
+        const wrapper = document.getElementById('globe-wrapper')
 
-        // Markers with ids so cobe v2 sets --cobe-{id} CSS anchor names
-        // and --cobe-visible-{id} visibility vars on the canvas element.
+        // ── State ────────────────────────────────────────────────────────────
+        let phi        = 0        // horizontal rotation
+        let theta      = 0.25     // vertical tilt
+        let animId
+
+        // Drag tracking
+        let pointerDown  = false
+        let lastX        = 0
+        let lastY        = 0
+        let velocityX    = 0      // momentum carry-over
+        let velocityY    = 0
+        let autoRotate   = true   // pauses while dragging
+
+        const DRAG_SENSITIVITY = 0.005   // radians per pixel
+        const THETA_LIMIT      = 0.6     // max vertical tilt (radians)
+        const AUTO_RESUME_MS   = 1200    // ms after release before auto-spin resumes
+        let   resumeTimer      = null
+
+        // ── Globe init ───────────────────────────────────────────────────────
         const globe = createGlobe(canvas, {
             devicePixelRatio: 2,
             width:  1000,
             height: 1000,
-            phi:    0,
-            theta:  0.25,
+            phi,
+            theta,
             dark:   1.1,
             diffuse: 3,
             mapSamples: 16000,
@@ -980,32 +998,92 @@
             scale:   1,
             offset:  [0, 0],
             markers: [
-                { location: [3.1390,   101.6869], size: 0.10, id: 'kl'       }, // Kuala Lumpur
-                { location: [43.1528,  141.8807], size: 0.09, id: 'hokkaido' }, // Hokkaido
-                { location: [-41.9296, 146.5202], size: 0.08, id: 'tasmania' }, // Tasmania
-                { location: [-37.8168, 144.9540], size: 0.08, id: 'melb'     }, // Melbourne
-                { location: [-31.9535, 115.8640], size: 0.08, id: 'perth'    }, // Perth
-                { location: [6.0755,   116.5588], size: 0.09, id: 'kk'       }, // Kota Kinabalu
-                { location: [30.2697,  120.1635], size: 0.08, id: 'hangzhou' }, // HangZhou
-                { location: [31.4880,  120.3098], size: 0.07, id: 'wuxi'     }, // WuXi
-                { location: [25.0330,  121.5654], size: 0.08, id: 'taipei'   }, // Taipei
-                { location: [26.2124,  127.6809], size: 0.10, id: 'okinawa'  }, // Okinawa ✨
-                { location: [34.6937,  135.5023], size: 0.08, id: 'osaka'    }, // Osaka
+                { location: [3.1390,   101.6869], size: 0.10, id: 'kl'       },
+                { location: [43.1528,  141.8807], size: 0.09, id: 'hokkaido' },
+                { location: [-41.9296, 146.5202], size: 0.08, id: 'tasmania' },
+                { location: [-37.8168, 144.9540], size: 0.08, id: 'melb'     },
+                { location: [-31.9535, 115.8640], size: 0.08, id: 'perth'    },
+                { location: [6.0755,   116.5588], size: 0.09, id: 'kk'       },
+                { location: [30.2697,  120.1635], size: 0.08, id: 'hangzhou' },
+                { location: [31.4880,  120.3098], size: 0.07, id: 'wuxi'     },
+                { location: [25.0330,  121.5654], size: 0.08, id: 'taipei'   },
+                { location: [26.2124,  127.6809], size: 0.10, id: 'okinawa'  },
+                { location: [34.6937,  135.5023], size: 0.08, id: 'osaka'    },
             ],
         })
 
-        // cobe v2: drive rotation via requestAnimationFrame + globe.update()
-        let phi = 0
-        let animId
-
+        // ── Animation loop ───────────────────────────────────────────────────
         function animate() {
-            phi += 0.003
-            globe.update({ phi })
+            if (autoRotate) {
+                phi += 0.003
+            } else {
+                // Apply momentum with damping after drag release
+                phi   += velocityX
+                theta += velocityY
+                theta  = Math.max(-THETA_LIMIT, Math.min(THETA_LIMIT, theta))
+                velocityX *= 0.92
+                velocityY *= 0.92
+            }
+            globe.update({ phi, theta })
             animId = requestAnimationFrame(animate)
         }
         animate()
 
-        // Clean up if the section is ever removed
+        // ── Cursor feedback ──────────────────────────────────────────────────
+        canvas.style.cursor = 'grab'
+
+        // ── Pointer helpers (works for mouse AND touch via pointer events) ───
+        function onPointerDown(e) {
+            pointerDown  = true
+            autoRotate   = false
+            lastX        = e.clientX ?? e.touches?.[0]?.clientX
+            lastY        = e.clientY ?? e.touches?.[0]?.clientY
+            velocityX    = 0
+            velocityY    = 0
+            canvas.style.cursor = 'grabbing'
+            clearTimeout(resumeTimer)
+            e.preventDefault()
+        }
+
+        function onPointerMove(e) {
+            if (!pointerDown) return
+            const x = e.clientX ?? e.touches?.[0]?.clientX
+            const y = e.clientY ?? e.touches?.[0]?.clientY
+            const dx = x - lastX
+            const dy = y - lastY
+            phi   += dx * DRAG_SENSITIVITY
+            theta -= dy * DRAG_SENSITIVITY
+            theta  = Math.max(-THETA_LIMIT, Math.min(THETA_LIMIT, theta))
+            velocityX = dx * DRAG_SENSITIVITY
+            velocityY = -dy * DRAG_SENSITIVITY
+            lastX = x
+            lastY = y
+            e.preventDefault()
+        }
+
+        function onPointerUp() {
+            if (!pointerDown) return
+            pointerDown = false
+            canvas.style.cursor = 'grab'
+            // Resume auto-rotation after idle period
+            resumeTimer = setTimeout(() => {
+                autoRotate = true
+                velocityX  = 0
+                velocityY  = 0
+            }, AUTO_RESUME_MS)
+        }
+
+        // Mouse events
+        canvas.addEventListener('mousedown',  onPointerDown, { passive: false })
+        window.addEventListener('mousemove',  onPointerMove, { passive: false })
+        window.addEventListener('mouseup',    onPointerUp)
+
+        // Touch events (mobile)
+        canvas.addEventListener('touchstart', onPointerDown, { passive: false })
+        window.addEventListener('touchmove',  onPointerMove, { passive: false })
+        window.addEventListener('touchend',   onPointerUp)
+
+        // ── Cleanup ──────────────────────────────────────────────────────────
         window.addEventListener('beforeunload', () => {
             cancelAnimationFrame(animId)
             globe.destroy()
