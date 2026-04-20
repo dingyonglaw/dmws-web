@@ -15,10 +15,6 @@
     <!-- Custom CSS -->
     <style>
         body {
-            /* font-family: 'Arial', sans-serif; */
-            /* font-family: "Coming Soon", cursive;
-            font-weight: 400;
-            font-style: normal; */
             overflow-x: hidden;
         }
 
@@ -66,9 +62,7 @@
         }
 
         .explore-btn {
-            /* background-color: #f5f5dc; */
             background-color: #1a5276;
-            /* color: #1a5276; */
             color: #f5f5dc;
             font-weight: bold;
             padding: 0.75rem 2rem;
@@ -80,7 +74,6 @@
 
         .explore-btn:hover {
             background-color: #0C2340;
-            /* background-color: #eaeacb; */
             transform: scale(1.05);
         }
 
@@ -215,7 +208,6 @@
         }
 
         .book-item {
-            /* text-align: center; */
             margin-bottom: 2rem;
             transition: transform 0.3s;
         }
@@ -294,7 +286,6 @@
         /* Game Arcade Section */
         .game-arcade-section {
             background-color: #0C2340;
-            /* Dark blue background */
             padding: 4rem 0;
             position: relative;
             overflow: hidden;
@@ -302,7 +293,6 @@
 
         .game-arcade-section .section-title {
             font-family: 'Press Start 2P', cursive;
-            /* Pixel font */
             color: #fdf5e1;
             font-size: 2rem;
             margin-bottom: 4rem;
@@ -383,6 +373,170 @@
             border-bottom-width: 6px;
         }
 
+        /* ─── COBE v2 Globe + Pulse ─── */
+
+        /* Full-bleed globe section layout */
+        .footprint-section {
+            position: relative;
+        }
+
+        /* The globe fills the right side; the list overlays on the left */
+        .footprint-inner {
+            position: relative;
+            width: 100%;
+        }
+
+        .globe-wrapper {
+            /* Square canvas — fixes the oval distortion */
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        #cobe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Pulse markers anchored to globe markers */
+        .pulse-marker {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: opacity 0.4s ease;
+        }
+
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--pulse-color, #fb6415);
+            box-shadow: 0 0 0 0 var(--pulse-color, #fb6415);
+            animation: pulse-ring 2s infinite;
+            animation-delay: var(--pulse-delay, 0s);
+        }
+
+        /* Special highlight colour for next destination */
+        .pulse-marker.highlight .pulse-dot {
+            --pulse-color: #f1c40f;
+        }
+
+        @keyframes pulse-ring {
+            0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251,100,21, 0.8); }
+            70%  { transform: scale(1);    box-shadow: 0 0 0 10px rgba(251,100,21, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251,100,21, 0); }
+        }
+
+        .pulse-marker.highlight .pulse-dot {
+            animation-name: pulse-ring-yellow;
+        }
+
+        @keyframes pulse-ring-yellow {
+            0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(241,196,15, 0.9); }
+            70%  { transform: scale(1);    box-shadow: 0 0 0 12px rgba(241,196,15, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(241,196,15, 0); }
+        }
+
+        .pulse-label {
+            background: rgba(0, 0, 0, 0.72);
+            color: #fff;
+            font-family: "Coming Soon", cursive;
+            font-size: 0.6rem;
+            font-weight: bold;
+            white-space: nowrap;
+            padding: 2px 6px;
+            border-radius: 4px;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .pulse-marker.highlight .pulse-label {
+            background: rgba(241,196,15, 0.92);
+            color: #000;
+        }
+
+        /* ── Footprint list overlay ── */
+        .footprint-overlay {
+            position: absolute;
+            top: 50%;
+            left: -15%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem;
+            max-width: 260px;
+            max-height: 90%;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.2) transparent;
+        }
+
+        .footprint-overlay-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #f5f5dc;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 0.5rem;
+        }
+
+        .footprint-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footprint-list li {
+            color: #ddd;
+            font-size: 0.78rem;
+            padding: 0.22rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            line-height: 1.4;
+        }
+
+        .footprint-list li:last-child {
+            border-bottom: none;
+        }
+
+        .footprint-list em {
+            font-style: normal;
+            color: #aaa;
+            font-size: 0.72rem;
+        }
+
+        @media (max-width: 768px) {
+            .footprint-overlay {
+                top: auto;
+                bottom: 8px;
+                left: 50%;
+                transform: translateX(-50%);
+                max-width: 90vw;
+                max-height: 35%;
+                padding: 0.8rem 1rem;
+            }
+
+            .footprint-overlay-title {
+                font-size: 0.9rem;
+            }
+
+            .footprint-list li {
+                font-size: 0.7rem;
+            }
+        }
+
         /* Media Queries */
         @media (max-width: 768px) {
             .school-title {
@@ -421,6 +575,19 @@
 
             .game-arcade-section .section-title {
                 font-size: 1.5rem;
+            }
+
+            .globe-wrapper {
+                max-width: 100%;
+            }
+
+            .pulse-dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .pulse-label {
+                font-size: 0.5rem;
             }
         }
 
@@ -524,9 +691,9 @@
                             Song!
                             🎤
                             <br><br>
-                            This song is so fun, it’ll make your goldfish dance and your grandma do the floss. It’s all
-                            about those epic Pop Quizzes in every book—y’know, the ones that are “easy peasy” but
-                            sneakily make you feel like a superhero when you nail ‘em! 💪
+                            This song is so fun, it'll make your goldfish dance and your grandma do the floss. It's all
+                            about those epic Pop Quizzes in every book—y'know, the ones that are "easy peasy" but
+                            sneakily make you feel like a superhero when you nail 'em! 💪
                             <br><br>
                             ⚠️⚠️⚠️ Warning: Singing this in public may cause spontaneous dance parties and jealous
                             stares from
@@ -554,19 +721,19 @@
                             the internet where learning meets games party! 🕹️
                             <br><br>
                             It all started when daddy whipped up a Minecraft Preposition Adventure to make
-                            learning prepositions less “ugh” and more “YEAH!”. Ee Jin loved it so much she said,
-                            “Dad, let’s make a another one with Pokemon. Quagsire stolen Ash GS ball ...”
+                            learning prepositions less "ugh" and more "YEAH!". Ee Jin loved it so much she said,
+                            "Dad, let's make a another one with Pokemon. Quagsire stolen Ash GS ball ..."
                             So, we teamed up, and BOOM—Pokémon Preposition Battle was
                             born! 🔥
                             <br><br>
-                            Now, we’re hooked! We want to crank out more games that make
+                            Now, we're hooked! We want to crank out more games that make
                             learning sneakily fun. Dive into the <a class="explore-btn-arcade">DMIS Arcade</a>, try out
                             our games, and let us know which
                             one makes you
                             snort-laugh the loudest.
                             <br><br>
-                            ⚠️⚠️⚠️ Warning: 🎙️ Turn up the volume for maximum hilarity! (to enjoy Ee Jin’s sound
-                            effects, her “PEW PEW!” and “ZAP!” are so epic!)
+                            ⚠️⚠️⚠️ Warning: 🎙️ Turn up the volume for maximum hilarity! (to enjoy Ee Jin's sound
+                            effects, her "PEW PEW!" and "ZAP!" are so epic!)
                             <br><br>
                             High scores & happy vibes,
                             <br>
@@ -701,78 +868,147 @@
         </div>
     </section>
 
+    <!-- ─── FOOTPRINTS SECTION ─────────────────────────────────────────────── -->
     <section class="footprint-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2 class="title">Our Footprints</h2>
-                    <ul style="color: #eee">
-                        <li>Selangor - Kuala Lumpur, Malaysia (Homebase)</li>
-                        <li>The Beach School, Port Dickson, Malaysia</li>
-                        <li>Hokkaido 北海道, Japan</li>
-                        <li>Perth, Australia</li>
-                        <li>Tasmania, Australia</li>
-                        <li>Melbourne, Australia</li>
-                        <li>Kota Kinabalu, Borneo, Malaysia</li>
-                        <li>Mt. Kinabalu Kundasang, Borneo, Malaysia</li>
-                        <li>Kudat, Borneo, Malaysia</li>
-                        <li>Sandakan, Borneo, Malaysia</li>
-                        <li>HangZhou 杭州, Zhejiang, China</li>
-                        <li>ChangZhou 长州, Jiangsu, China</li>
-                        <li>Wuxi 无锡, Jiangsu, China</li>
-                        <li>Wuzhen 乌镇, Zhejiang, China</li>
-                        <li>Taipei 台北, Taiwan</li>
-                        <li>Okinawa, Kyushu, Japan</li>
-                        <li>Osaka, Kansai, Japan</li>
-                        <li>Nara, Kansai, Japan</li>
-                        <li> ... </li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <canvas id="cobe" style="width: 100%; height: 500px" width="1000" height="1000"></canvas>
-                </div>
-            </div>
-            <div id="stars-container"></div>
+        <div class="container-fluid px-0">
+            <div class="footprint-inner">
+
+                <!-- Globe fills full width -->
+                <div class="globe-wrapper" id="globe-wrapper">
+                    <canvas id="cobe" width="1000" height="1000"></canvas>
+
+                    <!-- ── Pulse markers ── one per location ──────────────── -->
+                    <div class="pulse-marker" style="position-anchor:--cobe-kl; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-kl,0); --pulse-delay:0s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🏠 KL · Homebase 🇲🇾</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-hokkaido; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-hokkaido,0); --pulse-delay:0.3s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">❄️ Hokkaido 🇯🇵</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-tasmania; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-tasmania,0); --pulse-delay:0.6s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🦘 Tasmania 🇦🇺</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-melb; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-melb,0); --pulse-delay:0.9s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🎭 Melbourne 🇦🇺</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-perth; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-perth,0); --pulse-delay:0.2s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🌞 Perth 🇦🇺</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-kk; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-kk,0); --pulse-delay:0.5s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">⛰️ Sabah KK · Borneo 🇲🇾</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-hangzhou; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-hangzhou,0); --pulse-delay:0.8s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🍵 HangZhou 🇨🇳</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-wuxi; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-wuxi,0); --pulse-delay:0.1s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🌉 Wuxi 🇨🇳</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-taipei; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-taipei,0); --pulse-delay:0.4s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🧋 Taipei 🇹🇼</div>
+                    </div>
+                    <!-- Okinawa — next destination, glows yellow ✨ -->
+                    <div class="pulse-marker highlight" style="position-anchor:--cobe-okinawa; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-okinawa,0); --pulse-delay:0s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🏝️ Okinawa 🇯🇵</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-osaka; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-osaka,0); --pulse-delay:0.7s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🍜 Osaka & Nara 🇯🇵</div>
+                    </div>
+
+                    <!-- ── Footprint list overlaid on the left ────────────── -->
+                    <div class="footprint-overlay">
+                        <h2 class="footprint-overlay-title">Our Footprints</h2>
+                        <ul class="footprint-list">
+                            <li>🏠 Klang Valley, Malaysia <em>(Homebase)</em></li>
+                            <li>The Beach School, Port Dickson</li>
+                            <li>❄️ Hokkaido 北海道, Japan</li>
+                            <li>🌞 Perth, Australia</li>
+                            <li>🦘 Tasmania, Australia</li>
+                            <li>🎭 Melbourne, Australia</li>
+                            <li>⛰️ Kota Kinabalu, Borneo</li>
+                            <li>Mt. Kinabalu Kundasang, Borneo</li>
+                            <li>Kudat &amp; Sandakan, Borneo</li>
+                            <li>🍵 HangZhou 杭州, China</li>
+                            <li>ChangZhou 长州, China</li>
+                            <li>🌉 Wuxi 无锡 &amp; Wuzhen 乌镇</li>
+                            <li>🧋 Taipei 台北, Taiwan</li>
+                            <li>🏝️ Okinawa, Japan</li>
+                            <li>🍜 Osaka &amp; Nara, Japan</li>
+                            <li style="opacity:0.5">... and more to come!</li>
+                        </ul>
+                    </div>
+
+                </div><!-- /.globe-wrapper -->
+
+            </div><!-- /.footprint-inner -->
         </div>
+        <div id="stars-container"></div>
     </section>
 
+    <!-- ─── COBE v2 ────────────────────────────────────────────────────────── -->
     <script type="module">
-        import createGlobe from 'https://cdn.skypack.dev/cobe'
+        import createGlobe from 'https://esm.sh/cobe'
 
-        let phi = 0
-        let canvas = document.getElementById("cobe")
+        const canvas = document.getElementById('cobe')
 
+        // Markers with ids so cobe v2 sets --cobe-{id} CSS anchor names
+        // and --cobe-visible-{id} visibility vars on the canvas element.
         const globe = createGlobe(canvas, {
             devicePixelRatio: 2,
-            width: 1000,
+            width:  1000,
             height: 1000,
-            phi: 0,
-            theta: 0,
-            dark: 1.1,
+            phi:    0,
+            theta:  0.25,
+            dark:   1.1,
             diffuse: 3,
             mapSamples: 16000,
             mapBrightness: 1.8,
             mapBaseBrightness: 0.05,
-            baseColor: [1.1, 1.1, 1.1],
+            baseColor:   [1.1, 1.1, 1.1],
             markerColor: [251 / 255, 100 / 255, 21 / 255],
-            glowColor: [1.1, 1.1, 1.1],
+            glowColor:   [1.1, 1.1, 1.1],
             opacity: 0.7,
-            scale: 1,
-            offset: [0, 0],
+            scale:   1,
+            offset:  [0, 0],
             markers: [
-                { location: [3.1390, 101.6869], size: 0.1 },    // Kuala Lumpur, Malaysia
-                { location: [43.15275277524453, 141.88074069132827], size: 0.1 },    // Hokkaido
-                { location: [-41.92959139698113, 146.52022428771951], size: 0.1 },  // Tasmania
-                { location: [-37.81683595808933, 144.9540326048453], size: 0.1 },  // Melb
-                { location: [-31.95345260814669, 115.8639705067741], size: 0.1 },  // Perth
-                { location: [6.075483599951648, 116.55882362905255], size: 0.1 },  // Mt KK
-                { location: [30.26970168442154, 120.16353638039054], size: 0.1 },  // HangZhou
-                { location: [31.487952172027136, 120.30980049575389], size: 0.1 },  // WuXi
+                { location: [3.1390,   101.6869], size: 0.10, id: 'kl'       }, // Kuala Lumpur
+                { location: [43.1528,  141.8807], size: 0.09, id: 'hokkaido' }, // Hokkaido
+                { location: [-41.9296, 146.5202], size: 0.08, id: 'tasmania' }, // Tasmania
+                { location: [-37.8168, 144.9540], size: 0.08, id: 'melb'     }, // Melbourne
+                { location: [-31.9535, 115.8640], size: 0.08, id: 'perth'    }, // Perth
+                { location: [6.0755,   116.5588], size: 0.09, id: 'kk'       }, // Kota Kinabalu
+                { location: [30.2697,  120.1635], size: 0.08, id: 'hangzhou' }, // HangZhou
+                { location: [31.4880,  120.3098], size: 0.07, id: 'wuxi'     }, // WuXi
+                { location: [25.0330,  121.5654], size: 0.08, id: 'taipei'   }, // Taipei
+                { location: [26.2124,  127.6809], size: 0.10, id: 'okinawa'  }, // Okinawa ✨
+                { location: [34.6937,  135.5023], size: 0.08, id: 'osaka'    }, // Osaka
             ],
-            onRender: (state) => {
-                state.phi = phi
-                phi += 0.003
-            },
+        })
+
+        // cobe v2: drive rotation via requestAnimationFrame + globe.update()
+        let phi = 0
+        let animId
+
+        function animate() {
+            phi += 0.003
+            globe.update({ phi })
+            animId = requestAnimationFrame(animate)
+        }
+        animate()
+
+        // Clean up if the section is ever removed
+        window.addEventListener('beforeunload', () => {
+            cancelAnimationFrame(animId)
+            globe.destroy()
         })
     </script>
 
@@ -787,7 +1023,7 @@
         const bookSeries = [
             {
                 seriesName: "Charlie The Rainbow Dragon Series",
-                seriesDecription: "Inspired by Dav Pilkey’s Cat Kid Comic Club, young author Ee Jin created Charlie the Rainbow Dragon (Book 1) at the age of 7. The book won the Best Extra Features award at the EHM Short Story Competition 2024. Ee Jin continues to expand Charlie’s colorful universe with engaging stories for young readers.",
+                seriesDecription: "Inspired by Dav Pilkey's Cat Kid Comic Club, young author Ee Jin created Charlie the Rainbow Dragon (Book 1) at the age of 7. The book won the Best Extra Features award at the EHM Short Story Competition 2024. Ee Jin continues to expand Charlie's colorful universe with engaging stories for young readers.",
                 listIcon: "./img/charlie_animation_256.png",
                 books: [
                     { title: "Charlie The Rainbow Dragon", filename: "book1_charlie_the_rainbow_dragon_compressed", createdAt: "Sometime in November 2024" },
@@ -810,15 +1046,6 @@
                     { title: "Book 4: The Attack of the Titan and Titanic Pokemon", filename: "charlie_special_pokemon_4", createdAt: "July 27, 2025" },
                 ]
             },
-            // {
-            //     seriesName: "The Blocky Adventure of Thorik Series",
-            //     books: [
-            //         { title: "Thorik's First Quest", filename: "thorik_first_quest" },
-            //         { title: "Thorik and the Lost Mine", filename: "thorik_lost_mine" },
-            //         { title: "Thorik's Sky Adventure", filename: "thorik_sky_adventure" },
-            //         { title: "Thorik and the End Portal", filename: "thorik_end_portal" }
-            //     ]
-            // },
             {
                 seriesName: "The Stellar Adventures of Rosalina Series",
                 seriesDecription: "A Charming Original Side Story Series by Young Author - Ee Jin. Where imagination knows no bounds and friendship crosses all worlds",
@@ -842,16 +1069,11 @@
             }
         ];
 
-        // Function to populate books
         function populateBooks() {
             const booksContainer = document.getElementById('books-container');
-
-            // Clear existing content
             booksContainer.innerHTML = '';
 
-            // For each series
             bookSeries.forEach(series => {
-                // Create series header
                 const seriesHeader = document.createElement('h4');
                 seriesHeader.className = 'series-title';
                 seriesHeader.textContent = series.seriesName;
@@ -866,25 +1088,19 @@
                     const listItem = document.createElement('div');
                     listItem.className = 'd-flex book-item';
 
-                    console.log(series.listIcon);
-
                     const listItemImageContainer = document.createElement('div');
                     listItemImageContainer.className = 'flex-shrink-0';
                     const listItemImage = document.createElement('img');
-                    // listItemImage.src = 'https://minecraft.wiki/images/Enchanted_Book.gif?b21c4';
                     listItemImage.src = series.listIcon ? series.listIcon : '/img/minecraft_book.webp';
                     listItemImage.style.width = '52px';
                     listItemImage.style.height = '52px';
                     listItemImageContainer.appendChild(listItemImage);
 
-
                     const listItemBody = document.createElement('div');
                     listItemBody.className = 'flex-grow-1 ms-3';
 
-
                     const listItemLink = document.createElement('a');
                     listItemLink.href = `books.html?book=${book.filename}`;
-
 
                     const listItemTitle = document.createElement('h5');
                     listItemTitle.className = 'mt-0 mb-1 book-title';
@@ -896,92 +1112,40 @@
 
                     listItemLink.appendChild(listItemTitle);
                     listItemLink.appendChild(bookDate);
-
                     listItemBody.appendChild(listItemLink);
                     listItem.appendChild(listItemImageContainer);
                     listItem.appendChild(listItemBody);
-
                     booksContainer.appendChild(listItem);
                 });
             });
         }
 
         $(document).ready(function () {
-            // Populate books when the page loads
             populateBooks();
 
-            // Create stars for the header background
-            // createStars();
-
-            // Smooth scrolling for internal links
             $('a[href^="#"]').on('click', function (e) {
                 e.preventDefault();
-
                 $('html, body').animate({
                     scrollTop: $($(this).attr('href')).offset().top
                 }, 500, 'linear');
             });
 
-            // Animation for explore button
             $('.explore-btn').hover(
-                function () {
-                    $(this).css('transform', 'scale(1.05)');
-                },
-                function () {
-                    $(this).css('transform', 'scale(1)');
-                }
+                function () { $(this).css('transform', 'scale(1.05)'); },
+                function () { $(this).css('transform', 'scale(1)'); }
             );
 
-            // Function to create stars
-            function createStars() {
-                const starsContainer = $('#stars-container');
-                const headerHeight = $('.header').height();
-                const headerWidth = $('.header').width();
-
-                // Create 50 stars with random positions
-                for (let i = 0; i < 50; i++) {
-                    const star = $('<div class="star"></div>');
-                    const size = Math.random() * 3 + 1; // Random size between 1-4px
-
-                    star.css({
-                        top: Math.random() * headerHeight + 'px',
-                        left: Math.random() * headerWidth + 'px',
-                        width: size + 'px',
-                        height: size + 'px',
-                        opacity: Math.random() * 0.8 + 0.2 // Random opacity
-                    });
-
-                    starsContainer.append(star);
-                }
-            }
-
-            // Add click events to navigation buttons
             $('.explore-btn-books').on('click', function () {
-                // Scroll to books section
-                $('html, body').animate({
-                    scrollTop: $('.book-publishing-section').offset().top
-                }, 500, 'linear');
+                $('html, body').animate({ scrollTop: $('.book-publishing-section').offset().top }, 500, 'linear');
             });
 
             $('.explore-btn-arcade').on('click', function () {
-                // Scroll to arcade section
-                $('html, body').animate({
-                    scrollTop: $('.game-arcade-section').offset().top
-                }, 500, 'linear');
+                $('html, body').animate({ scrollTop: $('.game-arcade-section').offset().top }, 500, 'linear');
             });
 
             $('.explore-btn-footprints').on('click', function () {
-                // Scroll to footprints section
-                $('html, body').animate({
-                    scrollTop: $('.footprint-section').offset().top
-                }, 500, 'linear');
+                $('html, body').animate({ scrollTop: $('.footprint-section').offset().top }, 500, 'linear');
             });
-
-            // Responsive adjustments
-            // $(window).resize(function () {
-            //     $('#stars-container').empty();
-            //     createStars();
-            // });
         });
     </script>
 </body>
