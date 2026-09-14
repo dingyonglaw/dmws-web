@@ -517,6 +517,75 @@
             font-size: 0.72rem;
         }
 
+        /* Region header row — one pin on the globe can represent a cluster of stops */
+        .footprint-list .region-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .footprint-list li.region-item {
+            padding-bottom: 0.3rem;
+        }
+
+        .region-toggle {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .footprint-sublist.open + .region-toggle,
+        .region-header.open .region-toggle {
+            transform: rotate(90deg);
+        }
+
+        .footprint-list .region-count {
+            color: #999;
+            font-size: 0.68rem;
+            white-space: nowrap;
+        }
+
+        .footprint-list .region-toggle {
+            color: #fb6415;
+            font-size: 0.68rem;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        /* Nested stops under a clustered region — indented, dimmer, collapsible */
+        .footprint-sublist {
+            list-style: none;
+            margin: 0.3rem 0 0.2rem 0;
+            padding: 0 0 0 0.9rem;
+            border-left: 1px dashed rgba(255,255,255,0.15);
+            display: none;
+        }
+
+        .footprint-sublist.open {
+            display: block;
+        }
+
+        .footprint-sublist li {
+            color: #bbb;
+            font-size: 0.7rem;
+            padding: 0.16rem 0;
+            border-bottom: none;
+            line-height: 1.35;
+        }
+
+        .footprint-sublist li::before {
+            content: "↳ ";
+            color: #fb6415;
+        }
+
+        /* Tag for stops that are noted but intentionally have no globe pin */
+        .no-pin-tag {
+            color: #888;
+            font-size: 0.65rem;
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
             .footprint-overlay {
                 top: auto;
@@ -884,7 +953,7 @@
                     </div>
                     <div class="pulse-marker" style="position-anchor:--cobe-hokkaido; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-hokkaido,0); --pulse-delay:0.3s;">
                         <div class="pulse-dot"></div>
-                        <div class="pulse-label">❄️ Hokkaido 🇯🇵</div>
+                        <div class="pulse-label">❄️ Hokkaido Loop 🇯🇵<br>11 stops</div>
                     </div>
                     <div class="pulse-marker" style="position-anchor:--cobe-tasmania; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-tasmania,0); --pulse-delay:0.6s;">
                         <div class="pulse-dot"></div>
@@ -927,6 +996,18 @@
                         <div class="pulse-dot"></div>
                         <div class="pulse-label">🏰 Singapore 🇸🇬</div>
                     </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-kyoto; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-kyoto,0); --pulse-delay:0.6s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">⛩️ Kyoto 🇯🇵</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-tokyo; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-tokyo,0); --pulse-delay:0.2s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🗼 Tokyo 🇯🇵</div>
+                    </div>
+                    <div class="pulse-marker" style="position-anchor:--cobe-luangprabang; bottom:anchor(top); left:anchor(center); translate:-50% 0; opacity:var(--cobe-visible-luangprabang,0); --pulse-delay:0.9s;">
+                        <div class="pulse-dot"></div>
+                        <div class="pulse-label">🛕 Luang Prabang 🇱🇦</div>
+                    </div>
 
                     <!-- ── Footprint list overlaid on the left ────────────── -->
                     <div class="footprint-overlay">
@@ -934,7 +1015,7 @@
                         <ul class="footprint-list">
                             <li>🏠 Selangor - KL, Malaysia <em>(Homebase)</em></li>
                             <li>The Beach School, Port Dickson</li>
-                            <li>❄️ Hokkaido 北海道, Japan</li>
+                            <li>❄️ Hokkaido 北海道, Tomamu, Japan</li>
                             <li>🌞 Perth, Australia</li>
                             <li>🦘 Tasmania, Australia</li>
                             <li>🎭 Melbourne, Australia</li>
@@ -948,6 +1029,30 @@
                             <li>🏝️ Okinawa, Japan</li>
                             <li>🍜 Osaka &amp; Nara, Japan</li>
                             <li>🏰 Singapore</li>
+                            <li class="region-item">
+                                <div class="region-header" data-target="hokkaido-sub">
+                                    <span>🍂 Hokkaido 北海道, Japan</span>
+                                    <span class="region-count">11 stops</span>
+                                    <span class="region-toggle">▸</span>
+                                </div>
+                                <ul class="footprint-sublist" id="hokkaido-sub">
+                                    <li>Hakodate</li>
+                                    <li>Toyako</li>
+                                    <li>Shiraoi</li>
+                                    <li>Muroran</li>
+                                    <li>Daisetsuzan — Asahidake &amp; Kurodake</li>
+                                    <li>Yoichi</li>
+                                    <li>Otaru</li>
+                                    <li>Sapporo</li>
+                                    <li>Pippu</li>
+                                    <li>Asahikawa</li>
+                                    <li>Furano</li>
+                                </ul>
+                            </li>
+                            <li>⛩️ Kyoto, Japan</li>
+                            <li>🗼 Tokyo, Japan</li>
+                            <li>🛕 Luang Prabang, Laos</li>
+                            <li>🌳 Royal Belum, Perak, Malaysia</li>
                             <li style="opacity:0.5">... and more to come!</li>
                         </ul>
                     </div>
@@ -1004,7 +1109,9 @@
             offset:  [0, 0],
             markers: [
                 { location: [3.1390,   101.6869], size: 0.10, id: 'kl'       },
-                { location: [43.1528,  141.8807], size: 0.09, id: 'hokkaido' },
+                // Hokkaido pin now represents a cluster of 11 stops (Hakodate → Furano) —
+                // sized up a touch and given one shared pulse label instead of 11 separate pins
+                { location: [43.1528,  141.8807], size: 0.11, id: 'hokkaido' },
                 { location: [-41.9296, 146.5202], size: 0.08, id: 'tasmania' },
                 { location: [-37.8168, 144.9540], size: 0.08, id: 'melb'     },
                 { location: [-31.9535, 115.8640], size: 0.08, id: 'perth'    },
@@ -1014,6 +1121,10 @@
                 { location: [25.0330,  121.5654], size: 0.08, id: 'taipei'   },
                 { location: [26.2124,  127.6809], size: 0.10, id: 'okinawa'  },
                 { location: [34.6937,  135.5023], size: 0.08, id: 'osaka'    },
+                { location: [35.0116,  135.7681], size: 0.07, id: 'kyoto'    },
+                { location: [35.6762,  139.6503], size: 0.08, id: 'tokyo'    },
+                { location: [19.8845,  102.1348], size: 0.07, id: 'luangprabang' },
+                // Royal Belum, Perak intentionally has no globe pin — noted in the list only
             ],
         })
 
@@ -1228,6 +1339,15 @@
 
             $('.explore-btn-footprints').on('click', function () {
                 $('html, body').animate({ scrollTop: $('.footprint-section').offset().top }, 500, 'linear');
+            });
+
+            // Expand/collapse a clustered region's stop list (e.g. Hokkaido)
+            $('.region-header').on('click', function () {
+                const targetId = $(this).data('target');
+                $('#' + targetId).toggleClass('open');
+                $(this).toggleClass('open');
+                const arrow = $(this).find('.region-toggle');
+                arrow.text(arrow.text() === '▸' ? '▾' : '▸');
             });
         });
     </script>
