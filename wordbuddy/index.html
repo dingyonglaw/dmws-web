@@ -1,0 +1,488 @@
+
+
+Word buddy · HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Word Buddy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4EEFF; --paper:#FFFFFF; --ink:#2B1B5A; --soft:#6B5A99;
+  --pink:#FF4F9A; --pink-soft:#FFE0EE; --sun:#FFC93C; --sun-soft:#FFF3C7;
+  --teal:#12B8A6; --teal-soft:#D5F7F2; --grape:#7B5CFF; --grape-soft:#E7E0FF;
+  --line:#E2D8FF; --dot:#E4D9FF;
+  --display:"Baloo 2", "Trebuchet MS", "Comic Sans MS", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", Verdana, system-ui, sans-serif;
+  --han:"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1D1438; --paper:#2A1F4D; --ink:#FBF7FF; --soft:#C9BCF2;
+    --pink-soft:#4A2346; --sun-soft:#463A1C; --teal-soft:#123F42; --grape-soft:#3A2C70;
+    --line:#43357A; --dot:#2C2152;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1D1438; --paper:#2A1F4D; --ink:#FBF7FF; --soft:#C9BCF2;
+  --pink-soft:#4A2346; --sun-soft:#463A1C; --teal-soft:#123F42; --grape-soft:#3A2C70;
+  --line:#43357A; --dot:#2C2152;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; min-height:100%;
+  background-color:var(--bg);
+  background-image:radial-gradient(var(--dot) 2.5px, transparent 2.6px);
+  background-size:26px 26px;
+  color:var(--ink); font-family:var(--body); font-size:1.125rem; line-height:1.55;
+}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:4px solid var(--grape);outline-offset:3px;border-radius:14px}
+.wrap{max-width:720px;margin:0 auto;padding:20px 18px 60px}
+ 
+/* ---------- header ---------- */
+.top{display:flex;align-items:center;gap:14px;margin:6px 0 18px}
+.owl{width:86px;height:86px;flex:none}
+.owl .lid{transform-origin:center;transform:scaleY(0);transition:transform .15s}
+.owl.blink .lid{transform:scaleY(1)}
+.owl.thinking{animation:bob 1s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(-4deg)}}
+.brand h1{font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:1;margin:0;letter-spacing:-.5px}
+.brand p{margin:4px 0 0;color:var(--soft);font-size:1rem}
+.book-chip{
+  margin-left:auto;align-self:flex-start;border:3px dashed var(--line);background:var(--paper);
+  border-radius:999px;padding:6px 14px;font-size:.95rem;color:var(--soft);max-width:44%;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+ 
+/* ---------- ask panel ---------- */
+.ask{
+  background:var(--paper);border:4px solid var(--ink);border-radius:28px;
+  padding:22px 20px 20px;box-shadow:8px 8px 0 var(--pink);
+}
+.ask label{display:block;font-family:var(--display);font-weight:700;font-size:1.35rem;margin-bottom:6px}
+.word-input{
+  width:100%;border:3px solid var(--line);border-radius:18px;background:var(--bg);
+  font-family:var(--display);font-weight:700;font-size:2.2rem;padding:6px 18px;
+}
+.word-input::placeholder{color:var(--soft);opacity:.55}
+.word-input:focus{border-color:var(--grape);outline:none}
+.more-toggle{
+  background:none;border:none;padding:10px 0 0;color:var(--grape);font-weight:700;font-size:1rem;
+  text-decoration:underline;text-underline-offset:4px
+}
+.more{display:none;margin-top:10px}
+.more.open{display:block}
+.more .hint{font-size:.95rem;color:var(--soft);margin:0 0 6px}
+.more textarea,.more input{
+  width:100%;border:3px solid var(--line);border-radius:16px;background:var(--bg);padding:10px 14px;font-size:1.05rem
+}
+.more textarea{min-height:80px;resize:vertical}
+.more textarea:focus,.more input:focus{border-color:var(--grape);outline:none}
+.more .gap{height:12px}
+.go{
+  display:block;width:100%;margin-top:16px;border:4px solid var(--ink);border-radius:20px;
+  background:var(--sun);color:#2B1B5A;font-family:var(--display);font-weight:800;font-size:1.6rem;
+  padding:8px 0 6px;box-shadow:0 6px 0 var(--ink);transition:transform .08s, box-shadow .08s
+}
+.go:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
+.go:disabled{opacity:.6;cursor:wait}
+ 
+/* ---------- status ---------- */
+.status{margin:18px 4px 0;font-family:var(--display);font-weight:700;font-size:1.25rem;color:var(--soft);min-height:1.5em}
+.status.err{color:var(--pink)}
+.stop{margin-left:8px;border:2px solid var(--soft);background:transparent;border-radius:999px;padding:0 12px;font-size:.95rem}
+ 
+/* ---------- answer ---------- */
+.answer{margin-top:8px;display:none}
+.answer.show{display:block;animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.94);opacity:0}}
+.hero{
+  background:var(--grape);color:#fff;border:4px solid var(--ink);border-radius:28px 28px 8px 8px;
+  padding:18px 20px;display:flex;align-items:center;gap:16px
+}
+.emoji{font-size:3.6rem;line-height:1;background:#fff;border-radius:22px;width:84px;height:84px;display:grid;place-items:center;flex:none;border:3px solid var(--ink)}
+.hero .w{font-family:var(--display);font-weight:800;font-size:2.6rem;line-height:1;word-break:break-word}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center}
+.pos{background:#fff;color:var(--grape);border-radius:999px;padding:1px 12px;font-weight:700;font-size:.95rem}
+.say{border:3px solid #fff;background:transparent;color:#fff;border-radius:999px;padding:0 12px;font-weight:700;font-size:.95rem;display:inline-flex;gap:6px;align-items:center}
+.sounds{font-size:1rem;opacity:.9}
+ 
+.blocks{display:grid;gap:12px;margin-top:12px}
+.block{border:4px solid var(--ink);border-radius:8px;padding:14px 18px;background:var(--paper)}
+.block:last-child{border-radius:8px 8px 28px 28px}
+.block h3{font-family:var(--display);font-weight:800;font-size:1.2rem;margin:0 0 4px}
+.block p{margin:0}
+.b-mean{background:var(--sun-soft)}
+.b-mean p{font-size:1.3rem}
+.b-book{background:var(--pink-soft)}
+.b-eg{background:var(--teal-soft)}
+.b-eg p{font-style:italic}
+.b-zh{background:var(--grape-soft);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.han{font-family:var(--han);font-weight:700;font-size:2.4rem;line-height:1.1}
+.pinyin{font-size:1.15rem;color:var(--soft)}
+.b-zh .say{border-color:var(--grape);color:var(--grape);margin-left:auto}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{border:3px solid var(--ink);border-radius:999px;padding:2px 14px;background:var(--paper);font-weight:700}
+.chip.opp{background:var(--pink-soft)}
+.didyou{background:var(--sun-soft);border:3px dashed var(--ink);border-radius:18px;padding:10px 14px;margin-bottom:12px}
+.didyou button{border:none;background:none;color:var(--grape);font-weight:700;text-decoration:underline;padding:0}
+ 
+.save{
+  margin-top:14px;width:100%;border:4px solid var(--ink);border-radius:20px;background:var(--teal);color:#fff;
+  font-family:var(--display);font-weight:800;font-size:1.35rem;padding:6px 0 4px;box-shadow:0 5px 0 var(--ink)
+}
+.save:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.save.done{background:var(--paper);color:var(--teal);box-shadow:none}
+ 
+/* ---------- jar ---------- */
+.jar{margin-top:34px}
+.jar-head{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.jar-head h2{font-family:var(--display);font-weight:800;font-size:1.8rem;margin:0;line-height:1}
+.count{background:var(--pink);color:#fff;border-radius:999px;padding:2px 12px;font-weight:700;font-size:1rem}
+.quiz-btn{margin-left:auto;border:3px solid var(--ink);background:var(--grape-soft);border-radius:999px;padding:4px 16px;font-weight:700}
+.quiz-btn:disabled{opacity:.5;cursor:not-allowed}
+.jar-box{
+  margin-top:12px;border:4px solid var(--ink);border-radius:18px 18px 40px 40px;background:var(--paper);
+  padding:18px;display:flex;flex-wrap:wrap;gap:10px;min-height:110px;position:relative
+}
+.jar-box::before{
+  content:"";position:absolute;left:18%;right:18%;top:-14px;height:14px;background:var(--sun);
+  border:4px solid var(--ink);border-bottom:none;border-radius:10px 10px 0 0
+}
+.jar-empty{color:var(--soft);margin:auto;text-align:center}
+.jw{border:3px solid var(--ink);border-radius:16px;padding:4px 12px 2px;font-family:var(--display);font-weight:700;font-size:1.15rem;display:inline-flex;align-items:center;gap:6px}
+.jw .x{border:none;background:transparent;font-size:1rem;padding:0 2px;color:inherit;opacity:.6}
+.jw .x:hover{opacity:1}
+.c0{background:var(--sun-soft)}.c1{background:var(--pink-soft)}.c2{background:var(--teal-soft)}.c3{background:var(--grape-soft)}
+ 
+/* ---------- quiz ---------- */
+.quiz{display:none;margin-top:14px;border:4px solid var(--ink);border-radius:24px;background:var(--sun-soft);padding:18px}
+.quiz.show{display:block;animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+.quiz .q{font-size:1.25rem;margin:0 0 12px}
+.quiz .opts{display:grid;gap:10px}
+.quiz .opt{border:3px solid var(--ink);border-radius:16px;background:var(--paper);font-family:var(--display);font-weight:700;font-size:1.3rem;padding:6px 0 4px}
+.quiz .opt.right{background:var(--teal);color:#fff}
+.quiz .opt.wrong{background:var(--pink);color:#fff}
+.quiz .row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px}
+.quiz .score{font-weight:700;color:var(--soft)}
+.quiz .next{border:3px solid var(--ink);background:var(--sun);border-radius:999px;padding:4px 18px;font-weight:700;color:#2B1B5A}
+ 
+.foot{margin-top:28px;text-align:center;color:var(--soft);font-size:.9rem}
+.foot button{background:none;border:none;color:var(--soft);text-decoration:underline;font-size:.9rem}
+ 
+@media (max-width:520px){
+  .brand h1{font-size:2rem}
+  .owl{width:68px;height:68px}
+  .book-chip{display:none}
+  .hero{flex-direction:column;align-items:flex-start}
+  .hero .w{font-size:2.2rem}
+  .word-input{font-size:1.8rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+ 
+  <header class="top">
+    <svg class="owl" id="owl" viewBox="0 0 120 120" aria-hidden="true">
+      <ellipse cx="60" cy="112" rx="34" ry="5" fill="#000" opacity=".12"/>
+      <path d="M26 30 L34 12 L46 28 Z" fill="#7B5CFF" stroke="#2B1B5A" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M94 30 L86 12 L74 28 Z" fill="#7B5CFF" stroke="#2B1B5A" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="60" cy="64" rx="40" ry="44" fill="#7B5CFF" stroke="#2B1B5A" stroke-width="4"/>
+      <ellipse cx="60" cy="78" rx="24" ry="26" fill="#FFE0EE"/>
+      <path d="M46 72 q4 4 8 0 M58 80 q4 4 8 0 M50 88 q4 4 8 0" stroke="#FF4F9A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="44" cy="50" r="15" fill="#fff" stroke="#2B1B5A" stroke-width="4"/>
+      <circle cx="76" cy="50" r="15" fill="#fff" stroke="#2B1B5A" stroke-width="4"/>
+      <path d="M58 50 h4" stroke="#2B1B5A" stroke-width="4"/>
+      <circle cx="46" cy="51" r="6" fill="#2B1B5A"/><circle cx="78" cy="51" r="6" fill="#2B1B5A"/>
+      <circle cx="48" cy="49" r="2" fill="#fff"/><circle cx="80" cy="49" r="2" fill="#fff"/>
+      <ellipse class="lid" cx="44" cy="50" rx="13" ry="13" fill="#7B5CFF"/>
+      <ellipse class="lid" cx="76" cy="50" rx="13" ry="13" fill="#7B5CFF"/>
+      <path d="M55 60 L65 60 L60 69 Z" fill="#FFC93C" stroke="#2B1B5A" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="30" cy="66" r="5" fill="#FF4F9A" opacity=".55"/><circle cx="90" cy="66" r="5" fill="#FF4F9A" opacity=".55"/>
+      <rect x="30" y="96" width="60" height="16" rx="3" fill="#12B8A6" stroke="#2B1B5A" stroke-width="4"/>
+      <path d="M60 96 v16" stroke="#2B1B5A" stroke-width="3"/>
+    </svg>
+    <div class="brand">
+      <h1>Word Buddy</h1>
+      <p>Stuck on a word? Hoot will help.</p>
+    </div>
+    <div class="book-chip" id="bookChip" hidden></div>
+  </header>
+ 
+  <section class="ask" aria-label="Look up a word">
+    <label for="word">What word got you stuck?</label>
+    <input id="word" class="word-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="e.g. peculiar" maxlength="40">
+    <button class="more-toggle" id="moreToggle" aria-expanded="false" aria-controls="more">+ Add the sentence from my book</button>
+    <div class="more" id="more">
+      <p class="hint">Some words mean different things. Copy the sentence so Hoot knows which one.</p>
+      <textarea id="sentence" maxlength="400" placeholder="The old house had a peculiar smell, like pepper and rain."></textarea>
+      <div class="gap"></div>
+      <label for="book" style="font-size:1.05rem">Book I'm reading</label>
+      <input id="book" type="text" maxlength="80" placeholder="Book title (optional)">
+    </div>
+    <button class="go" id="go">Explain it!</button>
+  </section>
+ 
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+ 
+  <section class="answer" id="answer" aria-live="polite"></section>
+ 
+  <section class="jar" aria-label="My word jar">
+    <div class="jar-head">
+      <h2>My word jar</h2>
+      <span class="count" id="count">0</span>
+      <button class="quiz-btn" id="quizBtn" disabled title="Save 3 words to unlock">Quiz me</button>
+    </div>
+    <div class="quiz" id="quiz"></div>
+    <div class="jar-box" id="jar"></div>
+  </section>
+ 
+  <p class="foot">Words are saved on this device. <button id="clearJar">Empty the jar</button></p>
+</div>
+ 
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const wordEl = $("word"), sentEl = $("sentence"), bookEl = $("book");
+  const goBtn = $("go"), statusEl = $("status"), answerEl = $("answer");
+  const owl = $("owl");
+ 
+  /* ---------- storage (safe) ---------- */
+  const store = {
+    get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+    set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  };
+  let jar = store.get("wb-jar", []);
+  if (!Array.isArray(jar)) jar = [];
+  bookEl.value = store.get("wb-book", "") || "";
+ 
+  const updateBookChip = () => {
+    const b = bookEl.value.trim();
+    const chip = $("bookChip");
+    if (b) { chip.hidden = false; chip.textContent = "📖 " + b; } else chip.hidden = true;
+  };
+  updateBookChip();
+  bookEl.addEventListener("input", () => { store.set("wb-book", bookEl.value.trim()); updateBookChip(); });
+ 
+  /* ---------- owl blink ---------- */
+  setInterval(() => { owl.classList.add("blink"); setTimeout(() => owl.classList.remove("blink"), 160); }, 4200);
+ 
+  /* ---------- more toggle ---------- */
+  $("moreToggle").addEventListener("click", (e) => {
+    const m = $("more"); const open = m.classList.toggle("open");
+    e.currentTarget.setAttribute("aria-expanded", open);
+    e.currentTarget.textContent = open ? "– Hide the sentence box" : "+ Add the sentence from my book";
+    if (open) sentEl.focus();
+  });
+ 
+  /* ---------- speech ---------- */
+  function speak(text, lang){
+    try {
+      if (!("speechSynthesis" in window)) return;
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang || "en-GB"; u.rate = lang === "zh-CN" ? 0.8 : 0.9;
+      const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.replace("_","-").startsWith(u.lang.slice(0,2)) && (lang !== "zh-CN" || /zh/i.test(v.lang)));
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
+    } catch {}
+  }
+  const canSpeak = "speechSynthesis" in window;
+ 
+  /* ---------- API ----------
+     Put your Cloudflare Worker URL here after you deploy worker.js */
+//   const API_URL = "https://word-buddy.YOUR-SUBDOMAIN.workers.dev";
+  const API_URL = "https://dmis-word-buddy.shrill-flower-a770.workers.dev/";
+ 
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+ 
+  let ctl = null;
+  function setBusy(b){
+    goBtn.disabled = b;
+    goBtn.textContent = b ? "Hoot is thinking…" : "Explain it!";
+    owl.classList.toggle("thinking", b);
+  }
+  function setStatus(msg, isErr, withStop){
+    statusEl.className = "status" + (isErr ? " err" : "");
+    statusEl.textContent = msg;
+    if (withStop){
+      const s = document.createElement("button");
+      s.className = "stop"; s.textContent = "Stop";
+      s.onclick = () => ctl && ctl.abort();
+      statusEl.appendChild(s);
+    }
+  }
+  const errCopy = (code) => ({
+    slow_down: "Whoa, that was fast! Wait a minute, then press Explain it! again.",
+    busy: "Hoot's helpers are all busy. Try again in a few minutes.",
+    bad_word: "Hoot only knows letters. Check the word has no numbers or symbols.",
+    offline: "Hoot can't reach the internet. Check the Wi-Fi, then try again.",
+    cancelled: "",
+  }[code] ?? "Hoot couldn't find that one right now. Check the spelling and press Explain it! again.");
+ 
+  async function lookUp(wordArg, sentenceArg){
+    const word = (wordArg ?? wordEl.value).trim();
+    const sentence = (sentenceArg ?? sentEl.value).trim();
+    if (!word){ setStatus("Type the tricky word in the box first.", true); wordEl.focus(); return; }
+ 
+    // Already in the jar with the same sentence? Show it instantly.
+    const saved = jar.find(j => j.word.toLowerCase() === word.toLowerCase() && (j.sentence || "") === sentence);
+    if (saved){ setStatus(""); render(saved.data, saved.sentence, true); return; }
+ 
+    ctl?.abort();
+    ctl = new AbortController();
+    const myCtl = ctl;
+    setBusy(true);
+    answerEl.classList.remove("show");
+    setStatus("Hoot is flipping through the dictionary…", false, true);
+    try {
+      let res;
+      try {
+        res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ word, sentence }),
+          signal: myCtl.signal,
+        });
+      } catch (e) {
+        throw { code: e && e.name === "AbortError" ? "cancelled" : "offline" };
+      }
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || !out.ok) throw { code: out.error || "no_answer" };
+      const data = out.data;
+      if (!data || !data.meaning) throw { code: "no_answer" };
+      setStatus("");
+      render(data, sentence, false);
+    } catch (e) {
+      setStatus(errCopy(e && e.code), true);
+    } finally {
+      setBusy(false);
+    }
+  }
+ 
+  let current = null;
+  function render(d, sentence, fromJar){
+    current = { data: d, sentence };
+    const inJar = fromJar || jar.some(j => j.word.toLowerCase() === String(d.word).toLowerCase());
+    const similar = Array.isArray(d.similar) ? d.similar.filter(Boolean) : [];
+    answerEl.innerHTML = `
+      ${d.didYouMean ? `<div class="didyou">Did you mean <strong>${esc(d.didYouMean)}</strong>? Here's what that means.</div>` : ""}
+      <div class="hero">
+        <div class="emoji" aria-hidden="true">${esc(d.emoji || "📘")}</div>
+        <div>
+          <div class="w">${esc(d.word)}</div>
+          <div class="meta">
+            ${d.partOfSpeech ? `<span class="pos">${esc(d.partOfSpeech)}</span>` : ""}
+            ${d.soundsLike ? `<span class="sounds">says: ${esc(d.soundsLike)}</span>` : ""}
+            ${canSpeak ? `<button class="say" data-say="${esc(d.word)}" data-lang="en-GB" aria-label="Hear the word">🔊 Hear it</button>` : ""}
+          </div>
+        </div>
+      </div>
+      <div class="blocks">
+        <div class="block b-mean"><h3>What it means</h3><p>${esc(d.meaning)}</p></div>
+        ${sentence && d.inThisSentence ? `<div class="block b-book"><h3>In my book</h3><p>${esc(d.inThisSentence)}</p></div>` : ""}
+        ${d.example ? `<div class="block b-eg"><h3>Try it in a sentence</h3><p>${esc(d.example)}</p></div>` : ""}
+        ${d.chinese ? `<div class="block b-zh"><div><h3>In Chinese</h3><div class="han" lang="zh-Hans">${esc(d.chinese)}</div><div class="pinyin">${esc(d.pinyin || "")}</div></div>
+          ${canSpeak ? `<button class="say" data-say="${esc(d.chinese)}" data-lang="zh-CN" aria-label="Hear it in Chinese">🔊 听</button>` : ""}</div>` : ""}
+        ${(similar.length || d.opposite) ? `<div class="block"><h3>Word friends</h3><div class="chips">
+          ${similar.map(s => `<span class="chip">${esc(s)}</span>`).join("")}
+          ${d.opposite ? `<span class="chip opp">opposite: ${esc(d.opposite)}</span>` : ""}
+        </div></div>` : ""}
+      </div>
+      <button class="save ${inJar ? "done" : ""}" id="saveBtn" ${inJar ? "disabled" : ""}>${inJar ? "✓ In my word jar" : "⭐ Save to my word jar"}</button>
+    `;
+    answerEl.classList.add("show");
+    answerEl.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => speak(b.dataset.say, b.dataset.lang)));
+    const sb = $("saveBtn");
+    if (sb && !inJar) sb.addEventListener("click", () => {
+      jar.unshift({ word: d.word, sentence: sentence || "", book: bookEl.value.trim(), data: d, at: Date.now() });
+      jar = jar.slice(0, 300);
+      store.set("wb-jar", jar);
+      sb.classList.add("done"); sb.disabled = true; sb.textContent = "✓ In my word jar";
+      renderJar();
+    });
+    answerEl.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  }
+ 
+  goBtn.addEventListener("click", () => lookUp());
+  wordEl.addEventListener("keydown", (e) => { if (e.key === "Enter") lookUp(); });
+ 
+  /* ---------- jar ---------- */
+  function renderJar(){
+    const box = $("jar");
+    $("count").textContent = jar.length;
+    $("quizBtn").disabled = jar.length < 3;
+    $("quizBtn").title = jar.length < 3 ? `Save ${3 - jar.length} more word${jar.length === 2 ? "" : "s"} to unlock` : "Test yourself";
+    if (!jar.length){
+      box.innerHTML = `<p class="jar-empty">Your jar is empty.<br>Save a word and it lands here!</p>`;
+      return;
+    }
+    box.innerHTML = jar.map((j, i) => `
+      <span class="jw c${i % 4}" title="${esc(j.book ? "From " + j.book : "")}">
+        <button style="all:unset;cursor:pointer" data-open="${i}">${esc(j.data.emoji ? j.data.emoji.split(" ")[0] + " " : "")}${esc(j.word)}</button>
+        <button class="x" data-del="${i}" aria-label="Remove ${esc(j.word)}">✕</button>
+      </span>`).join("");
+    box.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => {
+      const j = jar[+b.dataset.open]; setStatus(""); render(j.data, j.sentence, true);
+    }));
+    box.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => {
+      jar.splice(+b.dataset.del, 1); store.set("wb-jar", jar); renderJar();
+    }));
+  }
+  renderJar();
+ 
+  $("clearJar").addEventListener("click", () => {
+    if (!jar.length) return;
+    if (confirm("Empty the whole word jar? This can't be undone.")){ jar = []; store.set("wb-jar", jar); renderJar(); $("quiz").classList.remove("show"); }
+  });
+ 
+  /* ---------- quiz ---------- */
+  let score = 0, asked = 0;
+  const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--){ const k = Math.floor(Math.random() * (i + 1)); [a[i], a[k]] = [a[k], a[i]]; } return a; };
+  function quizRound(){
+    const q = $("quiz");
+    if (jar.length < 3){ q.classList.remove("show"); return; }
+    const pick = jar[Math.floor(Math.random() * jar.length)];
+    const others = shuffle(jar.filter(j => j !== pick)).slice(0, 2);
+    const opts = shuffle([pick, ...others]);
+    q.innerHTML = `
+      <p class="q"><strong>Which word means…</strong><br>${esc(pick.data.meaning)}</p>
+      <div class="opts">${opts.map(o => `<button class="opt" data-w="${esc(o.word)}">${esc(o.word)}</button>`).join("")}</div>
+      <div class="row"><span class="score">${score} / ${asked} right</span><button class="next" id="nextQ">Next one</button></div>`;
+    q.classList.add("show");
+    let done = false;
+    q.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
+      if (done) return; done = true; asked++;
+      if (b.dataset.w === pick.word){ b.classList.add("right"); b.textContent = "🎉 " + b.textContent; score++; }
+      else {
+        b.classList.add("wrong");
+        q.querySelectorAll(".opt").forEach(x => { if (x.dataset.w === pick.word) x.classList.add("right"); });
+      }
+      q.querySelector(".score").textContent = `${score} / ${asked} right`;
+    }));
+    $("nextQ").addEventListener("click", quizRound);
+  }
+  $("quizBtn").addEventListener("click", () => {
+    const q = $("quiz");
+    if (q.classList.contains("show")){ q.classList.remove("show"); $("quizBtn").textContent = "Quiz me"; return; }
+    score = 0; asked = 0; $("quizBtn").textContent = "Close quiz"; quizRound();
+  });
+})();
+</script>
+</body>
+</html>
+ 
