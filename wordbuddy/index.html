@@ -1,6 +1,3 @@
-
-
-Word buddy · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +45,7 @@ button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:4px solid var(--grape);outline-offset:3px;border-radius:14px}
 .wrap{max-width:720px;margin:0 auto;padding:20px 18px 60px}
- 
+
 /* ---------- header ---------- */
 .top{display:flex;align-items:center;gap:14px;margin:6px 0 18px}
 .owl{width:86px;height:86px;flex:none}
@@ -63,7 +60,7 @@ button{cursor:pointer}
   border-radius:999px;padding:6px 14px;font-size:.95rem;color:var(--soft);max-width:44%;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
- 
+
 /* ---------- ask panel ---------- */
 .ask{
   background:var(--paper);border:4px solid var(--ink);border-radius:28px;
@@ -96,12 +93,12 @@ button{cursor:pointer}
 }
 .go:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
 .go:disabled{opacity:.6;cursor:wait}
- 
+
 /* ---------- status ---------- */
 .status{margin:18px 4px 0;font-family:var(--display);font-weight:700;font-size:1.25rem;color:var(--soft);min-height:1.5em}
 .status.err{color:var(--pink)}
 .stop{margin-left:8px;border:2px solid var(--soft);background:transparent;border-radius:999px;padding:0 12px;font-size:.95rem}
- 
+
 /* ---------- answer ---------- */
 .answer{margin-top:8px;display:none}
 .answer.show{display:block;animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
@@ -116,7 +113,7 @@ button{cursor:pointer}
 .pos{background:#fff;color:var(--grape);border-radius:999px;padding:1px 12px;font-weight:700;font-size:.95rem}
 .say{border:3px solid #fff;background:transparent;color:#fff;border-radius:999px;padding:0 12px;font-weight:700;font-size:.95rem;display:inline-flex;gap:6px;align-items:center}
 .sounds{font-size:1rem;opacity:.9}
- 
+
 .blocks{display:grid;gap:12px;margin-top:12px}
 .block{border:4px solid var(--ink);border-radius:8px;padding:14px 18px;background:var(--paper)}
 .block:last-child{border-radius:8px 8px 28px 28px}
@@ -136,14 +133,14 @@ button{cursor:pointer}
 .chip.opp{background:var(--pink-soft)}
 .didyou{background:var(--sun-soft);border:3px dashed var(--ink);border-radius:18px;padding:10px 14px;margin-bottom:12px}
 .didyou button{border:none;background:none;color:var(--grape);font-weight:700;text-decoration:underline;padding:0}
- 
+
 .save{
   margin-top:14px;width:100%;border:4px solid var(--ink);border-radius:20px;background:var(--teal);color:#fff;
   font-family:var(--display);font-weight:800;font-size:1.35rem;padding:6px 0 4px;box-shadow:0 5px 0 var(--ink)
 }
 .save:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
 .save.done{background:var(--paper);color:var(--teal);box-shadow:none}
- 
+
 /* ---------- jar ---------- */
 .jar{margin-top:34px}
 .jar-head{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
@@ -164,7 +161,7 @@ button{cursor:pointer}
 .jw .x{border:none;background:transparent;font-size:1rem;padding:0 2px;color:inherit;opacity:.6}
 .jw .x:hover{opacity:1}
 .c0{background:var(--sun-soft)}.c1{background:var(--pink-soft)}.c2{background:var(--teal-soft)}.c3{background:var(--grape-soft)}
- 
+
 /* ---------- quiz ---------- */
 .quiz{display:none;margin-top:14px;border:4px solid var(--ink);border-radius:24px;background:var(--sun-soft);padding:18px}
 .quiz.show{display:block;animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
@@ -176,10 +173,10 @@ button{cursor:pointer}
 .quiz .row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px}
 .quiz .score{font-weight:700;color:var(--soft)}
 .quiz .next{border:3px solid var(--ink);background:var(--sun);border-radius:999px;padding:4px 18px;font-weight:700;color:#2B1B5A}
- 
+
 .foot{margin-top:28px;text-align:center;color:var(--soft);font-size:.9rem}
 .foot button{background:none;border:none;color:var(--soft);text-decoration:underline;font-size:.9rem}
- 
+
 @media (max-width:520px){
   .brand h1{font-size:2rem}
   .owl{width:68px;height:68px}
@@ -195,7 +192,7 @@ button{cursor:pointer}
 </head>
 <body>
 <div class="wrap">
- 
+
   <header class="top">
     <svg class="owl" id="owl" viewBox="0 0 120 120" aria-hidden="true">
       <ellipse cx="60" cy="112" rx="34" ry="5" fill="#000" opacity=".12"/>
@@ -222,7 +219,7 @@ button{cursor:pointer}
     </div>
     <div class="book-chip" id="bookChip" hidden></div>
   </header>
- 
+
   <section class="ask" aria-label="Look up a word">
     <label for="word">What word got you stuck?</label>
     <input id="word" class="word-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="e.g. peculiar" maxlength="40">
@@ -236,11 +233,11 @@ button{cursor:pointer}
     </div>
     <button class="go" id="go">Explain it!</button>
   </section>
- 
+
   <div class="status" id="status" role="status" aria-live="polite"></div>
- 
+
   <section class="answer" id="answer" aria-live="polite"></section>
- 
+
   <section class="jar" aria-label="My word jar">
     <div class="jar-head">
       <h2>My word jar</h2>
@@ -250,17 +247,17 @@ button{cursor:pointer}
     <div class="quiz" id="quiz"></div>
     <div class="jar-box" id="jar"></div>
   </section>
- 
+
   <p class="foot">Words are saved on this device. <button id="clearJar">Empty the jar</button></p>
 </div>
- 
+
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
   const wordEl = $("word"), sentEl = $("sentence"), bookEl = $("book");
   const goBtn = $("go"), statusEl = $("status"), answerEl = $("answer");
   const owl = $("owl");
- 
+
   /* ---------- storage (safe) ---------- */
   const store = {
     get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
@@ -269,7 +266,7 @@ button{cursor:pointer}
   let jar = store.get("wb-jar", []);
   if (!Array.isArray(jar)) jar = [];
   bookEl.value = store.get("wb-book", "") || "";
- 
+
   const updateBookChip = () => {
     const b = bookEl.value.trim();
     const chip = $("bookChip");
@@ -277,10 +274,10 @@ button{cursor:pointer}
   };
   updateBookChip();
   bookEl.addEventListener("input", () => { store.set("wb-book", bookEl.value.trim()); updateBookChip(); });
- 
+
   /* ---------- owl blink ---------- */
   setInterval(() => { owl.classList.add("blink"); setTimeout(() => owl.classList.remove("blink"), 160); }, 4200);
- 
+
   /* ---------- more toggle ---------- */
   $("moreToggle").addEventListener("click", (e) => {
     const m = $("more"); const open = m.classList.toggle("open");
@@ -288,7 +285,7 @@ button{cursor:pointer}
     e.currentTarget.textContent = open ? "– Hide the sentence box" : "+ Add the sentence from my book";
     if (open) sentEl.focus();
   });
- 
+
   /* ---------- speech ---------- */
   function speak(text, lang){
     try {
@@ -302,14 +299,13 @@ button{cursor:pointer}
     } catch {}
   }
   const canSpeak = "speechSynthesis" in window;
- 
+
   /* ---------- API ----------
      Put your Cloudflare Worker URL here after you deploy worker.js */
-//   const API_URL = "https://word-buddy.YOUR-SUBDOMAIN.workers.dev";
-  const API_URL = "https://dmis-word-buddy.shrill-flower-a770.workers.dev/";
- 
+  const API_URL = "https://dmis-word-buddy.shrill-flower-a770.workers.dev";
+
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
- 
+
   let ctl = null;
   function setBusy(b){
     goBtn.disabled = b;
@@ -333,22 +329,26 @@ button{cursor:pointer}
     offline: "Hoot can't reach the internet. Check the Wi-Fi, then try again.",
     cancelled: "",
   }[code] ?? "Hoot couldn't find that one right now. Check the spelling and press Explain it! again.");
- 
+
   async function lookUp(wordArg, sentenceArg){
     const word = (wordArg ?? wordEl.value).trim();
     const sentence = (sentenceArg ?? sentEl.value).trim();
     if (!word){ setStatus("Type the tricky word in the box first.", true); wordEl.focus(); return; }
- 
+
     // Already in the jar with the same sentence? Show it instantly.
     const saved = jar.find(j => j.word.toLowerCase() === word.toLowerCase() && (j.sentence || "") === sentence);
     if (saved){ setStatus(""); render(saved.data, saved.sentence, true); return; }
- 
+
     ctl?.abort();
     ctl = new AbortController();
     const myCtl = ctl;
     setBusy(true);
     answerEl.classList.remove("show");
     setStatus("Hoot is flipping through the dictionary…", false, true);
+    const slowMsgs = ["Still looking… this one's a tricky word!", "Almost there, Hoot is asking a friend…"];
+    const slowTimers = slowMsgs.map((m, i) => setTimeout(() => {
+      if (ctl === myCtl) setStatus(m, false, true);
+    }, 7000 + i * 8000));
     try {
       let res;
       try {
@@ -370,10 +370,11 @@ button{cursor:pointer}
     } catch (e) {
       setStatus(errCopy(e && e.code), true);
     } finally {
+      slowTimers.forEach(clearTimeout);
       setBusy(false);
     }
   }
- 
+
   let current = null;
   function render(d, sentence, fromJar){
     current = { data: d, sentence };
@@ -417,10 +418,10 @@ button{cursor:pointer}
     });
     answerEl.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   }
- 
+
   goBtn.addEventListener("click", () => lookUp());
   wordEl.addEventListener("keydown", (e) => { if (e.key === "Enter") lookUp(); });
- 
+
   /* ---------- jar ---------- */
   function renderJar(){
     const box = $("jar");
@@ -444,12 +445,12 @@ button{cursor:pointer}
     }));
   }
   renderJar();
- 
+
   $("clearJar").addEventListener("click", () => {
     if (!jar.length) return;
     if (confirm("Empty the whole word jar? This can't be undone.")){ jar = []; store.set("wb-jar", jar); renderJar(); $("quiz").classList.remove("show"); }
   });
- 
+
   /* ---------- quiz ---------- */
   let score = 0, asked = 0;
   const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--){ const k = Math.floor(Math.random() * (i + 1)); [a[i], a[k]] = [a[k], a[i]]; } return a; };
@@ -485,4 +486,3 @@ button{cursor:pointer}
 </script>
 </body>
 </html>
- 
