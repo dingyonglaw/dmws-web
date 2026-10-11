@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>DMIS Word Buddy</title>
+<title>Word Buddy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
@@ -48,7 +48,7 @@ button{cursor:pointer}
 
 /* ---------- header ---------- */
 .top{display:flex;align-items:center;gap:14px;margin:6px 0 18px}
-.owl{width:186px;height:186px;flex:none}
+.owl{width:86px;height:86px;flex:none}
 .owl .lid{transform-origin:center;transform:scaleY(0);transition:transform .15s}
 .owl.blink .lid{transform:scaleY(1)}
 .owl.thinking{animation:bob 1s ease-in-out infinite}
@@ -177,6 +177,63 @@ button{cursor:pointer}
 .foot{margin-top:28px;text-align:center;color:var(--soft);font-size:.9rem}
 .foot button{background:none;border:none;color:var(--soft);text-decoration:underline;font-size:.9rem}
 
+/* ---------- snap a page ---------- */
+.or{display:flex;align-items:center;gap:12px;margin:18px 0 12px;color:var(--soft);font-weight:700}
+.or::before,.or::after{content:"";flex:1;border-top:3px dashed var(--line)}
+.snap{
+  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  border:4px solid var(--ink);border-radius:20px;background:var(--pink);color:#fff;
+  font-family:var(--display);font-weight:800;font-size:1.5rem;padding:8px 0 6px;
+  box-shadow:0 6px 0 var(--ink);cursor:pointer;transition:transform .08s, box-shadow .08s
+}
+.snap:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
+.snap-alt{display:block;text-align:center;margin-top:10px;color:var(--grape);font-weight:700;font-size:1rem;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.page{margin-top:18px;background:var(--paper);border:4px solid var(--ink);border-radius:28px;padding:16px;box-shadow:8px 8px 0 var(--teal)}
+.page[hidden]{display:none}
+.page-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.page-head h2{font-family:var(--display);font-weight:800;font-size:1.35rem;margin:0;line-height:1.1;flex:1;min-width:180px}
+.tool{border:3px solid var(--ink);background:var(--paper);border-radius:999px;min-width:44px;height:44px;padding:0 12px;font-weight:800;font-size:1.1rem;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.tool:disabled{opacity:.4;cursor:not-allowed}
+.page-scroll{overflow:auto;max-height:72vh;border-radius:16px;border:3px solid var(--line);background:#fff;-webkit-overflow-scrolling:touch}
+.page-img{position:relative;width:100%;touch-action:manipulation}
+.page-img img{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none;pointer-events:none}
+.wbox{
+  position:absolute;border:none;padding:0;margin:0;background:transparent;border-radius:4px;
+  mix-blend-mode:multiply;-webkit-tap-highlight-color:transparent
+}
+.wbox.hint{animation:hint 1.6s ease-out 1}
+@keyframes hint{0%,40%{background:rgba(123,92,255,.28)}100%{background:transparent}}
+.wbox.sel{background:#FFE14D}
+.wbox.sel.edge-a{border-top-left-radius:8px;border-bottom-left-radius:8px}
+.ocr{padding:28px 10px;text-align:center}
+.ocr .msg{font-family:var(--display);font-weight:700;font-size:1.25rem;margin:0 0 12px}
+.ocr .bar{height:18px;border:3px solid var(--ink);border-radius:999px;background:var(--bg);overflow:hidden;max-width:360px;margin:0 auto}
+.ocr .bar i{display:block;height:100%;width:0;background:var(--teal);transition:width .2s}
+.ocr.err .msg{color:var(--pink)}
+.selbar{
+  position:sticky;bottom:12px;margin-top:12px;background:var(--sun-soft);border:4px solid var(--ink);border-radius:20px;
+  padding:10px 12px;box-shadow:0 6px 0 var(--ink);z-index:2
+}
+.selbar[hidden]{display:none}
+.seltext{font-family:var(--display);font-weight:700;font-size:1.2rem;line-height:1.25;margin:0 0 8px;max-height:4.2em;overflow:auto}
+.selbtns{display:flex;gap:8px;flex-wrap:wrap}
+.selbtns .tool{background:var(--paper)}
+.selbtns .explain{flex:1;min-width:150px;background:var(--grape);color:#fff;font-family:var(--display);font-size:1.25rem}
+.page-tip{margin:10px 2px 0;font-size:.95rem;color:var(--soft)}
+
+.b-orig{background:var(--paper)}
+.b-orig p{font-style:italic}
+.han-s{font-family:var(--han);font-weight:700;font-size:1.4rem;line-height:1.5}
+.tricky{display:grid;gap:8px;margin-top:6px}
+.tricky button{
+  display:block;width:100%;text-align:left;border:3px solid var(--ink);border-radius:16px;background:var(--paper);padding:8px 12px
+}
+.tricky b{font-family:var(--display);font-size:1.2rem;color:var(--grape)}
+.tricky small{display:block;color:var(--soft);font-size:.85rem;margin-top:2px}
+.backpage{margin-top:12px;width:100%;border:3px solid var(--ink);border-radius:18px;background:var(--paper);font-weight:700;padding:8px 0}
+
 @media (max-width:520px){
   .brand h1{font-size:2rem}
   .owl{width:68px;height:68px}
@@ -214,7 +271,7 @@ button{cursor:pointer}
       <path d="M60 96 v16" stroke="#2B1B5A" stroke-width="3"/>
     </svg>
     <div class="brand">
-      <h1>DMIS Word Buddy</h1>
+      <h1>Word Buddy</h1>
       <p>Stuck on a word? Hoot will help.</p>
     </div>
     <div class="book-chip" id="bookChip" hidden></div>
@@ -232,6 +289,37 @@ button{cursor:pointer}
       <input id="book" type="text" maxlength="80" placeholder="Book title (optional)">
     </div>
     <button class="go" id="go">Explain it!</button>
+
+    <div class="or">or</div>
+    <label class="snap" for="photoCam">📷 Snap my page</label>
+    <input id="photoCam" class="vh" type="file" accept="image/*" capture="environment">
+    <label class="snap-alt" for="photoPick">Choose a photo instead</label>
+    <input id="photoPick" class="vh" type="file" accept="image/*">
+  </section>
+
+  <section class="page" id="page" hidden aria-label="My book page">
+    <div class="page-head">
+      <h2 id="pageTitle">Tap the words you don't know</h2>
+      <button class="tool" id="zoomOut" aria-label="Make the page smaller">−</button>
+      <button class="tool" id="zoomIn" aria-label="Make the page bigger">+</button>
+      <label class="tool" for="photoCam" aria-label="Take a new photo">📷</label>
+    </div>
+    <div class="ocr" id="ocr">
+      <p class="msg" id="ocrMsg">Hoot is getting its reading glasses…</p>
+      <div class="bar"><i id="ocrBar"></i></div>
+    </div>
+    <div class="page-scroll" id="pageScroll" hidden>
+      <div class="page-img" id="pageImg"></div>
+    </div>
+    <p class="page-tip" id="pageTip" hidden>Tap a word to highlight it. Tap the words next to it to make it longer.</p>
+    <div class="selbar" id="selbar" hidden>
+      <p class="seltext" id="selText"></p>
+      <div class="selbtns">
+        <button class="tool" id="selClear" aria-label="Clear highlight">✕</button>
+        <button class="tool" id="selSentence">Whole sentence</button>
+        <button class="tool explain" id="selGo">Explain!</button>
+      </div>
+    </div>
   </section>
 
   <div class="status" id="status" role="status" aria-live="polite"></div>
@@ -326,19 +414,13 @@ button{cursor:pointer}
     slow_down: "Whoa, that was fast! Wait a minute, then press Explain it! again.",
     busy: "Hoot's helpers are all busy. Try again in a few minutes.",
     bad_word: "Hoot only knows letters. Check the word has no numbers or symbols.",
+    bad_sentence: "Hoot couldn't read that sentence. Try highlighting it again.",
     offline: "Hoot can't reach the internet. Check the Wi-Fi, then try again.",
     cancelled: "",
   }[code] ?? "Hoot couldn't find that one right now. Check the spelling and press Explain it! again.");
 
-  async function lookUp(wordArg, sentenceArg){
-    const word = (wordArg ?? wordEl.value).trim();
-    const sentence = (sentenceArg ?? sentEl.value).trim();
-    if (!word){ setStatus("Type the tricky word in the box first.", true); wordEl.focus(); return; }
-
-    // Already in the jar with the same sentence? Show it instantly.
-    const saved = jar.find(j => j.word.toLowerCase() === word.toLowerCase() && (j.sentence || "") === sentence);
-    if (saved){ setStatus(""); render(saved.data, saved.sentence, true); return; }
-
+  // Calls the Worker with slow-progress messages; returns data or throws {code}.
+  async function callApi(body){
     ctl?.abort();
     ctl = new AbortController();
     const myCtl = ctl;
@@ -355,24 +437,82 @@ button{cursor:pointer}
         res = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ word, sentence }),
+          body: JSON.stringify(body),
           signal: myCtl.signal,
         });
       } catch (e) {
         throw { code: e && e.name === "AbortError" ? "cancelled" : "offline" };
       }
       const out = await res.json().catch(() => ({}));
-      if (!res.ok || !out.ok) throw { code: out.error || "no_answer" };
-      const data = out.data;
-      if (!data || !data.meaning) throw { code: "no_answer" };
+      if (!res.ok || !out.ok || !out.data) throw { code: out.error || "no_answer" };
       setStatus("");
-      render(data, sentence, false);
-    } catch (e) {
-      setStatus(errCopy(e && e.code), true);
+      return out.data;
     } finally {
       slowTimers.forEach(clearTimeout);
       setBusy(false);
     }
+  }
+
+  async function lookUp(wordArg, sentenceArg){
+    const word = (wordArg ?? wordEl.value).trim();
+    const sentence = (sentenceArg ?? sentEl.value).trim();
+    if (!word){ setStatus("Type the tricky word in the box first.", true); wordEl.focus(); return; }
+
+    // Already in the jar with the same sentence? Show it instantly.
+    const saved = jar.find(j => j.word.toLowerCase() === word.toLowerCase() && (j.sentence || "") === sentence);
+    if (saved){ setStatus(""); render(saved.data, saved.sentence, true); return; }
+
+    try {
+      const data = await callApi({ word, sentence });
+      if (!data.meaning) throw { code: "no_answer" };
+      render(data, sentence, false);
+    } catch (e) {
+      setStatus(errCopy(e && e.code), true);
+    }
+  }
+
+  async function explainSentence(text){
+    try {
+      const data = await callApi({ mode: "sentence", sentence: text });
+      if (!data.simple) throw { code: "no_answer" };
+      renderSentence(data);
+    } catch (e) {
+      setStatus(errCopy(e && e.code), true);
+    }
+  }
+
+  function renderSentence(d){
+    const tricky = Array.isArray(d.tricky) ? d.tricky : [];
+    answerEl.innerHTML = `
+      <div class="hero">
+        <div class="emoji" aria-hidden="true">${esc(d.emoji || "💬")}</div>
+        <div><div class="w" style="font-size:2rem">What it means</div></div>
+      </div>
+      <div class="blocks">
+        <div class="block b-orig"><h3>From my book</h3><p>${esc(d.sentence)}</p></div>
+        <div class="block b-mean"><h3>In simple words</h3><p>${esc(d.simple)}</p></div>
+        ${tricky.length ? `<div class="block b-eg"><h3>Tricky words</h3><div class="tricky">
+          ${tricky.map(t => `<button data-word="${esc(t.word)}"><b>${esc(t.word)}</b> ${esc(t.meaning)}<small>Tap to learn more and save it ⭐</small></button>`).join("")}
+        </div></div>` : ""}
+        ${d.chinese ? `<div class="block b-zh"><div style="flex:1;min-width:0"><h3>In Chinese</h3><div class="han-s" lang="zh-Hans">${esc(d.chinese)}</div></div>
+          ${canSpeak ? `<button class="say" data-say="${esc(d.chinese)}" data-lang="zh-CN" aria-label="Hear it in Chinese">🔊 听</button>` : ""}</div>` : ""}
+      </div>`;
+    answerEl.classList.add("show");
+    answerEl.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => speak(b.dataset.say, b.dataset.lang)));
+    answerEl.querySelectorAll("[data-word]").forEach(b => b.addEventListener("click", () => {
+      const w = b.dataset.word.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
+      lookUp(w, d.sentence);
+    }));
+    addBackToPage();
+    answerEl.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  }
+
+  function addBackToPage(){
+    if (pageEl.hidden || !tokens.length) return;
+    const b = document.createElement("button");
+    b.className = "backpage"; b.textContent = "📖 Back to my page";
+    b.addEventListener("click", () => pageEl.scrollIntoView({ behavior: "smooth", block: "start" }));
+    answerEl.appendChild(b);
   }
 
   let current = null;
@@ -416,11 +556,265 @@ button{cursor:pointer}
       sb.classList.add("done"); sb.disabled = true; sb.textContent = "✓ In my word jar";
       renderJar();
     });
+    addBackToPage();
     answerEl.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   }
 
   goBtn.addEventListener("click", () => lookUp());
   wordEl.addEventListener("keydown", (e) => { if (e.key === "Enter") lookUp(); });
+
+  /* ---------- snap my page (OCR runs on this device) ---------- */
+  const TESSERACT_SRC = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+  const pageEl = $("page"), pageImg = $("pageImg"), pageScroll = $("pageScroll");
+  const ocrEl = $("ocr"), ocrMsg = $("ocrMsg"), ocrBar = $("ocrBar");
+  const selbar = $("selbar"), selText = $("selText"), selGo = $("selGo");
+  let tokens = [];        // {text, clean, box:{x0,y0,x1,y1}, el, hyph}
+  let sel = null;         // {a, b} index range
+  let zoom = 1, imgW = 1, imgH = 1;
+  const ZOOMS = [1, 1.5, 2, 2.5, 3];
+  let ocrWorkerP = null, ocrRun = 0;
+
+  function loadScript(src){
+    return new Promise((ok, fail) => {
+      if (window.Tesseract) return ok();
+      const el = document.createElement("script");
+      el.src = src; el.async = true; el.onload = () => ok(); el.onerror = () => fail(new Error("load"));
+      document.head.appendChild(el);
+    });
+  }
+  let ocrProgressCb = () => {};
+  function getOcrWorker(){
+    if (!ocrWorkerP){
+      ocrWorkerP = loadScript(TESSERACT_SRC)
+        .then(() => Tesseract.createWorker("eng", 1, { logger: (m) => ocrProgressCb(m) }))
+        .catch((e) => { ocrWorkerP = null; throw e; });
+    }
+    return ocrWorkerP;
+  }
+
+  function showOcr(msg, pct, isErr){
+    ocrEl.hidden = false;
+    ocrEl.classList.toggle("err", !!isErr);
+    ocrMsg.textContent = msg;
+    ocrBar.parentElement.style.display = isErr ? "none" : "";
+    if (pct != null) ocrBar.style.width = Math.round(pct * 100) + "%";
+  }
+
+  async function fileToCanvas(file){
+    let src;
+    try { src = await createImageBitmap(file, { imageOrientation: "from-image" }); }
+    catch {
+      src = await new Promise((ok, fail) => {
+        const im = new Image(); im.onload = () => ok(im); im.onerror = fail;
+        im.src = URL.createObjectURL(file);
+      });
+    }
+    const w0 = src.width || src.naturalWidth, h0 = src.height || src.naturalHeight;
+    const scale = Math.min(1, 2200 / Math.max(w0, h0));
+    const c = document.createElement("canvas");
+    c.width = Math.round(w0 * scale); c.height = Math.round(h0 * scale);
+    c.getContext("2d").drawImage(src, 0, 0, c.width, c.height);
+    return c;
+  }
+
+  const stripPunct = (t) => t.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
+  const endsSentence = (t) => /[.!?]["'”’)\]]*$/.test(t);
+
+  async function handlePhoto(file){
+    if (!file) return;
+    const run = ++ocrRun;
+    pageEl.hidden = false;
+    pageScroll.hidden = true; $("pageTip").hidden = true;
+    clearSel(); tokens = []; pageImg.innerHTML = "";
+    answerEl.classList.remove("show"); setStatus("");
+    showOcr("Hoot is getting its reading glasses…", 0.03);
+    pageEl.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    try {
+      const canvas = await fileToCanvas(file);
+      if (run !== ocrRun) return;
+      imgW = canvas.width; imgH = canvas.height;
+      ocrProgressCb = (m) => {
+        if (run !== ocrRun) return;
+        if (m.status === "recognizing text") showOcr(`Hoot is reading your page… ${Math.round((m.progress || 0) * 100)}%`, 0.1 + (m.progress || 0) * 0.9);
+        else if (/load|initializ/i.test(m.status || "")) showOcr("Hoot is getting its reading glasses… (the first time takes a little longer)", 0.05);
+      };
+      const worker = await getOcrWorker();
+      if (run !== ocrRun) return;
+      showOcr("Hoot is reading your page…", 0.1);
+      const { data } = await worker.recognize(canvas);
+      if (run !== ocrRun) return;
+
+      // Build tokens in reading order.
+      tokens = [];
+      const lines = (data.lines || []).filter(l => l.words && l.words.length);
+      lines.forEach((line, li) => {
+        line.words.forEach((w, wi) => {
+          const text = (w.text || "").trim();
+          if (!text) return;
+          const isLast = wi === line.words.length - 1;
+          tokens.push({
+            text, clean: stripPunct(text), box: w.bbox, conf: w.confidence,
+            hyph: isLast && li < lines.length - 1 && /[-‐]$/.test(text) && /\p{L}[-‐]$/u.test(text),
+          });
+        });
+      });
+      // A word split across lines ("apprehen-" + "sive") becomes one word.
+      tokens.forEach((t, i) => { if (t.hyph && tokens[i + 1]) tokens[i + 1].hyphPrev = true; });
+
+      const readable = tokens.filter(t => /\p{L}{2,}/u.test(t.clean) && t.conf > 40).length;
+      if (readable < 3){
+        tokens = [];
+        showOcr("Hoot couldn't read that photo. Hold the book flat, find good light, and get close to the words, then try again.", null, true);
+        return;
+      }
+
+      const img = new Image();
+      img.alt = "Photo of my book page";
+      img.src = canvas.toDataURL("image/jpeg", 0.85);
+      pageImg.appendChild(img);
+      tokens.forEach((t, i) => {
+        if (!/\p{L}/u.test(t.clean)) return;
+        const padY = (t.box.y1 - t.box.y0) * 0.18, padX = 2;
+        const b = document.createElement("button");
+        b.className = "wbox hint";
+        b.setAttribute("aria-label", t.clean);
+        b.style.left = ((t.box.x0 - padX) / imgW * 100) + "%";
+        b.style.top = ((t.box.y0 - padY) / imgH * 100) + "%";
+        b.style.width = ((t.box.x1 - t.box.x0 + padX * 2) / imgW * 100) + "%";
+        b.style.height = ((t.box.y1 - t.box.y0 + padY * 2) / imgH * 100) + "%";
+        b.addEventListener("click", () => tapWord(i));
+        t.el = b;
+        pageImg.appendChild(b);
+      });
+      ocrEl.hidden = true;
+      pageScroll.hidden = false; $("pageTip").hidden = false;
+      setZoom(1);
+    } catch (e) {
+      if (run !== ocrRun) return;
+      showOcr("Hoot couldn't open its reading glasses. Check the internet, then take the photo again.", null, true);
+    }
+  }
+
+  function setZoom(z){
+    zoom = z;
+    pageImg.style.width = (z * 100) + "%";
+    $("zoomOut").disabled = z <= ZOOMS[0];
+    $("zoomIn").disabled = z >= ZOOMS[ZOOMS.length - 1];
+  }
+  function stepZoom(dir){
+    const i = ZOOMS.indexOf(zoom) + dir;
+    if (i < 0 || i >= ZOOMS.length) return;
+    // keep the middle of the view in place
+    const cx = (pageScroll.scrollLeft + pageScroll.clientWidth / 2) / pageScroll.scrollWidth;
+    const cy = (pageScroll.scrollTop + pageScroll.clientHeight / 2) / pageScroll.scrollHeight;
+    setZoom(ZOOMS[i]);
+    pageScroll.scrollLeft = cx * pageScroll.scrollWidth - pageScroll.clientWidth / 2;
+    pageScroll.scrollTop = cy * pageScroll.scrollHeight - pageScroll.clientHeight / 2;
+  }
+  $("zoomIn").addEventListener("click", () => stepZoom(1));
+  $("zoomOut").addEventListener("click", () => stepZoom(-1));
+
+  // Grow a range so split words ("apprehen-" / "sive") stay together.
+  function fixHyph(r){
+    if (tokens[r.a] && tokens[r.a].hyphPrev && r.a > 0) r.a--;
+    if (tokens[r.b] && tokens[r.b].hyph && r.b < tokens.length - 1) r.b++;
+    return r;
+  }
+
+  // Tap rules: first tap highlights a word; tapping a neighbour grows the
+  // highlight; tapping an end word shrinks it; tapping elsewhere starts over.
+  function tapWord(i){
+    const g = fixHyph({ a: i, b: i });          // the tapped word (both halves if split)
+    if (!sel) sel = g;
+    else if (g.b === sel.a - 1) sel.a = g.a;
+    else if (g.a === sel.b + 1) sel.b = g.b;
+    else if (g.a === sel.a && g.b === sel.b) sel = null;
+    else if (g.a === sel.a) sel.a = g.b + 1;
+    else if (g.b === sel.b) sel.b = g.a - 1;
+    else sel = g;
+    if (sel) {
+      while (sel.a < sel.b && !/\p{L}/u.test(tokens[sel.a].clean)) sel.a++;
+      while (sel.b > sel.a && !/\p{L}/u.test(tokens[sel.b].clean)) sel.b--;
+      fixHyph(sel);
+      if (sel.b - sel.a > 70) sel.a = sel.b - 70;
+    }
+    paintSel();
+  }
+
+  // Join tokens a..b into text, merging line-break hyphens.
+  function joinText(a, b){
+    let out = "";
+    for (let i = a; i <= b; i++){
+      const t = tokens[i];
+      let piece = t.text;
+      if (t.hyph && i < b) piece = piece.replace(/[-‐]$/, "");
+      out += (i === a || t.hyphPrev ? "" : " ") + piece;
+    }
+    return out.trim();
+  }
+  function selectedPhrase(){
+    if (!sel) return "";
+    return stripPunct(joinText(sel.a, sel.b));
+  }
+  function wordCount(){
+    if (!sel) return 0;
+    let n = 0;
+    for (let i = sel.a; i <= sel.b; i++) if (/\p{L}/u.test(tokens[i].clean) && !tokens[i].hyphPrev) n++;
+    return n;
+  }
+  function sentenceRange(a, b){
+    let s = a, e = b, steps = 0;
+    while (s > 0 && !endsSentence(tokens[s - 1].text) && steps++ < 45) s--;
+    steps = 0;
+    while (e < tokens.length - 1 && !endsSentence(tokens[e].text) && steps++ < 45) e++;
+    return { a: s, b: e };
+  }
+
+  function clearSel(){ sel = null; paintSel(); }
+  function paintSel(){
+    tokens.forEach((t, i) => {
+      if (!t.el) return;
+      const on = !!sel && i >= sel.a && i <= sel.b;
+      t.el.classList.toggle("sel", on);
+      t.el.classList.remove("hint");
+      t.el.setAttribute("aria-pressed", on);
+    });
+    if (!sel){ selbar.hidden = true; return; }
+    selbar.hidden = false;
+    const n = wordCount();
+    selText.textContent = "“" + joinText(sel.a, sel.b) + "”";
+    const isSentence = n > 4;
+    selGo.textContent = isSentence ? "Explain this sentence!" : (n > 1 ? "Explain these words!" : "Explain this word!");
+    const sr = sentenceRange(sel.a, sel.b);
+    $("selSentence").hidden = sr.a === sel.a && sr.b === sel.b;
+  }
+
+  $("selClear").addEventListener("click", clearSel);
+  $("selSentence").addEventListener("click", () => {
+    if (!sel) return;
+    sel = sentenceRange(sel.a, sel.b);
+    while (sel.a < sel.b && !/\p{L}/u.test(tokens[sel.a].clean)) sel.a++;
+    paintSel();
+  });
+  selGo.addEventListener("click", () => {
+    if (!sel) return;
+    const n = wordCount();
+    const sr = sentenceRange(sel.a, sel.b);
+    const sentence = joinText(sr.a, sr.b).slice(0, 400);
+    if (n <= 4){
+      const phrase = selectedPhrase().slice(0, 40);
+      if (phrase) lookUp(phrase, sentence);
+    } else {
+      explainSentence(joinText(sel.a, sel.b).slice(0, 400));
+    }
+  });
+
+  ["photoCam", "photoPick"].forEach(id => $(id).addEventListener("change", (e) => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = "";   // so the same photo can be chosen again
+    handlePhoto(f);
+  }));
 
   /* ---------- jar ---------- */
   function renderJar(){
