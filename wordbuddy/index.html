@@ -221,6 +221,10 @@ button{cursor:pointer}
 .selbtns{display:flex;gap:8px;flex-wrap:wrap}
 .selbtns .tool{background:var(--paper)}
 .selbtns .explain{flex:1;min-width:150px;background:var(--grape);color:#fff;font-family:var(--display);font-size:1.25rem}
+.selbtns .explain.busy{opacity:1;cursor:wait;background:var(--soft);animation:breathe 1.4s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(.97);opacity:.8}}
+.go:disabled{animation:breathe 1.4s ease-in-out infinite}
+.page-img.locked .wbox{cursor:wait}
 .page-tip{margin:10px 2px 0;font-size:.95rem;color:var(--soft)}
 
 .b-orig{background:var(--paper)}
@@ -395,10 +399,23 @@ button{cursor:pointer}
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 
   let ctl = null;
-  function setBusy(b){
+  let busy = false;
+  // While Hoot is working, every "explain" button is locked and says so,
+  // so pressing again can't restart the lookup (which also wastes requests).
+  function setBusy(b, label){
+    busy = b;
     goBtn.disabled = b;
-    goBtn.textContent = b ? "Hoot is thinking…" : "Explain it!";
+    goBtn.textContent = b ? (label || "Hoot is thinking…") : "Explain it!";
     owl.classList.toggle("thinking", b);
+    selGo.disabled = b;
+    selGo.classList.toggle("busy", b);
+    selGo.setAttribute("aria-busy", b);
+    $("selSentence").disabled = b;
+    $("selClear").disabled = b;
+    pageImg.classList.toggle("locked", b);
+    answerEl.querySelectorAll(".tricky button").forEach(x => x.disabled = b);
+    if (b) selGo.textContent = label || "Hoot is thinking…";
+    else paintSel();   // puts the normal "Explain…" label back
   }
   function setStatus(msg, isErr, withStop){
     statusEl.className = "status" + (isErr ? " err" : "");
@@ -427,9 +444,9 @@ button{cursor:pointer}
     setBusy(true);
     answerEl.classList.remove("show");
     setStatus("Hoot is flipping through the dictionary…", false, true);
-    const slowMsgs = ["Still looking… this one's a tricky word!", "Almost there, Hoot is asking a friend…"];
-    const slowTimers = slowMsgs.map((m, i) => setTimeout(() => {
-      if (ctl === myCtl) setStatus(m, false, true);
+    const slowMsgs = [["Still looking… this one's a tricky word!", "Still looking…"], ["Almost there, Hoot is asking a friend…", "Almost there…"]];
+    const slowTimers = slowMsgs.map(([long, short], i) => setTimeout(() => {
+      if (ctl === myCtl){ setStatus(long, false, true); setBusy(true, short); }
     }, 7000 + i * 8000));
     try {
       let res;
@@ -456,6 +473,7 @@ button{cursor:pointer}
   async function lookUp(wordArg, sentenceArg){
     const word = (wordArg ?? wordEl.value).trim();
     const sentence = (sentenceArg ?? sentEl.value).trim();
+    if (busy) return;
     if (!word){ setStatus("Type the tricky word in the box first.", true); wordEl.focus(); return; }
 
     // Already in the jar with the same sentence? Show it instantly.
@@ -472,6 +490,7 @@ button{cursor:pointer}
   }
 
   async function explainSentence(text){
+    if (busy) return;
     try {
       const data = await callApi({ mode: "sentence", sentence: text });
       if (!data.simple) throw { code: "no_answer" };
@@ -725,6 +744,7 @@ button{cursor:pointer}
   // Tap rules: first tap highlights a word; tapping a neighbour grows the
   // highlight; tapping an end word shrinks it; tapping elsewhere starts over.
   function tapWord(i){
+    if (busy) return;                           // keep the highlight steady while Hoot works
     const g = fixHyph({ a: i, b: i });          // the tapped word (both halves if split)
     if (!sel) sel = g;
     else if (g.b === sel.a - 1) sel.a = g.a;
@@ -785,7 +805,7 @@ button{cursor:pointer}
     const n = wordCount();
     selText.textContent = "“" + joinText(sel.a, sel.b) + "”";
     const isSentence = n > 4;
-    selGo.textContent = isSentence ? "Explain this sentence!" : (n > 1 ? "Explain these words!" : "Explain this word!");
+    if (!busy) selGo.textContent = isSentence ? "Explain this sentence!" : (n > 1 ? "Explain these words!" : "Explain this word!");
     const sr = sentenceRange(sel.a, sel.b);
     $("selSentence").hidden = sr.a === sel.a && sr.b === sel.b;
   }
@@ -798,7 +818,7 @@ button{cursor:pointer}
     paintSel();
   });
   selGo.addEventListener("click", () => {
-    if (!sel) return;
+    if (!sel || busy) return;
     const n = wordCount();
     const sr = sentenceRange(sel.a, sel.b);
     const sentence = joinText(sr.a, sr.b).slice(0, 400);
