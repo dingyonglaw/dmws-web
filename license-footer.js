@@ -17,7 +17,7 @@
         '#dmis-license-footer *{box-sizing:border-box}' +
         '#dmis-license-footer a{color:inherit;text-decoration:underline;text-underline-offset:2px}' +
         '#dmis-license-footer a:focus-visible,#dmis-license-footer button:focus-visible{outline:2px solid #fb6415;outline-offset:2px}' +
-        '#dmis-license-footer.dlf-bar{clear:both;width:100%;text-align:center;padding:14px 16px;background:#fdf5e1;color:#0C2340;border-top:2px solid #ead9b4}' +
+        '#dmis-license-footer.dlf-bar{clear:both;width:100%;text-align:center;padding:14px 16px;background:#fdf5e1;color:#0C2340;border-top:2px solid #ead9b4;margin-top:20px}' +
         '#dmis-license-footer .dlf-sep{opacity:.5;margin:0 6px}' +
         '#dmis-license-footer.dlf-badge{position:fixed;left:calc(8px + env(safe-area-inset-left,0px));bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:2147483000}' +
         '#dmis-license-footer .dlf-toggle{font:inherit;font-weight:700;font-size:12px;cursor:pointer;border:2px solid #fdf5e1;background:rgba(12,35,64,.85);color:#fdf5e1;border-radius:999px;padding:4px 10px;opacity:.75;transition:opacity .2s}' +
