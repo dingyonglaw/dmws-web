@@ -243,6 +243,20 @@ header .steps{order:5;flex:1 1 100%}
 /* Net Lab on phones: the nets scroll sideways so the 3D view stays close */
 @media (max-width:699px){.thumbs{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:92px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}.thumb{scroll-snap-align:start}}
 #ask:empty{display:none}
+/* Net Lab guess card: floats on the 3D view, where her eyes already are after tapping a net */
+.stageask{position:absolute;left:12px;right:12px;bottom:12px;margin:0 auto;max-width:520px;z-index:5;background:var(--card);color:var(--ink);border-radius:16px;padding:12px 14px;
+  box-shadow:0 0 0 3px var(--accent),0 14px 30px -10px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:8px;animation:saIn .3s ease}
+.stageask p{margin:0}
+.stageask .saeye{font:800 .75rem/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.stageask .saq{font:800 1.3rem/1.15 var(--f-display)}
+.stageask .sarow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.stageask .sarow .btn{flex:none}
+.stageask .feedback{font-size:1.25rem}
+@keyframes saIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.stageask{animation:none}}
+.stage.asking .spinpill{display:none}
+.stagecol.guessing .controls,.stagecol.guessing .result{display:none}
+@media (max-width:480px){.stageask{left:8px;right:8px;bottom:8px;padding:10px 12px}.stageask .saq{font-size:1.1rem}.stageask .sarow{flex-wrap:wrap}.stageask .yn .btn{font-size:.95rem;padding:11px 8px 9px}}
 #ask{display:flex;flex-direction:column;gap:8px}
 
 .lesson .panel .eyebrow{display:none}
@@ -426,6 +440,7 @@ details.tip:not([open]){padding-block:6px}
           <canvas class="confetti" id="confetti" hidden></canvas>
           <button class="spinpill" id="spinBtn" type="button" aria-pressed="true" title="Spin the shape around after it folds"><span class="track"><i></i></span>Auto-spin</button>
           <button class="spinpill right" id="pairBtn" type="button" aria-pressed="false" title="Show which edges meet when it folds"><span class="track"><i></i></span>Edge partners</button>
+          <div class="stageask" id="stageAsk" aria-live="polite" hidden></div>
         </div>
         <div class="controls">
           <button class="btn" id="playBtn" type="button">Fold it</button>
@@ -1537,7 +1552,7 @@ function setLegend(shape){
     Object.entries(shape.kinds).filter(([n,k])=>!k.hide).map(([n,k])=>`<span><i class="sw" style="${swatchStyle(shape,n)}"></i>${k.label}</span>`).join('');
 }
 function fitCamera(w,h,smooth){
-  w=w||stage.clientWidth||600; h=h||stage.clientHeight||400; const a=w/h;
+  w=w||stage.clientWidth||600; h=h||(stage.clientHeight-askPad(stage.clientHeight))||400; const a=w/h;
   const b=model.bounds, ext=Math.max(b.x1-b.x0,(b.y1-b.y0)*1.2)+1.6, fov=camera.fov*Math.PI/180;
   const d=ext/(2*Math.tan(fov/2))*(a<1.25?1.25/a:1)*1.02;
   const pos=new THREE.Vector3(d*.32,d*.72,d*.66), tg=new THREE.Vector3(0,.4,0);
@@ -1545,7 +1560,10 @@ function fitCamera(w,h,smooth){
   camAnim=null; camera.position.copy(pos); controls.target.copy(tg); controls.update(); dirty=true;
 }
 let lastW=0;
-function resize(){ const w=stage.clientWidth,h=stage.clientHeight; if(!w||!h) return false; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); dirty=true; const wc=Math.abs(w-lastW)>2; lastW=w; return wc; }
+// while the guess card covers the bottom of the stage, frame the shape in the space above it
+function askPad(h){ return stage.classList.contains('asking')?Math.min(stageAskEl.offsetHeight+24,h*.45):0; }
+function resize(){ const w=stage.clientWidth,h=stage.clientHeight; if(!w||!h) return false; renderer.setSize(w,h,false);
+  const hv=h-askPad(h); camera.aspect=w/hv; if(hv<h) camera.setViewOffset(w,hv,0,0,w,h); else camera.clearViewOffset(); camera.updateProjectionMatrix(); dirty=true; const wc=Math.abs(w-lastW)>2; lastW=w; return wc; }
 new ResizeObserver(()=>{ if(resize() && model && !thumbJob) fitCamera(); }).observe(stage);
 
 const range=document.getElementById('foldRange'), playBtn=document.getElementById('playBtn'), resultEl=document.getElementById('result');
@@ -1802,7 +1820,7 @@ function exitQuiz(){ setPicking(false); quizMode=false; lockStage(false); const 
 function showPicker(){
   QUIZ.n=0; QUIZ.ended=false; QUIZ.answered=false; renderQuizBar();
   const pool=QUIZ.pool; setPicking(true);
-  anim=null; camAnim=null; disposeModel(); lockStage(false); stageTop.hidden=true; askEl.innerHTML='';
+  anim=null; camAnim=null; disposeModel(); lockStage(false); stageTop.hidden=true; askEl.innerHTML=''; setStageAsk('');
   panel.innerHTML=`<h2>Fold it in your head</h2><p>${pool.startsWith('shape:')?'Nets for the '+SHAPES[pool.slice(6)].name.toLowerCase()+'.':'Nets from every shape, all mixed up.'} One at a time: look, decide, then watch it fold. The nets are turned and flipped, so look closely!</p>${pickerHTML(bestText(pool))}`;
   bindPicker(n=>startRound(pool,n)); quizNav();
 }
@@ -1814,7 +1832,7 @@ function startRound(pool,n){
 }
 function showQuestion(){
   QUIZ.answered=false; const key=QUIZ.items[QUIZ.i], s=SHAPES[NETS[key].shape];
-  setPartners(false); showVerdict=false; onFolded=null; loadNet(key,0); paintVerdict(); topDown(); lockStage(true); stageTop.hidden=true; askEl.innerHTML='';
+  setPartners(false); showVerdict=false; onFolded=null; loadNet(key,0); paintVerdict(); topDown(); lockStage(true); stageTop.hidden=true; askEl.innerHTML=''; setStageAsk('');
   panel.innerHTML=`<div class="qhead"><span class="qnum">Question ${QUIZ.i+1}</span><span class="qshape">${s.name}</span></div>
     <h2>${s.dice?'Is this a real dice?':'Will this net fold into '+aShape(s)+'?'}</h2>
     <p class="qhint">Fold it in your head. Picture each flap swinging up.</p>
@@ -1864,7 +1882,7 @@ function endRound(){
 function enterQuiz(pool,from){
   quizMode=true; shapeKey=null; steps=[]; homeEl.hidden=true; lessonEl.hidden=false; document.body.classList.add('app');
   crumb.hidden=false; crumb.textContent='Quiz'; QUIZ.pool=pool; if(from!==undefined) QUIZ.from=from;
-  resize(); askEl.innerHTML=''; stageTop.hidden=true;
+  resize(); askEl.innerHTML=''; setStageAsk(''); stageTop.hidden=true;
   const p=QUIZ.pending; QUIZ.pending=null;
   if(p&&p.pool===pool) startRound(pool,p.n); else showPicker();
 }
@@ -1873,7 +1891,7 @@ function enterQuiz(pool,from){
 const homeEl=document.getElementById('home'), lessonEl=document.getElementById('lesson'), panel=document.getElementById('panel');
 const chips=document.getElementById('chips'), crumb=document.getElementById('crumb'), counter=document.getElementById('counter');
 let shapeKey=null, steps=[], cur=0, countTimer=null, qSel='A', qMarks={}, labSel=null, labAsk=null, teacher=false;
-const thumbs={0:{},1:{}}; let thumbJob=null; const stageTop=document.getElementById('stageTop'), askEl=document.getElementById('ask');
+const thumbs={0:{},1:{}}; let thumbJob=null; const stageTop=document.getElementById('stageTop'), askEl=document.getElementById('ask'), stageAskEl=document.getElementById('stageAsk');
 
 /* Home pictures: rendered one per frame, only while the home page shows, cached per color mode. */
 function renderThumbs(){
@@ -1885,7 +1903,7 @@ function renderThumbs(){
     if(homeEl.hidden||(cb?1:0)!==thumbJob.mode){ thumbJob=null; resize(); return; }
     const k=todo.shift();
     try{
-      const W=480,H=360; renderer.setSize(W,H,false); camera.aspect=W/H; camera.updateProjectionMatrix();
+      const W=480,H=360; renderer.setSize(W,H,false); camera.clearViewOffset(); camera.aspect=W/H; camera.updateProjectionMatrix();
       const m=makeModel(UI[k].ref); scene.add(m.group); model=m; applySmooth(m,m.setT(1)); applyTable(SHAPES[k]);
       camera.aspect=W/H; const fr=foldedFrame(); controls.target.copy(fr.c);
       camera.position.setFromSpherical(new THREE.Spherical(fr.d*.82,1.0,k==='cone'?-.9:.55)).add(fr.c); controls.update();
@@ -2012,9 +2030,12 @@ function labStep(k){
     html:()=>`<div class="eyebrow">Net Lab</div><h2>Which nets really fold?</h2><p>${u.labNote}</p>${TURN}
       <div class="labhead"><div class="labstats" id="labstats"></div>
         <label class="toggle"><input type="checkbox" id="teach" ${teacher?'checked':''}> Show all answers</label></div>
-      <div class="thumbs" id="thumbs"></div>`,
+      <div class="thumbs" id="thumbs"></div>
+      <div><button class="linkbtn" type="button" id="resetLab">Clear my results for this shape</button></div>`,
     tasks:[{id:'g3',text:()=>`Tap a net, guess, then fold it (${Math.min(3,labGuesses())}/3)`,when:()=>labGuesses()>=3},{id:'found',text:'Find a net that really works',when:()=>Object.values(lab[shapeKey]||{}).some(r=>r.v)}],
-    bind(){ document.getElementById('teach').onchange=e=>{ teacher=e.target.checked; renderLab(); }; renderLab(); }};
+    bind(){ document.getElementById('teach').onchange=e=>{ teacher=e.target.checked; renderLab(); };
+      document.getElementById('resetLab').onclick=()=>{ lab[shapeKey]={}; saveLab(); labAsk=null; setT(0); renderLab(); };
+      renderLab(); }};
 }
 function labGuesses(){ return Object.values(lab[shapeKey]||{}).filter(r=>r.g!==null&&r.g!==undefined).length; }
 function verdictOf(key){ if(!verdictOf.c) verdictOf.c={}; if(!(key in verdictOf.c)){ const m=buildNet(NETS[key],SHAPES[NETS[key].shape]); verdictOf.c[key]=m.evaluate().valid; } return verdictOf.c[key]; }
@@ -2027,20 +2048,26 @@ function renderLab(){
   const tested=u.lab.filter(n=>L[n]), right=tested.filter(n=>L[n].g).length, validTot=u.lab.filter(verdictOf).length, validFound=tested.filter(n=>L[n].v).length;
   document.getElementById('labstats').innerHTML=`<span>Tested <b>${tested.length}/${u.lab.length}</b></span><span>Right guesses <b>${right}</b></span><span>Working nets found <b>${validFound}/${validTot}</b></span>`;
   const idx=u.lab.indexOf(labSel)+1, rec=L[labSel], shape=SHAPES[shapeKey];
-  let h;
+  const what=shape.dice?'a real dice':'the '+shape.name.toLowerCase();
+  // the guess card sits on the 3D view; the fold controls stay hidden until she has guessed
+  let h, guessing=false;
   if(labAsk&&labAsk.done){ const ok=labAsk.guess===model.result.valid;
-    h=`<div class="ask"><div class="feedback ${ok?'g':'b'}">${ok?'Correct!':'Not quite.'}</div><p style="font-weight:400">${model.result.valid?`Net ${idx} folds into the ${shape.name.toLowerCase()}.`:`Net ${idx} does not work. The ${cb?'marked':'red'} parts show why.`}</p>
-      <div><button class="btn" id="nextNet" type="button">Next net →</button></div></div>`;
-  } else if(labAsk){ h=`<div class="ask"><p>Folding net ${idx}…</p></div>`; }
-  else { h=`<div class="ask"><p>Will net ${idx} fold into ${shape.dice?'a real dice':'the '+shape.name.toLowerCase()}?</p>
-      <div class="yn"><button class="btn yes" type="button" data-g="1">Yes, it folds</button><button class="btn no" type="button" data-g="0">No, it won’t</button></div>
-      ${rec?`<button class="linkbtn" type="button" id="clearOne">You already tested this one. Try it again</button>`:''}</div>`; }
-  h+=`<div><button class="linkbtn" type="button" id="resetLab">Clear my results for this shape</button></div>`;
-  document.getElementById('ask').innerHTML=h;
-  document.querySelectorAll('.yn .btn').forEach(b=>b.onclick=()=>{ labAsk={guess:b.dataset.g==='1',done:false}; renderLab(); if(T>0.001) fitCamera(); setT(0); animateTo(1); });
+    h=`<div class="sarow"><div><div class="feedback ${ok?'g':'b'}">${ok?'Correct!':'Not quite.'}</div><p>${model.result.valid?`Net ${idx} folds into ${what}.`:`Net ${idx} does not work. The ${cb?'marked':'red'} parts show why.`}</p></div>
+      <button class="btn" id="nextNet" type="button">Next net →</button></div>`;
+  } else if(labAsk){ guessing=true; h=`<p class="saq">Folding net ${idx}…</p>`; }
+  else if(rec){ h=`<div class="sarow"><div><div class="saeye">Net ${idx} · already tested</div><p>${rec.v?`It folds into ${what}.`:'It does not fold.'}</p></div>
+      <button class="btn ghost small" id="clearOne" type="button">Guess again</button></div>`; }
+  else { guessing=true; h=`<div class="saeye">Net ${idx} · Your guess</div><p class="saq">Will it fold into ${what}?</p>
+      <div class="yn"><button class="btn yes" type="button" data-g="1">✓ Yes, it folds</button><button class="btn no" type="button" data-g="0">✗ No, it won’t</button></div>`; }
+  setStageAsk(h,guessing);
+  stageAskEl.querySelectorAll('.yn .btn').forEach(b=>b.onclick=()=>{ labAsk={guess:b.dataset.g==='1',done:false}; renderLab(); if(T>0.001) fitCamera(); setT(0); animateTo(1); });
   const nx=document.getElementById('nextNet'); if(nx) nx.onclick=()=>{ const list=u.lab; const nextUn=list.find((n,i)=>i>list.indexOf(labSel)&&!(lab[shapeKey]||{})[n])||list[(list.indexOf(labSel)+1)%list.length]; labSel=nextUn; labAsk=null; loadNet(labSel,0); renderLab(); };
   const co=document.getElementById('clearOne'); if(co) co.onclick=()=>{ delete lab[shapeKey][labSel]; saveLab(); labAsk=null; setT(0); renderLab(); };
-  document.getElementById('resetLab').onclick=()=>{ lab[shapeKey]={}; saveLab(); labAsk=null; setT(0); renderLab(); };
+}
+function setStageAsk(h,guessing){
+  stageAskEl.innerHTML=h||''; stageAskEl.hidden=!h;
+  stage.classList.toggle('asking',!!h); document.querySelector('.stagecol').classList.toggle('guessing',!!guessing);
+  resize(); if(model&&T<0.001&&!camAnim) fitCamera();
 }
 function labFolded(key,res){
   lab[shapeKey]=lab[shapeKey]||{};
@@ -2133,7 +2160,7 @@ function renderPanel(){
   const st=steps[cur];
   panel.innerHTML=st.html();
   stageTop.innerHTML=st.top?st.top():''; stageTop.hidden=!st.top;
-  askEl.innerHTML='';
+  askEl.innerHTML=''; setStageAsk('');
   if(st.bind) st.bind();
   const back=document.getElementById('back'), nx=document.getElementById('next');
   back.textContent=cur===0?'← All shapes':'← Back';
