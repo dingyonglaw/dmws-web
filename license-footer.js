@@ -5,6 +5,8 @@
  * Normal pages get a footer line at the bottom of the page.
  * Full-screen pages (games that don't scroll) get a small badge in the bottom-left corner
  * that opens into the same links on tap, so it never covers game controls for long.
+ * A page can give the badge a fixed home instead (e.g. in its header) with
+ * <div id="dmis-license-slot"></div>; the links then drop down from there.
  */
 (function () {
     if (document.getElementById('dmis-license-footer')) return;
@@ -25,6 +27,8 @@
         '#dmis-license-footer .dlf-pop{margin-bottom:6px;background:#fdf5e1;color:#0C2340;border:2px solid #0C2340;border-radius:12px;padding:10px 12px;max-width:240px;box-shadow:0 6px 18px rgba(0,0,0,.3)}' +
         '#dmis-license-footer .dlf-pop a{display:block;padding:3px 0;font-weight:700}' +
         '#dmis-license-footer .dlf-pop p{margin:0 0 4px}' +
+        '#dmis-license-footer.dlf-inslot{position:relative}' +
+        '#dmis-license-footer.dlf-inslot .dlf-pop{position:absolute;top:calc(100% + 6px);right:0;margin:0;width:240px;z-index:50}' +
         '@media print{#dmis-license-footer.dlf-badge{display:none}}';
 
     function linksHTML() {
@@ -50,22 +54,23 @@
         style.textContent = css;
         document.head.appendChild(style);
 
+        var slot = document.getElementById('dmis-license-slot');
         var el = document.createElement('div');
         el.id = 'dmis-license-footer';
         el.setAttribute('role', 'contentinfo');
 
-        if (useFooterBar()) {
+        if (!slot && useFooterBar()) {
             el.className = 'dlf-bar';
             el.innerHTML = linksHTML();
         } else {
-            el.className = 'dlf-badge';
+            el.className = slot ? 'dlf-inslot' : 'dlf-badge';
             el.innerHTML =
                 '<div class="dlf-pop" id="dlf-pop" hidden>' +
                 '<p>Free for families, not for commercial use.</p>' +
                 '<a href="' + LICENSE_URL + '">Read the license</a>' +
                 '<a href="' + KOFI_URL + '" target="_blank" rel="noopener">Tip us on Ko-fi</a>' +
                 '</div>' +
-                '<button type="button" class="dlf-toggle" aria-expanded="false" aria-controls="dlf-pop">&copy; DMIS</button>';
+                '<button type="button" class="dlf-toggle" aria-expanded="false" aria-controls="dlf-pop">&copy;<span class="dlf-word"> DMIS</span></button>';
             var btn = el.querySelector('.dlf-toggle');
             var pop = el.querySelector('.dlf-pop');
             btn.addEventListener('click', function (e) {
@@ -81,7 +86,7 @@
                 }
             });
         }
-        document.body.appendChild(el);
+        (slot || document.body).appendChild(el);
     }
 
     if (document.readyState === 'loading') {

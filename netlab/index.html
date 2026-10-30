@@ -167,6 +167,14 @@ button:focus-visible,.opt:focus-visible{outline:3px solid var(--accent);outline-
 
 /* Top-right switches */
 .tools{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px}
+/* © DMIS badge (from /license-footer.js) lives in the header, never over the lesson */
+#dmis-license-slot{margin-left:auto}
+#dmis-license-slot+.tools{margin-left:0}
+#dmis-license-slot #dmis-license-footer{font-family:var(--f-body)}
+#dmis-license-slot #dmis-license-footer .dlf-toggle{opacity:1;border:1.5px solid var(--line);background:var(--card);color:var(--muted);font:700 .82rem/1 var(--f-body);padding:8px 11px;min-width:32px}
+#dmis-license-slot #dmis-license-footer .dlf-toggle:hover,#dmis-license-slot #dmis-license-footer .dlf-toggle[aria-expanded="true"]{color:var(--ink);border-color:var(--muted)}
+#dmis-license-slot #dmis-license-footer .dlf-pop{background:var(--card);color:var(--ink);border:1.5px solid var(--line);font-size:.85rem}
+@media (max-width:480px){#dmis-license-slot .dlf-word{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
 .swbtn{display:flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:700 .82rem/1 var(--f-body);padding:6px 11px 6px 6px;border-radius:999px;cursor:pointer}
 .track{width:30px;height:18px;border-radius:99px;background:var(--line);position:relative;flex:none;transition:background .15s}
 .track i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.35);transition:transform .15s}
@@ -403,6 +411,7 @@ details.tip:not([open]){padding-block:6px}
   <header>
     <button class="brand" id="homeBtn" type="button" aria-label="Back to all shapes"><span class="dmis">DMIS</span> Net <span>Lab</span></button>
     <span class="crumb" id="crumb" hidden></span>
+    <div id="dmis-license-slot"></div>
     <div class="tools">
       <button class="quizbtn" id="quizBtn" type="button"><span class="qbfull">Fold it in your head</span><span class="qbshort">Quiz</span></button>
       <button class="swbtn" id="cbBtn" type="button" aria-pressed="false" title="Colors and patterns that are easy to tell apart"><span class="track"><i></i></span>Color-blind</button>
