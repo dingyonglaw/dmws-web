@@ -10,6 +10,7 @@
   --accent:#E2457A; --accent-ink:#FFFFFF; --accent-soft:#FCE4EC;
   --long:#79B4E8; --end:#F4B942; --good:#228A5A; --good-soft:#E3F4EA; --bad:#D63A41; --bad-soft:#FCE6E6;
   --tip:#FFF6D9; --tip-line:#EBCB6B;
+  --lead:#FFF8EC; --lead-line:#EEDDBC;
   --mat:#24563F;
   --f-display:"Baloo 2", "Trebuchet MS", system-ui, sans-serif;
   --f-body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -19,12 +20,12 @@
   --paper:#12161F; --card:#1A202C; --ink:#E7EBF3; --muted:#9CA6BB; --line:#2C3445;
   --accent:#FF6B98; --accent-ink:#1A0A10; --accent-soft:#3A1C28;
   --good:#4CC98A; --good-soft:#163024; --bad:#FF6B70; --bad-soft:#361A1C;
-  --tip:#2C2614; --tip-line:#6E5B22; color-scheme:dark }}
+  --tip:#2C2614; --tip-line:#6E5B22; --lead:#211E19; --lead-line:#3B3427; color-scheme:dark }}
 :root[data-theme="dark"]{
   --paper:#12161F; --card:#1A202C; --ink:#E7EBF3; --muted:#9CA6BB; --line:#2C3445;
   --accent:#FF6B98; --accent-ink:#1A0A10; --accent-soft:#3A1C28;
   --good:#4CC98A; --good-soft:#163024; --bad:#FF6B70; --bad-soft:#361A1C;
-  --tip:#2C2614; --tip-line:#6E5B22; color-scheme:dark }
+  --tip:#2C2614; --tip-line:#6E5B22; --lead:#211E19; --lead-line:#3B3427; color-scheme:dark }
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -214,11 +215,13 @@ header .steps{order:5;flex:1 1 100%}
 .dots .chip:focus-visible{outline:none}.dots .chip:focus-visible b{outline:3px solid var(--accent);outline-offset:2px}
 @media (max-width:700px){.dots .chip .lbl{display:none}}
 
-.lesson .layout{display:grid;grid-template-columns:minmax(300px,1fr) minmax(0,1.5fr);gap:18px;align-items:start}
+.lesson .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
 @media (max-width:699px){.lesson .layout{grid-template-columns:minmax(0,1fr)}}
 .lesson .stagecol{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px)}
 @media (max-width:699px){.lesson .stagecol{position:static}}
 .lesson .panel{gap:12px}
+/* the step card is where she starts: a warm paper tint sets it apart from the cool 3D side; boxes inside it go white */
+.lesson .panel{background:var(--lead);border-color:var(--lead-line);--paper:var(--card)}
 .stagetop .seg{background:var(--card)}
 .stage{height:clamp(300px,calc(100vh - 480px),560px)}
 @media (max-width:699px){.stage{height:46vh;max-height:420px;min-height:280px}}
@@ -292,7 +295,7 @@ details.tip:not([open]){padding-block:12px}
   body.app .wrap{height:100%;display:flex;flex-direction:column;gap:10px;max-width:1280px}
   body.app header{flex:none}
   body.app .lesson{flex:1 1 auto;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px}
-  body.app .lesson .layout{min-height:0;height:100%;display:grid;grid-template-columns:minmax(330px,.85fr) minmax(0,1.5fr);gap:14px;align-items:stretch}
+  body.app .lesson .layout{min-height:0;height:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:stretch}
   body.app .lesson .panel{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
   body.app .lesson .stagecol{position:static;min-height:0;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
   body.app .stage{flex:1 1 auto;height:auto;min-height:240px;max-height:none}
@@ -369,11 +372,11 @@ details.tip:not([open]){padding-block:12px}
 /* a soft shadow tells her the step card has more to scroll */
 @media (min-width:700px) and (min-height:560px){
   body.app .lesson .panel{background:
-    linear-gradient(var(--card) 30%, transparent) top / 100% 36px no-repeat local,
-    linear-gradient(transparent, var(--card) 70%) bottom / 100% 36px no-repeat local,
+    linear-gradient(var(--lead) 30%, transparent) top / 100% 36px no-repeat local,
+    linear-gradient(transparent, var(--lead) 70%) bottom / 100% 36px no-repeat local,
     radial-gradient(farthest-side at 50% 0, rgba(20,30,60,.22), transparent) top / 100% 12px no-repeat scroll,
     radial-gradient(farthest-side at 50% 100%, rgba(20,30,60,.22), transparent) bottom / 100% 12px no-repeat scroll,
-    var(--card)}
+    var(--lead)}
 }
 
 /* round picker: a focused screen with no 3D view */
